@@ -45,8 +45,9 @@ pages), **L2** (has `main` / `background` code).
 
 1. Fork this repository and add `extensions/<your.id>/` (the folder name
    must equal the manifest `id`, e.g. `jane.plantuml`).
-2. Develop it in Typora with *Settings ▸ Extensions ▸ Developer mode* (load
-   the unpacked folder; it reloads on change).
+2. Try it in Typora: *Settings ▸ Extensions ▸ Install from File…* (pick the
+   folder), or copy it into the Extensions folder (*Open Folder*), then
+   *Reload* after each change.
 3. Run `npm run validate` and `npm run build` locally.
 4. Open a pull request. CI validates the manifest and files, prints a
    permission diff against `main` in the job summary, and builds the zip.
