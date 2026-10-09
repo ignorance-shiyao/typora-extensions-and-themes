@@ -47,14 +47,14 @@ mkdirSync(join(DIST, "download"), { recursive: true });
 
 // ── Assets (content-hashed so /assets/* can be cached forever) ─────────
 const assets = {};
-for (const [key, file] of [["css", "style.css"], ["js", "app.js"], ["favicon", "favicon.svg"]]) {
+for (const [key, file] of [["css", "style.css"], ["js", "app.js"], ["favicon", "favicon.png"], ["icon", "typora-icon.png"]]) {
   const data = readFileSync(join(ROOT, "site", file));
   const [base, ext] = file.split(".");
   const name = `assets/${base}.${sha256(data).slice(0, 10)}.${ext}`;
   write(name, data);
   assets[key] = `/${name}`;
 }
-write("favicon.svg", readFileSync(join(ROOT, "site", "favicon.svg")));
+write("favicon.png", readFileSync(join(ROOT, "site", "favicon.png")));
 
 // ── Packages + catalog ─────────────────────────────────────────────────
 const entries = [];

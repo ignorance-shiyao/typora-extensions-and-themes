@@ -43,8 +43,6 @@ export function permissionSentences(p) {
   return out;
 }
 
-const MARK = `<svg class="mark" viewBox="0 0 25 24" width="21" height="20" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M22.22 21.33H2.78V2.67h19.44M22.22 0H2.78C1.24 0 0 1.19 0 2.67v18.66C0 22.81 1.24 24 2.78 24h19.44C23.76 24 25 22.81 25 21.33V2.67C25 1.19 23.76 0 22.22 0ZM6 5v3h5v12h3V8h5V5H6Z"/></svg>`;
-
 function layout({ title, description, canonical, assets, body, origin: siteOrigin }) {
   return `<!doctype html>
 <html lang="en">
@@ -57,13 +55,13 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ""}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" href="${assets.favicon}" type="image/svg+xml">
+<link rel="icon" href="${assets.favicon}" type="image/png">
 <link rel="stylesheet" href="${assets.css}">
 </head>
 <body>
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="/">${MARK}<span>Typora <b>Extensions</b></span></a>
+    <a class="brand" href="/"><img class="mark" src="${assets.icon}" width="28" height="28" alt=""><span>Typora <b>Extensions</b></span></a>
     <nav>
       <a href="${DOCS_URL}">Docs</a>
       <a href="${REPO_URL}">GitHub</a>
