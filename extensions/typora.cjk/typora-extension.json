@@ -1,0 +1,24 @@
+{
+  "id": "typora.cjk",
+  "name": "CJK Typography",
+  "version": "1.0.0",
+  "description": "Pairs CJK brackets and quotes as you type, and adds spaces between CJK and Latin text (盘古之白).",
+  "author": "Typora samples",
+  "permissions": { "document": "write" },
+  "contributes": {
+    "inputRules": [
+      { "pair": ["（", "）"] },
+      { "pair": ["「", "」"] },
+      { "pair": ["『", "』"] },
+      { "pair": ["《", "》"] },
+      { "pair": ["【", "】"] },
+      { "pair": ["〈", "〉"] },
+      { "match": "...", "replace": "…" }
+    ],
+    "commands": [
+      { "id": "spacing", "title": "Add Spaces Between CJK and Latin", "category": "CJK" }
+    ],
+    "keyBindings": [{ "command": "spacing", "key": "Mod+Alt+Shift+S" }]
+  },
+  "main": "main.js"
+}

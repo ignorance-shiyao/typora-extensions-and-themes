@@ -1,0 +1,25 @@
+{
+  "id": "typora.math-pack",
+  "name": "Math Pack",
+  "version": "1.0.0",
+  "description": "Common TeX macros (\\R, \\N, \\abs, \\norm, \\set …) and snippets for theorem / proof blocks.",
+  "author": "Typora samples",
+  "contributes": {
+    "texMacros": {
+      "R": "\\mathbb{R}",
+      "N": "\\mathbb{N}",
+      "Z": "\\mathbb{Z}",
+      "Q": "\\mathbb{Q}",
+      "C": "\\mathbb{C}",
+      "E": "\\mathbb{E}",
+      "abs": ["\\left\\lvert #1 \\right\\rvert", 1],
+      "norm": ["\\left\\lVert #1 \\right\\rVert", 1],
+      "set": ["\\left\\{ #1 \\right\\}", 1],
+      "inner": ["\\left\\langle #1, #2 \\right\\rangle", 2],
+      "dd": "\\mathrm{d}",
+      "argmax": "\\operatorname*{arg\\,max}",
+      "argmin": "\\operatorname*{arg\\,min}"
+    },
+    "snippets": "snippets"
+  }
+}

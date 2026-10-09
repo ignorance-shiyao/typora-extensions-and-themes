@@ -1,0 +1,93 @@
+# Typora Extensions
+
+The source of every extension in the Typora extension store, and the
+tooling that builds and publishes [extensions.typora.io](https://extensions.typora.io).
+
+Extensions are never uploaded as binaries. Each one lives here as source,
+every new extension and every update is a pull request, and Typora's CI
+validates, packages and publishes what was reviewed. Users install from
+Typora ▸ Settings ▸ Extensions, which reads the catalog at
+`https://extensions.typora.io/index.json`.
+
+To write an extension, start with the developer guide:
+<https://docs.typora.io/extensions/>.
+
+## Layout
+
+```
+extensions/<id>/            one folder per extension, named after its id
+  typora-extension.json     the manifest (docs.typora.io/extensions/)
+  …                         everything else the manifest references
+scripts/
+  validate.mjs              manifest and file checks (npm run validate)
+  permission-diff.mjs       permission / version diff against a base ref (PRs)
+  build.mjs                 zips, index.json and the website → dist/
+  site.mjs                  HTML templates for the website
+  serve.mjs                 local server that mimics the Worker
+site/                       CSS, JS and icon for the website
+worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
+.github/workflows/          ci.yml (every push / PR), deploy.yml (main)
+```
+
+`npm run build` writes:
+
+| Path | What |
+| --- | --- |
+| `dist/index.json` | The catalog the app reads (`schemaVersion: 1`) |
+| `dist/download/<id>-<version>.zip` | The package; `typora-extension.json` at the archive root. Deterministic: the same source always gives the same SHA-256 |
+| `dist/index.html`, `dist/<id>/index.html` | The store website |
+| `dist/404.html`, `robots.txt`, `sitemap.xml` | |
+
+Each catalog entry has a tier: **L0** (data only), **L1** (ships HTML
+pages), **L2** (has `main` / `background` code).
+
+## Adding or updating an extension
+
+1. Fork this repository and add `extensions/<your.id>/` (the folder name
+   must equal the manifest `id`, e.g. `jane.plantuml`).
+2. Develop it in Typora with *Settings ▸ Extensions ▸ Developer mode* (load
+   the unpacked folder; it reloads on change).
+3. Run `npm run validate` and `npm run build` locally.
+4. Open a pull request. CI validates the manifest and files, prints a
+   permission diff against `main` in the job summary, and builds the zip.
+5. After review and merge, the deploy workflow publishes the new version
+   within a few minutes.
+
+Every change to an extension's folder needs a version bump: published zips
+are immutable and cached forever. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+for what reviewers check.
+
+## Local development
+
+Node 22, no dependencies.
+
+```sh
+npm ci                 # nothing to install, but keeps CI and local identical
+npm run validate       # check every extension (or: node scripts/validate.mjs <id>)
+npm run build          # build dist/ for https://extensions.typora.io
+npm run dev            # build for http://localhost:8788 and serve it
+node scripts/permission-diff.mjs origin/main   # what a PR would show
+```
+
+To install from the local store in Typora, start it with
+`TYPORA_EXTENSIONS_STORE=http://localhost:8788`. `npm run dev` builds the
+catalog with `http://localhost:8788` URLs because the app only installs
+downloads from the store origin.
+
+Deploying (CI does this on every push to `main`): `npx wrangler deploy`
+with `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` set.
+
+## Extensions
+
+| Extension | Shows | From |
+| --- | --- | --- |
+| `typora.kroki` | L0 Kroki fence renderers (PlantUML, Graphviz, D2, …), configuration, network permission | typora-issues#1138 |
+| `typora.issue-links` | L0 inline rules: `#123` → issue URL, `#tag` → search + Tags detail view | |
+| `typora.tasks` | L0 rule-based detail views over Iteration (open tasks, TODO notes, links) | typora_plugin TODO / right outline |
+| `typora.math-pack` | L0 TeX macros and snippets | V1 users' MathJax macro requests |
+| `typora.meeting-notes` | L0 templates and snippets | typora-issues#863 |
+| `typora.cjk` | L0 input rules (CJK pairs) + L2 `main` command and formatter (CJK/Latin spacing) | typora_plugin cjk_symbol_pairing, md_padding |
+| `typora.chart` | L1 static fence renderer (` ```chart `) | typora_plugin chart / echarts |
+| `typora.kanban` | L1 interactive fence renderer with export snapshot (` ```kanban `) | typora_plugin kanban |
+| `typora.csv-viewer` | L1 editable file viewer + `main` talking to the page, clipboard permission | file viewer discussion |
+| `typora.writing-stats` | L2 `main` + `background` singleton, runtime ports, atomic storage, alarms, detail page | Obsidian-style daily writing goals |

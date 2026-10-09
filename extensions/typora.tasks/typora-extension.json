@@ -1,0 +1,32 @@
+{
+  "id": "typora.tasks",
+  "name": "Tasks & Links",
+  "version": "1.0.0",
+  "description": "Detail views listing open tasks, TODO / FIXME notes and every link in the document.",
+  "author": "Typora samples",
+  "contributes": {
+    "detailViews": [
+      {
+        "id": "open-tasks",
+        "title": "Open Tasks",
+        "icon": "list-checks",
+        "query": { "block": ["list_item"], "where": { "checked": false } },
+        "item": { "label": "{text}", "groupBy": "heading" }
+      },
+      {
+        "id": "todo",
+        "title": "TODO",
+        "icon": "hash",
+        "query": { "block": ["paragraph", "heading"], "text": "\\b(TODO|FIXME|XXX)\\b[:：]?\\s*(.*)" },
+        "item": { "label": "{$1}: {$2}", "groupBy": "heading" }
+      },
+      {
+        "id": "links",
+        "title": "Links",
+        "icon": "network",
+        "query": { "inline": ["link", "autolink", "url", "wikilink"] },
+        "item": { "label": "{text}" }
+      }
+    ]
+  }
+}

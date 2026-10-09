@@ -1,0 +1,34 @@
+{
+  "id": "typora.kroki",
+  "name": "Kroki Diagrams",
+  "version": "1.0.0",
+  "description": "PlantUML, Graphviz, D2, WaveDrom, BPMN and more, drawn by a Kroki server (typora-issues#1138).",
+  "author": "Typora samples",
+  "permissions": {
+    "network": ["https://kroki.io"]
+  },
+  "contributes": {
+    "fenceRenderers": [
+      { "id": "plantuml", "lang": ["plantuml", "puml"], "kroki": "plantuml" },
+      { "id": "graphviz", "lang": ["graphviz", "dot"], "kroki": "graphviz" },
+      { "id": "d2", "lang": ["d2"], "kroki": "d2" },
+      { "id": "wavedrom", "lang": ["wavedrom"], "kroki": "wavedrom" },
+      { "id": "bpmn", "lang": ["bpmn"], "kroki": "bpmn" },
+      { "id": "ditaa", "lang": ["ditaa"], "kroki": "ditaa" },
+      { "id": "nomnoml", "lang": ["nomnoml"], "kroki": "nomnoml" },
+      { "id": "erd", "lang": ["erd"], "kroki": "erd" },
+      { "id": "vegalite", "lang": ["vegalite", "vega-lite"], "kroki": "vegalite" }
+    ],
+    "configuration": {
+      "title": "Kroki",
+      "properties": {
+        "server": {
+          "type": "string",
+          "default": "https://kroki.io",
+          "title": "Server",
+          "description": "Diagram source is sent here to be drawn. A self-hosted server must also be added to this extension's network permission."
+        }
+      }
+    }
+  }
+}

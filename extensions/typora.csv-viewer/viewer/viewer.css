@@ -1,0 +1,48 @@
+:root { color-scheme: light dark; }
+html, body { margin: 0; height: 100%; }
+body {
+  display: flex;
+  flex-direction: column;
+  font: 13px/1.4 var(--typora-font, system-ui, sans-serif);
+  background: var(--typora-background, #fff);
+  color: var(--typora-foreground, #222);
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--typora-border, #ddd);
+}
+#name { font-weight: 600; }
+#info { opacity: 0.6; }
+.spacer { flex: 1; }
+button {
+  font: inherit;
+  padding: 3px 10px;
+  border: 1px solid var(--typora-border, #ccc);
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+}
+button:disabled { opacity: 0.4; }
+main { flex: 1; overflow: auto; }
+table { border-collapse: collapse; min-width: 100%; }
+th, td {
+  border: 1px solid var(--typora-border, #ddd);
+  padding: 4px 8px;
+  white-space: pre;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  position: sticky;
+  top: 0;
+  background: var(--typora-panel, #f6f8fa);
+  cursor: pointer;
+  user-select: none;
+}
+th[data-sort="asc"]::after { content: " ▲"; }
+th[data-sort="desc"]::after { content: " ▼"; }
+td:focus { outline: 2px solid var(--typora-accent, #0a84ff); outline-offset: -2px; }
+td.row-number { opacity: 0.5; text-align: right; }

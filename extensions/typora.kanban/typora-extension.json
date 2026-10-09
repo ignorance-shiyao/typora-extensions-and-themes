@@ -1,0 +1,12 @@
+{
+  "id": "typora.kanban",
+  "name": "Kanban Boards",
+  "version": "1.0.0",
+  "description": "```kanban fences shown as an interactive board: columns from ## headings, cards from list items. Export keeps a static picture.",
+  "author": "Typora samples",
+  "contributes": {
+    "fenceRenderers": [
+      { "id": "kanban", "lang": ["kanban"], "mode": "interactive", "entry": "board.html" }
+    ]
+  }
+}

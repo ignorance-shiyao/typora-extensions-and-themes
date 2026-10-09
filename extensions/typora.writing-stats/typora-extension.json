@@ -1,0 +1,23 @@
+{
+  "id": "typora.writing-stats",
+  "name": "Writing Stats",
+  "version": "1.0.0",
+  "description": "Counts the words you write each day across all windows, with a daily goal and a 14-day history in the detail panel.",
+  "author": "Typora samples",
+  "permissions": { "document": "read" },
+  "contributes": {
+    "detailViews": [
+      { "id": "stats", "title": "Writing", "icon": "chart", "entry": "view/index.html" }
+    ],
+    "commands": [{ "id": "reset", "title": "Reset Today's Word Count", "category": "Writing Stats" }],
+    "configuration": {
+      "title": "Writing Stats",
+      "properties": {
+        "dailyGoal": { "type": "number", "default": 500, "title": "Daily goal", "description": "Words per day." }
+      }
+    }
+  },
+  "main": "main.js",
+  "background": "background.js",
+  "activationEvents": ["onStartupFinished"]
+}

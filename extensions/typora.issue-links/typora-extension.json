@@ -1,0 +1,37 @@
+{
+  "id": "typora.issue-links",
+  "name": "Issue Links & Tags",
+  "version": "1.0.0",
+  "description": "#123 links to an issue of your repository; #tags open a search and are listed in a Tags view.",
+  "author": "Typora samples",
+  "contributes": {
+    "inlineRules": [
+      {
+        "id": "issue",
+        "pattern": "(?<![\\w/&#])#(\\d+)\\b",
+        "class": "md-ext-issue",
+        "title": "Issue #$1 (⌘-click to open)",
+        "action": { "openUrl": "{config.issueUrl}$1" }
+      },
+      {
+        "id": "tag",
+        "pattern": "(?<=^|\\s)#([\\p{L}_][\\p{L}\\p{N}_/-]*)",
+        "class": "md-ext-tag",
+        "title": "Tag #$1 (⌘-click to search)",
+        "action": { "command": "search.global", "args": { "query": "#$1" } },
+        "index": { "title": "Tags", "icon": "tags", "groupBy": "#$1" }
+      }
+    ],
+    "configuration": {
+      "title": "Issue Links",
+      "properties": {
+        "issueUrl": {
+          "type": "string",
+          "default": "https://github.com/typora/typora-issues/issues/",
+          "title": "Issue URL prefix",
+          "description": "The issue number is appended, e.g. https://github.com/owner/repo/issues/"
+        }
+      }
+    }
+  }
+}

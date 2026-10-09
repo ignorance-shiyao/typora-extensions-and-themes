@@ -1,0 +1,10 @@
+html, body { margin: 0; background: transparent; }
+body { padding: 12px 14px; font: 13px/1.4 var(--typora-font, system-ui, sans-serif); color: var(--typora-foreground, #222); }
+section { margin-bottom: 18px; }
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.6; }
+.count { font-size: 32px; font-weight: 600; margin: 2px 0 6px; }
+.goal { height: 6px; border-radius: 3px; background: var(--typora-border, #e5e5e5); overflow: hidden; margin-bottom: 4px; }
+.bar { height: 100%; width: 0; background: var(--typora-accent, #0a84ff); transition: width 0.3s; }
+.history { display: flex; align-items: flex-end; gap: 4px; height: 90px; margin-top: 8px; }
+.day { flex: 1; background: var(--typora-accent, #0a84ff); opacity: 0.75; border-radius: 2px 2px 0 0; min-height: 1px; }
+.day.today { opacity: 1; }

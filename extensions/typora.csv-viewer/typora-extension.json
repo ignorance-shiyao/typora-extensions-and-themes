@@ -1,0 +1,20 @@
+{
+  "id": "typora.csv-viewer",
+  "name": "CSV Viewer",
+  "version": "1.0.0",
+  "description": "Open .csv / .tsv files as a sortable, editable table, and copy them as a Markdown table.",
+  "author": "Typora samples",
+  "permissions": { "clipboard": true },
+  "contributes": {
+    "fileViewers": [
+      {
+        "id": "csv",
+        "title": "CSV Table",
+        "extensions": ["csv", "tsv"],
+        "entry": "viewer/index.html",
+        "editable": true
+      }
+    ]
+  },
+  "main": "main.js"
+}
