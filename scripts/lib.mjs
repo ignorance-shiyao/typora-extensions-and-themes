@@ -9,7 +9,7 @@ import { deflateRawSync } from "node:zlib";
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const EXTENSIONS_DIR = join(ROOT, "extensions");
 export const MANIFEST = "typora-extension.json";
-export const REPO_URL = "https://github.com/typora/extensions";
+export const REPO_URL = "https://github.com/typora/typora-extensions";
 export const DOCS_URL = "https://docs.typora.io/extensions/";
 export const SITE_ORIGIN = "https://extensions.typora.io";
 

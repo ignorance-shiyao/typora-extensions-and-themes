@@ -74,7 +74,7 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ""}
 ${body}
 </main>
 <footer class="footer">
-  <p>Every extension here is open source, reviewed, and built from <a href="${REPO_URL}">typora/extensions</a> by Typora's CI. Extensions run sandboxed with the permissions shown on their page.</p>
+  <p>Every extension here is open source, reviewed, and built from <a href="${REPO_URL}">typora/typora-extensions</a> by Typora's CI. Extensions run sandboxed with the permissions shown on their page.</p>
   <p><a href="${DOCS_URL}">Developer docs</a> · <a href="${siteOrigin}/index.json">index.json</a> · <a href="${REPO_URL}/blob/main/CONTRIBUTING.md">Submit an extension</a></p>
 </footer>
 ${assets.js ? `<script src="${assets.js}" defer></script>` : ""}
