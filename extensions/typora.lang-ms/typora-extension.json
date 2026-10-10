@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-ms",
   "name": "Bahasa Melayu Language Pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shows Typora in Malay, and checks Malay spelling when the system spellchecker has no Malay dictionary.",
   "author": "Typora",
   "keywords": [

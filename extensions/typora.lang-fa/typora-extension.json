@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-fa",
   "name": "فارسی Language Pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shows Typora in Persian, and checks Persian spelling when the system spellchecker has no Persian dictionary.",
   "author": "Typora",
   "keywords": [

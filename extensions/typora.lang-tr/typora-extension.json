@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-tr",
   "name": "Türkçe Language Pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shows Typora in Turkish, and checks Turkish spelling when the system spellchecker has no Turkish dictionary.",
   "author": "Typora",
   "keywords": [
