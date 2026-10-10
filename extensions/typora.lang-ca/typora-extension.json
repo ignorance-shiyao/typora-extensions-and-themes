@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-ca",
+  "name": "Català Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Catalan, and checks Catalan spelling when the system spellchecker has no Catalan dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Catalan",
+    "Català",
+    "ca",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "ca",
+        "name": "Català",
+        "englishName": "Catalan",
+        "path": "translations/ca.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "ca",
+        "aff": "dictionaries/ca/index.aff",
+        "dic": "dictionaries/ca/index.dic"
+      }
+    ]
+  }
+}

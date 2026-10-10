@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-ro",
+  "name": "Română Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Romanian, and checks Romanian spelling when the system spellchecker has no Romanian dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Romanian",
+    "Română",
+    "ro",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "ro",
+        "name": "Română",
+        "englishName": "Romanian",
+        "path": "translations/ro.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "ro",
+        "aff": "dictionaries/ro/index.aff",
+        "dic": "dictionaries/ro/index.dic"
+      }
+    ]
+  }
+}

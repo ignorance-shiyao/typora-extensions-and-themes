@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-pt-pt",
+  "name": "Português (Portugal) Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Portuguese (Portugal), and checks Portuguese (Portugal) spelling when the system spellchecker has no Portuguese (Portugal) dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Portuguese (Portugal)",
+    "Português (Portugal)",
+    "pt-PT",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "pt-PT",
+        "name": "Português (Portugal)",
+        "englishName": "Portuguese (Portugal)",
+        "path": "translations/pt-PT.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "pt-PT",
+        "aff": "dictionaries/pt-PT/index.aff",
+        "dic": "dictionaries/pt-PT/index.dic"
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-it",
+  "name": "Italiano Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Italian, and checks Italian spelling when the system spellchecker has no Italian dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Italian",
+    "Italiano",
+    "it",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "it",
+        "name": "Italiano",
+        "englishName": "Italian",
+        "path": "translations/it.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "it",
+        "aff": "dictionaries/it/index.aff",
+        "dic": "dictionaries/it/index.dic"
+      }
+    ]
+  }
+}

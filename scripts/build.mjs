@@ -33,6 +33,8 @@ const args = process.argv.slice(2);
 const originArg = args.includes("--origin") ? args[args.indexOf("--origin") + 1] : null;
 const origin = (originArg ?? (args.includes("--dev") ? `http://localhost:${process.env.PORT ?? 8788}` : SITE_ORIGIN)).replace(/\/$/, "");
 const DIST = join(ROOT, "dist");
+/** `extensions.install { url }` in every host (docs/extensions-host.md). */
+const MAX_DOWNLOAD_BYTES = 50 * 1024 * 1024;
 
 const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 const now = process.env.SOURCE_DATE_EPOCH ? new Date(Number(process.env.SOURCE_DATE_EPOCH) * 1000) : new Date();
@@ -80,6 +82,11 @@ for (const id of extensionIds()) {
 
   const files = packageFiles(dir);
   const archive = zip(files.map((name) => ({ name, data: readFileSync(join(dir, name)) })));
+  if (archive.length > MAX_DOWNLOAD_BYTES) {
+    console.error(`✗ ${id}: the zip is ${(archive.length / 1024 / 1024).toFixed(1)} MB; the app downloads at most 50 MB.`);
+    failed = true;
+    continue;
+  }
   const zipName = `${id}-${manifest.version}.zip`;
   write(`download/${zipName}`, archive);
 
@@ -99,6 +106,9 @@ for (const id of extensionIds()) {
     permissions: manifest.permissions && typeof manifest.permissions === "object" ? manifest.permissions : {},
     contributes,
     tier: tierOf(manifest, files),
+    // Language packs: the app finds the pack for a UI or spelling language by these.
+    localizations: (manifest.contributes?.localizations ?? []).map((l) => l.locale),
+    dictionaries: (manifest.contributes?.dictionaries ?? []).map((d) => d.language),
     page: `${origin}/${id}/`,
     download: { url: `${origin}/download/${zipName}`, sha256: sha256(archive), size: archive.length },
     updatedAt: gitTime(`extensions/${id}`) ?? isoSeconds(now),

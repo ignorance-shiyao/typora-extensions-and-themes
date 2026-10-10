@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-pt-br",
+  "name": "Português (Brasil) Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Portuguese (Brazil), and checks Portuguese (Brazil) spelling when the system spellchecker has no Portuguese (Brazil) dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Portuguese (Brazil)",
+    "Português (Brasil)",
+    "pt-BR",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "pt-BR",
+        "name": "Português (Brasil)",
+        "englishName": "Portuguese (Brazil)",
+        "path": "translations/pt-BR.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "pt-BR",
+        "aff": "dictionaries/pt-BR/index.aff",
+        "dic": "dictionaries/pt-BR/index.dic"
+      }
+    ]
+  }
+}

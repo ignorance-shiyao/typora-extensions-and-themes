@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-nl",
+  "name": "Nederlands Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Dutch, and checks Dutch spelling when the system spellchecker has no Dutch dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Dutch",
+    "Nederlands",
+    "nl",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "nl",
+        "name": "Nederlands",
+        "englishName": "Dutch",
+        "path": "translations/nl.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "nl",
+        "aff": "dictionaries/nl/index.aff",
+        "dic": "dictionaries/nl/index.dic"
+      }
+    ]
+  }
+}

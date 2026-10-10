@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-ga",
+  "name": "Gaeilge Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Irish, and checks Irish spelling when the system spellchecker has no Irish dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Irish",
+    "Gaeilge",
+    "ga",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "ga",
+        "name": "Gaeilge",
+        "englishName": "Irish",
+        "path": "translations/ga.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "ga",
+        "aff": "dictionaries/ga/index.aff",
+        "dic": "dictionaries/ga/index.dic"
+      }
+    ]
+  }
+}

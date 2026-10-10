@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-vi",
+  "name": "Tiếng Việt Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Vietnamese, and checks Vietnamese spelling when the system spellchecker has no Vietnamese dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Vietnamese",
+    "Tiếng Việt",
+    "vi",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "vi",
+        "name": "Tiếng Việt",
+        "englishName": "Vietnamese",
+        "path": "translations/vi.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "vi",
+        "aff": "dictionaries/vi/index.aff",
+        "dic": "dictionaries/vi/index.dic"
+      }
+    ]
+  }
+}

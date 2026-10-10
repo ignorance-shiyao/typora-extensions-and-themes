@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-ko",
+  "name": "한국어 Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Korean, and checks Korean spelling when the system spellchecker has no Korean dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Korean",
+    "한국어",
+    "ko",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "ko",
+        "name": "한국어",
+        "englishName": "Korean",
+        "path": "translations/ko.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "ko",
+        "aff": "dictionaries/ko/index.aff",
+        "dic": "dictionaries/ko/index.dic"
+      }
+    ]
+  }
+}

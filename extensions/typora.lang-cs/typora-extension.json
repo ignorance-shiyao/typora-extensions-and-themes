@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-cs",
+  "name": "Čeština Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Czech, and checks Czech spelling when the system spellchecker has no Czech dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Czech",
+    "Čeština",
+    "cs",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "cs",
+        "name": "Čeština",
+        "englishName": "Czech",
+        "path": "translations/cs.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "cs",
+        "aff": "dictionaries/cs/index.aff",
+        "dic": "dictionaries/cs/index.dic"
+      }
+    ]
+  }
+}

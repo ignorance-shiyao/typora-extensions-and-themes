@@ -150,6 +150,10 @@ export function contributionSummary(manifest, files) {
       .map((f) => f.slice(prefix.length).replace(/\.[^.]+$/, ""));
   };
 
+  if (Array.isArray(c.localizations) && c.localizations.length)
+    add("Display language", plainNames(c.localizations.map((l) => (l.englishName ? `${l.name} (${l.englishName})` : l.name))));
+  if (Array.isArray(c.dictionaries) && c.dictionaries.length)
+    add("Spelling dictionaries", `${plainNames(c.dictionaries.map((d) => d.language))} — used when the system spellchecker lacks the language`);
   if (Array.isArray(c.fenceRenderers) && c.fenceRenderers.length) {
     const fences = (r) => listNames((Array.isArray(r.lang) ? r.lang : [r.lang]).map((l) => "```" + l));
     const kroki = c.fenceRenderers.filter((r) => r.kroki);

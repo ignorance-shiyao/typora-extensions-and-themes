@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-es",
+  "name": "Español Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Spanish, and checks Spanish spelling when the system spellchecker has no Spanish dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Spanish",
+    "Español",
+    "es",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "es",
+        "name": "Español",
+        "englishName": "Spanish",
+        "path": "translations/es.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "es",
+        "aff": "dictionaries/es/index.aff",
+        "dic": "dictionaries/es/index.dic"
+      }
+    ]
+  }
+}

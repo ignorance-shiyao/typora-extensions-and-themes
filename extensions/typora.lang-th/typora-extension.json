@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-th",
+  "name": "ไทย Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Thai, and checks Thai spelling when the system spellchecker has no Thai dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Thai",
+    "ไทย",
+    "th",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "th",
+        "name": "ไทย",
+        "englishName": "Thai",
+        "path": "translations/th.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "th",
+        "aff": "dictionaries/th/index.aff",
+        "dic": "dictionaries/th/index.dic"
+      }
+    ]
+  }
+}

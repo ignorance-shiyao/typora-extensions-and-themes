@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-gl",
+  "name": "Galego Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Galician, and checks Galician spelling when the system spellchecker has no Galician dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Galician",
+    "Galego",
+    "gl",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "gl",
+        "name": "Galego",
+        "englishName": "Galician",
+        "path": "translations/gl.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "gl",
+        "aff": "dictionaries/gl/index.aff",
+        "dic": "dictionaries/gl/index.dic"
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-pl",
+  "name": "Polski Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Polish, and checks Polish spelling when the system spellchecker has no Polish dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Polish",
+    "Polski",
+    "pl",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "pl",
+        "name": "Polski",
+        "englishName": "Polish",
+        "path": "translations/pl.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "pl",
+        "aff": "dictionaries/pl/index.aff",
+        "dic": "dictionaries/pl/index.dic"
+      }
+    ]
+  }
+}

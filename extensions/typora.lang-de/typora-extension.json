@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-de",
+  "name": "Deutsch Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in German, and checks German spelling when the system spellchecker has no German dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "German",
+    "Deutsch",
+    "de",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "de",
+        "name": "Deutsch",
+        "englishName": "German",
+        "path": "translations/de.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "de",
+        "aff": "dictionaries/de/index.aff",
+        "dic": "dictionaries/de/index.dic"
+      }
+    ]
+  }
+}

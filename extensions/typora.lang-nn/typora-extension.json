@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-nn",
+  "name": "Norsk nynorsk Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Norwegian Nynorsk, and checks Norwegian Nynorsk spelling when the system spellchecker has no Norwegian Nynorsk dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Norwegian Nynorsk",
+    "Norsk nynorsk",
+    "nn",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "nn",
+        "name": "Norsk nynorsk",
+        "englishName": "Norwegian Nynorsk",
+        "path": "translations/nn.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "nn",
+        "aff": "dictionaries/nn/index.aff",
+        "dic": "dictionaries/nn/index.dic"
+      }
+    ]
+  }
+}

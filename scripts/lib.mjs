@@ -16,6 +16,19 @@ export const SITE_ORIGIN = "https://extensions.typora.io";
 /** Per-file and per-package limits (docs/extensions.md §8.6, "bundle size"). */
 export const MAX_FILE_BYTES = 1024 * 1024;
 export const MAX_PACKAGE_BYTES = 5 * 1024 * 1024;
+/**
+ * Language packs: a Hunspell dictionary file may be larger (the app reads up
+ * to 32 MB per file), and so may a pack (the app downloads up to 50 MB).
+ */
+export const MAX_DICTIONARY_FILE_BYTES = 32 * 1024 * 1024;
+export const MAX_LANGUAGE_PACK_BYTES = 128 * 1024 * 1024;
+const LANGUAGE_TAG = /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/;
+
+/** Files named by `contributes.dictionaries` (exempt from MAX_FILE_BYTES). */
+export function dictionaryFiles(raw) {
+  const list = isObject(raw?.contributes) && Array.isArray(raw.contributes.dictionaries) ? raw.contributes.dictionaries : [];
+  return new Set(list.flatMap((d) => (isObject(d) ? [d.aff, d.dic].filter((p) => typeof p === "string") : [])));
+}
 
 // Same rules as packages/workbench/src/extensions/manifest.ts.
 export const EXTENSION_ID_PATTERN = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/;
@@ -23,6 +36,8 @@ export const VERSION_PATTERN = /^\d+\.\d+\.\d+([-+].*)?$/;
 const NETWORK_ORIGIN = /^https?:\/\/(\*\.)?[a-z0-9.-]+(:\d{1,5})?$/i;
 
 export const CONTRIBUTION_KEYS = [
+  "localizations",
+  "dictionaries",
   "themes",
   "templates",
   "snippets",
@@ -231,6 +246,35 @@ export function checkManifest(raw, dir, folderId) {
         errors.push(`contributes.inlineRules[${i}]: invalid pattern.`);
       }
     });
+    const locales = new Set();
+    arr("localizations").forEach((l, i) => {
+      const where = `contributes.localizations[${i}]`;
+      if (!isObject(l)) return errors.push(`${where} must be an object.`);
+      if (typeof l.locale !== "string" || !LANGUAGE_TAG.test(l.locale)) errors.push(`${where}.locale must be a language tag such as de or pt-BR.`);
+      else if (locales.has(l.locale)) errors.push(`${where}: locale ${l.locale} appears twice.`);
+      else locales.add(l.locale);
+      if (!nonEmpty(l.name)) errors.push(`${where} needs the language's name in that language.`);
+      if (!nonEmpty(l.englishName)) warnings.push(`${where} has no englishName.`);
+      if (typeof l.path !== "string" || !l.path.endsWith(".json")) return errors.push(`${where}.path must be a .json file.`);
+      needFile(l.path, `${where}.path`);
+      if (!isRelativeAssetPath(l.path) || !isFile(l.path)) return;
+      try {
+        const catalog = JSON.parse(readFileSync(join(dir, l.path), "utf8"));
+        if (!isObject(catalog) || Object.values(catalog).some((v) => typeof v !== "string"))
+          errors.push(`${where}: ${l.path} must map English strings to translated strings.`);
+      } catch (error) {
+        errors.push(`${where}: ${l.path} is not valid JSON: ${error.message}`);
+      }
+    });
+    arr("dictionaries").forEach((d, i) => {
+      const where = `contributes.dictionaries[${i}]`;
+      if (!isObject(d)) return errors.push(`${where} must be an object.`);
+      if (typeof d.language !== "string" || !LANGUAGE_TAG.test(d.language)) errors.push(`${where}.language must be a language tag such as de or de-CH.`);
+      needFile(d.aff, `${where}.aff`);
+      needFile(d.dic, `${where}.dic`);
+    });
+    if ((c.localizations !== undefined || c.dictionaries !== undefined) && (raw.main !== undefined || raw.background !== undefined))
+      errors.push("A language pack is data only: no main or background.");
     if (c.configuration !== undefined && !(isObject(c.configuration) && isObject(c.configuration.properties)))
       errors.push("contributes.configuration needs properties.");
   }

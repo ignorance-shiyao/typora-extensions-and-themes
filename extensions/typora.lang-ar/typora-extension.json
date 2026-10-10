@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-ar",
+  "name": "العربية Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Arabic, and checks Arabic spelling when the system spellchecker has no Arabic dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Arabic",
+    "العربية",
+    "ar",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "ar",
+        "name": "العربية",
+        "englishName": "Arabic",
+        "path": "translations/ar.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "ar",
+        "aff": "dictionaries/ar/index.aff",
+        "dic": "dictionaries/ar/index.dic"
+      }
+    ]
+  }
+}

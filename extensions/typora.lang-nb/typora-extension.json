@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-nb",
+  "name": "Norsk bokmål Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Norwegian Bokmål, and checks Norwegian Bokmål spelling when the system spellchecker has no Norwegian Bokmål dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Norwegian Bokmål",
+    "Norsk bokmål",
+    "nb",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "nb",
+        "name": "Norsk bokmål",
+        "englishName": "Norwegian Bokmål",
+        "path": "translations/nb.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "nb",
+        "aff": "dictionaries/nb/index.aff",
+        "dic": "dictionaries/nb/index.dic"
+      }
+    ]
+  }
+}

@@ -9,9 +9,12 @@ import { join } from "node:path";
 import {
   EXTENSIONS_DIR,
   MANIFEST,
+  MAX_DICTIONARY_FILE_BYTES,
   MAX_FILE_BYTES,
+  MAX_LANGUAGE_PACK_BYTES,
   MAX_PACKAGE_BYTES,
   checkManifest,
+  dictionaryFiles,
   extensionIds,
   hiddenFiles,
 } from "./lib.mjs";
@@ -51,6 +54,13 @@ function validate(id) {
 
   if (!lstatSync(dir).isDirectory()) return { errors: [`extensions/${id} is not a folder.`], warnings, where };
 
+  let manifestJson = null;
+  try {
+    manifestJson = JSON.parse(readFileSync(join(dir, MANIFEST), "utf8"));
+  } catch {
+    /* reported below */
+  }
+  const dictionaries = dictionaryFiles(manifestJson);
   let total = 0;
   for (const path of walkAll(dir)) {
     const stat = lstatSync(join(dir, path));
@@ -61,8 +71,9 @@ function validate(id) {
     if (!stat.isFile()) continue;
     if (path.split("/").some((part) => part.startsWith("."))) continue;
     total += stat.size;
-    if (stat.size > MAX_FILE_BYTES)
-      errors.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB (limit ${MAX_FILE_BYTES / 1024} KB).`);
+    const limit = dictionaries.has(path) ? MAX_DICTIONARY_FILE_BYTES : MAX_FILE_BYTES;
+    if (stat.size > limit)
+      errors.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB (limit ${limit / 1024} KB).`);
 
     const isCode = /\.(m?js|cjs)$/i.test(path);
     const isHtml = /\.html?$/i.test(path);
@@ -85,8 +96,9 @@ function validate(id) {
     if (longest > MINIFIED_LINE)
       warnings.push(`${path} has a ${longest}-character line; minified or generated sources are not accepted (§8.6).`);
   }
-  if (total > MAX_PACKAGE_BYTES)
-    errors.push(`The package is ${(total / 1024 / 1024).toFixed(1)} MB (limit ${MAX_PACKAGE_BYTES / 1024 / 1024} MB).`);
+  const packageLimit = dictionaries.size ? MAX_LANGUAGE_PACK_BYTES : MAX_PACKAGE_BYTES;
+  if (total > packageLimit)
+    errors.push(`The package is ${(total / 1024 / 1024).toFixed(1)} MB (limit ${packageLimit / 1024 / 1024} MB).`);
   for (const path of hiddenFiles(dir)) warnings.push(`${path} is hidden and will not be packaged.`);
 
   let raw;

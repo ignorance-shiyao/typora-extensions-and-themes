@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-id",
+  "name": "Bahasa Indonesia Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Indonesian, and checks Indonesian spelling when the system spellchecker has no Indonesian dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Indonesian",
+    "Bahasa Indonesia",
+    "id",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "id",
+        "name": "Bahasa Indonesia",
+        "englishName": "Indonesian",
+        "path": "translations/id.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "id",
+        "aff": "dictionaries/id/index.aff",
+        "dic": "dictionaries/id/index.dic"
+      }
+    ]
+  }
+}

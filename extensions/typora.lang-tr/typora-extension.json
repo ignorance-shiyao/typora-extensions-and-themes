@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-tr",
+  "name": "Türkçe Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Turkish, and checks Turkish spelling when the system spellchecker has no Turkish dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Turkish",
+    "Türkçe",
+    "tr",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "tr",
+        "name": "Türkçe",
+        "englishName": "Turkish",
+        "path": "translations/tr.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "tr",
+        "aff": "dictionaries/tr/index.aff",
+        "dic": "dictionaries/tr/index.dic"
+      }
+    ]
+  }
+}

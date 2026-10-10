@@ -1,0 +1,33 @@
+{
+  "id": "typora.lang-sl",
+  "name": "Slovenščina Language Pack",
+  "version": "1.0.0",
+  "description": "Shows Typora in Slovenian, and checks Slovenian spelling when the system spellchecker has no Slovenian dictionary.",
+  "author": "Typora",
+  "keywords": [
+    "language pack",
+    "translation",
+    "Slovenian",
+    "Slovenščina",
+    "sl",
+    "spelling",
+    "dictionary"
+  ],
+  "contributes": {
+    "localizations": [
+      {
+        "locale": "sl",
+        "name": "Slovenščina",
+        "englishName": "Slovenian",
+        "path": "translations/sl.json"
+      }
+    ],
+    "dictionaries": [
+      {
+        "language": "sl",
+        "aff": "dictionaries/sl/index.aff",
+        "dic": "dictionaries/sl/index.dic"
+      }
+    ]
+  }
+}
