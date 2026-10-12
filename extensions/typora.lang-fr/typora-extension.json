@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-fr",
   "name": "Français Language Pack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Shows Typora in French, and checks French spelling when the system spellchecker has no French dictionary.",
   "author": "Typora",
   "keywords": [
