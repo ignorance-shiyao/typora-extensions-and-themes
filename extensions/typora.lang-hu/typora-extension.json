@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-hu",
   "name": "Magyar Language Pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Shows Typora in Hungarian, and checks Hungarian spelling when the system spellchecker has no Hungarian dictionary.",
   "author": "Typora",
   "keywords": [

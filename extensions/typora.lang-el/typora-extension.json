@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-el",
   "name": "Ελληνικά Language Pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Shows Typora in Greek, and checks Greek spelling when the system spellchecker has no Greek dictionary.",
   "author": "Typora",
   "keywords": [

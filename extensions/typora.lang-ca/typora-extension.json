@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-ca",
   "name": "Català Language Pack",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Shows Typora in Catalan, and checks Catalan spelling when the system spellchecker has no Catalan dictionary.",
   "author": "Typora",
   "keywords": [
