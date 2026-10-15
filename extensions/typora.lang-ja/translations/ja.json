@@ -1988,5 +1988,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: トーンを変更 – {0}",
   "AI: Translate to {0}": "AI: 翻訳 – {0}",
-  "AI Features": "AI 機能"
+  "AI Features": "AI 機能",
+  "Proposed Changes": "提案された変更",
+  "{0} proposes changes to {1}": "{0} が {1} への変更を提案しています",
+  "An agent": "外部エージェント",
+  "The document was closed.": "ドキュメントが閉じられました。",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "提案を開いている間にドキュメントが変更されました。もう一度読み込んでから編集をやり直してください。",
+  "Replaced by a newer proposal.": "新しい提案に置き換えられました。"
 }

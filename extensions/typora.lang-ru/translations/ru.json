@@ -1987,5 +1987,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Изменить тон — {0}",
   "AI: Translate to {0}": "AI: Перевести — {0}",
-  "AI Features": "Функции AI"
+  "AI Features": "Функции AI",
+  "Proposed Changes": "Предлагаемые изменения",
+  "{0} proposes changes to {1}": "{0} предлагает изменения в {1}",
+  "An agent": "Внешний агент",
+  "The document was closed.": "Документ закрыт.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Документ изменился, пока предложение было открыто. Прочитайте его заново и повторите правку.",
+  "Replaced by a newer proposal.": "Заменено более новым предложением."
 }

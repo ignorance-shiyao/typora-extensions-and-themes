@@ -1989,5 +1989,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Promijeni ton – {0}",
   "AI: Translate to {0}": "AI: Prevedi – {0}",
-  "AI Features": "AI značajke"
+  "AI Features": "AI značajke",
+  "Proposed Changes": "Predložene promjene",
+  "{0} proposes changes to {1}": "{0} predlaže promjene u {1}",
+  "An agent": "Agent",
+  "The document was closed.": "Dokument je zatvoren.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokument se promijenio dok je prijedlog bio otvoren. Ponovno ga pročitajte i ponovite uređivanje.",
+  "Replaced by a newer proposal.": "Zamijenjeno novijim prijedlogom."
 }

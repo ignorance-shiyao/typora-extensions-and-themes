@@ -1990,5 +1990,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Toon wijzigen – {0}",
   "AI: Translate to {0}": "AI: Vertalen – {0}",
-  "AI Features": "AI-functies"
+  "AI Features": "AI-functies",
+  "Proposed Changes": "Voorgestelde wijzigingen",
+  "{0} proposes changes to {1}": "{0} stelt wijzigingen voor in {1}",
+  "An agent": "Een agent",
+  "The document was closed.": "Het document is gesloten.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Het document is gewijzigd terwijl het voorstel openstond. Lees het opnieuw en voer de bewerking opnieuw uit.",
+  "Replaced by a newer proposal.": "Vervangen door een nieuwer voorstel."
 }

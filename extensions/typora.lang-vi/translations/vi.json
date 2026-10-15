@@ -1986,5 +1986,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Đổi giọng văn – {0}",
   "AI: Translate to {0}": "AI: Dịch sang {0}",
-  "AI Features": "Tính năng AI"
+  "AI Features": "Tính năng AI",
+  "Proposed Changes": "Thay đổi được đề xuất",
+  "{0} proposes changes to {1}": "{0} đề xuất thay đổi cho {1}",
+  "An agent": "Một agent",
+  "The document was closed.": "Tài liệu đã bị đóng.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Tài liệu đã thay đổi trong khi đề xuất đang mở. Hãy đọc lại và thực hiện lại thao tác chỉnh sửa.",
+  "Replaced by a newer proposal.": "Đã được thay thế bởi một đề xuất mới hơn."
 }

@@ -1988,5 +1988,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: เปลี่ยนน้ำเสียงเป็น{0}",
   "AI: Translate to {0}": "AI: แปลเป็นภาษา{0}",
-  "AI Features": "ฟีเจอร์ AI"
+  "AI Features": "ฟีเจอร์ AI",
+  "Proposed Changes": "การเปลี่ยนแปลงที่เสนอ",
+  "{0} proposes changes to {1}": "{0} เสนอการเปลี่ยนแปลงใน {1}",
+  "An agent": "เอเจนต์ภายนอก",
+  "The document was closed.": "เอกสารถูกปิดแล้ว",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "เอกสารมีการเปลี่ยนแปลงระหว่างที่ข้อเสนอเปิดอยู่ โปรดอ่านอีกครั้งแล้วแก้ไขใหม่",
+  "Replaced by a newer proposal.": "ถูกแทนที่ด้วยข้อเสนอที่ใหม่กว่า"
 }

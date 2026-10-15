@@ -1987,5 +1987,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Tukar Nada – {0}",
   "AI: Translate to {0}": "AI: Terjemah ke Bahasa {0}",
-  "AI Features": "Ciri AI"
+  "AI Features": "Ciri AI",
+  "Proposed Changes": "Perubahan Dicadangkan",
+  "{0} proposes changes to {1}": "{0} mencadangkan perubahan pada {1}",
+  "An agent": "Sebuah ejen",
+  "The document was closed.": "Dokumen telah ditutup.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokumen berubah semasa cadangan dibuka. Baca semula dan buat suntingan sekali lagi.",
+  "Replaced by a newer proposal.": "Digantikan oleh cadangan yang lebih baharu."
 }

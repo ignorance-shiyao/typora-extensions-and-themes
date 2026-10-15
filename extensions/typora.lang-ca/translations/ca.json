@@ -1991,5 +1991,11 @@
   "AI: {0}": "IA: {0}",
   "AI: Change Tone to {0}": "IA: Canvia el to – {0}",
   "AI: Translate to {0}": "IA: Tradueix – {0}",
-  "AI Features": "Funcions d'IA"
+  "AI Features": "Funcions d'IA",
+  "Proposed Changes": "Canvis proposats",
+  "{0} proposes changes to {1}": "{0} proposa canvis a {1}",
+  "An agent": "Un agent",
+  "The document was closed.": "S'ha tancat el document.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "El document ha canviat mentre la proposta estava oberta. Torna'l a llegir i refés l'edició.",
+  "Replaced by a newer proposal.": "Substituïda per una proposta més recent."
 }

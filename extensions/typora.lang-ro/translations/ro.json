@@ -1989,5 +1989,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Schimbă Tonul – {0}",
   "AI: Translate to {0}": "AI: Tradu în {0}",
-  "AI Features": "Funcții AI"
+  "AI Features": "Funcții AI",
+  "Proposed Changes": "Modificări propuse",
+  "{0} proposes changes to {1}": "{0} propune modificări pentru {1}",
+  "An agent": "Un agent",
+  "The document was closed.": "Documentul a fost închis.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Documentul s-a modificat cât timp propunerea era deschisă. Citește-l din nou și refă editarea.",
+  "Replaced by a newer proposal.": "Înlocuită de o propunere mai nouă."
 }

@@ -1990,5 +1990,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Tonu Değiştir – {0}",
   "AI: Translate to {0}": "AI: Çevir – {0}",
-  "AI Features": "AI Özellikleri"
+  "AI Features": "AI Özellikleri",
+  "Proposed Changes": "Önerilen Değişiklikler",
+  "{0} proposes changes to {1}": "{0}, {1} için değişiklik öneriyor",
+  "An agent": "Bir ajan",
+  "The document was closed.": "Belge kapatıldı.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Öneri açıkken belge değişti. Belgeyi yeniden okuyup düzenlemeyi tekrar yapın.",
+  "Replaced by a newer proposal.": "Daha yeni bir öneriyle değiştirildi."
 }

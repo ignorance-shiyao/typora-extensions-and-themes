@@ -1989,5 +1989,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: تغيير النبرة إلى {0}",
   "AI: Translate to {0}": "AI: الترجمة إلى {0}",
-  "AI Features": "ميزات AI"
+  "AI Features": "ميزات AI",
+  "Proposed Changes": "التغييرات المقترحة",
+  "{0} proposes changes to {1}": "يقترح {0} تغييرات على {1}",
+  "An agent": "وكيل خارجي",
+  "The document was closed.": "تم إغلاق المستند.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "تغيّر المستند أثناء فتح الاقتراح. اقرأه مجددًا ثم أعد إجراء التعديل.",
+  "Replaced by a newer proposal.": "تم استبداله باقتراح أحدث."
 }

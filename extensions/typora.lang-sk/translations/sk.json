@@ -1989,5 +1989,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Zmeniť tón na {0}",
   "AI: Translate to {0}": "AI: Preložiť – {0}",
-  "AI Features": "Funkcie AI"
+  "AI Features": "Funkcie AI",
+  "Proposed Changes": "Navrhované zmeny",
+  "{0} proposes changes to {1}": "{0} navrhuje zmeny v {1}",
+  "An agent": "Externý agent",
+  "The document was closed.": "Dokument bol zatvorený.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokument sa zmenil, kým bol návrh otvorený. Načítajte ho znova a úpravu vykonajte znova.",
+  "Replaced by a newer proposal.": "Nahradené novším návrhom."
 }

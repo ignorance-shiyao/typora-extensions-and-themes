@@ -1986,5 +1986,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: लहजा बदलें – {0}",
   "AI: Translate to {0}": "AI: {0} में अनुवाद करें",
-  "AI Features": "AI सुविधाएँ"
+  "AI Features": "AI सुविधाएँ",
+  "Proposed Changes": "प्रस्तावित बदलाव",
+  "{0} proposes changes to {1}": "{0} ने {1} में बदलाव प्रस्तावित किए हैं",
+  "An agent": "एक एजेंट",
+  "The document was closed.": "दस्तावेज़ बंद कर दिया गया।",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "प्रस्ताव खुला रहने के दौरान दस्तावेज़ बदल गया। इसे फिर से पढ़ें और संपादन दोबारा करें।",
+  "Replaced by a newer proposal.": "एक नए प्रस्ताव से बदल दिया गया।"
 }

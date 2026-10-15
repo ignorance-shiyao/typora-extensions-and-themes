@@ -1987,5 +1987,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Endre tone – {0}",
   "AI: Translate to {0}": "AI: Oversett – {0}",
-  "AI Features": "AI-funksjoner"
+  "AI Features": "AI-funksjoner",
+  "Proposed Changes": "Foreslåtte endringer",
+  "{0} proposes changes to {1}": "{0} foreslår endringer i {1}",
+  "An agent": "En agent",
+  "The document was closed.": "Dokumentet ble lukket.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokumentet ble endret mens forslaget var åpent. Les det på nytt og gjør redigeringen på nytt.",
+  "Replaced by a newer proposal.": "Erstattet av et nyere forslag."
 }

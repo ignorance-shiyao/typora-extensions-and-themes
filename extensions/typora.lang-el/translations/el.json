@@ -1989,5 +1989,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Αλλαγή Ύφους – {0}",
   "AI: Translate to {0}": "AI: Μετάφραση – {0}",
-  "AI Features": "Λειτουργίες AI"
+  "AI Features": "Λειτουργίες AI",
+  "Proposed Changes": "Προτεινόμενες αλλαγές",
+  "{0} proposes changes to {1}": "Ο/Η {0} προτείνει αλλαγές στο {1}",
+  "An agent": "Ένας πράκτορας",
+  "The document was closed.": "Το έγγραφο έκλεισε.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Το έγγραφο άλλαξε ενώ η πρόταση ήταν ανοιχτή. Διαβάστε το ξανά και επαναλάβετε την επεξεργασία.",
+  "Replaced by a newer proposal.": "Αντικαταστάθηκε από νεότερη πρόταση."
 }

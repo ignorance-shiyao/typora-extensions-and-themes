@@ -1990,5 +1990,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: تغییر لحن به {0}",
   "AI: Translate to {0}": "AI: ترجمه به {0}",
-  "AI Features": "قابلیت‌های AI"
+  "AI Features": "قابلیت‌های AI",
+  "Proposed Changes": "تغییرات پیشنهادی",
+  "{0} proposes changes to {1}": "{0} تغییراتی را برای {1} پیشنهاد می‌کند",
+  "An agent": "یک عامل خارجی",
+  "The document was closed.": "سند بسته شد.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "سند در زمانی که پیشنهاد باز بود تغییر کرد. آن را دوباره بخوانید و ویرایش را از نو انجام دهید.",
+  "Replaced by a newer proposal.": "با پیشنهاد جدیدتری جایگزین شد."
 }

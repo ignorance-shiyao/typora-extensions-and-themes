@@ -1996,5 +1996,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Ubah Nada – {0}",
   "AI: Translate to {0}": "AI: Terjemahkan ke Bahasa {0}",
-  "AI Features": "Fitur AI"
+  "AI Features": "Fitur AI",
+  "Proposed Changes": "Perubahan yang Diusulkan",
+  "{0} proposes changes to {1}": "{0} mengusulkan perubahan pada {1}",
+  "An agent": "Sebuah agen",
+  "The document was closed.": "Dokumen telah ditutup.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokumen berubah saat usulan masih terbuka. Baca ulang lalu lakukan kembali pengeditan.",
+  "Replaced by a newer proposal.": "Digantikan oleh usulan yang lebih baru."
 }

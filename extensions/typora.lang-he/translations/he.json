@@ -1986,5 +1986,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: שינוי טון – {0}",
   "AI: Translate to {0}": "AI: תרגום – {0}",
-  "AI Features": "תכונות AI"
+  "AI Features": "תכונות AI",
+  "Proposed Changes": "שינויים מוצעים",
+  "{0} proposes changes to {1}": "{0} מציע שינויים ב-{1}",
+  "An agent": "סוכן חיצוני",
+  "The document was closed.": "המסמך נסגר.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "המסמך השתנה בזמן שההצעה הייתה פתוחה. קרא אותו שוב ובצע את העריכה מחדש.",
+  "Replaced by a newer proposal.": "הוחלפה בהצעה חדשה יותר."
 }

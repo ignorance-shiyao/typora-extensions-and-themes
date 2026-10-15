@@ -1986,5 +1986,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Hangnem módosítása – {0}",
   "AI: Translate to {0}": "AI: Fordítás – {0}",
-  "AI Features": "AI-funkciók"
+  "AI Features": "AI-funkciók",
+  "Proposed Changes": "Javasolt módosítások",
+  "{0} proposes changes to {1}": "{0} módosításokat javasol ehhez: {1}",
+  "An agent": "Egy ügynök",
+  "The document was closed.": "A dokumentum be lett zárva.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "A dokumentum megváltozott, amíg a javaslat nyitva volt. Olvassa be újra, és végezze el ismét a szerkesztést.",
+  "Replaced by a newer proposal.": "Egy újabb javaslat váltotta fel."
 }

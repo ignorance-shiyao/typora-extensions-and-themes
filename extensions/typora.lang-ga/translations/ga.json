@@ -1986,5 +1986,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Athraigh an Tón – {0}",
   "AI: Translate to {0}": "AI: Aistrigh – {0}",
-  "AI Features": "Gnéithe AI"
+  "AI Features": "Gnéithe AI",
+  "Proposed Changes": "Athruithe Molta",
+  "{0} proposes changes to {1}": "Tá {0} ag moladh athruithe ar {1}",
+  "An agent": "Gníomhaire",
+  "The document was closed.": "Dúnadh an doiciméad.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Athraíodh an doiciméad agus an moladh oscailte. Léigh arís é agus déan an t-eagarthóireacht arís.",
+  "Replaced by a newer proposal.": "Tá moladh níos nuaí curtha ina áit."
 }

@@ -1987,5 +1987,11 @@
   "AI: {0}": "AI: {0}",
   "AI: Change Tone to {0}": "AI: Zmień ton na {0}",
   "AI: Translate to {0}": "AI: Przetłumacz na {0}",
-  "AI Features": "Funkcje AI"
+  "AI Features": "Funkcje AI",
+  "Proposed Changes": "Proponowane zmiany",
+  "{0} proposes changes to {1}": "{0} proponuje zmiany w {1}",
+  "An agent": "Agent zewnętrzny",
+  "The document was closed.": "Dokument został zamknięty.",
+  "The document changed while the proposal was open. Read it again and redo the edit.": "Dokument zmienił się, gdy propozycja była otwarta. Odczytaj go ponownie i ponów edycję.",
+  "Replaced by a newer proposal.": "Zastąpiono nowszą propozycją."
 }
