@@ -1,13 +1,13 @@
 {
   "id": "typora.writing-stats",
   "name": "Writing Stats",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Counts the words you write each day across all windows, with a daily goal and a 14-day history in the detail panel.",
   "author": "Typora samples",
   "permissions": { "document": "read" },
   "contributes": {
     "detailViews": [
-      { "id": "stats", "title": "Writing", "icon": "chart", "entry": "view/index.html" }
+      { "id": "stats", "title": "Writing", "icon": "chart", "sfSymbol": "chart.bar.xaxis", "entry": "view/index.html" }
     ],
     "commands": [{ "id": "reset", "title": "Reset Today's Word Count", "category": "Writing Stats" }],
     "configuration": {

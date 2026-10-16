@@ -23,6 +23,7 @@ export const MAX_PACKAGE_BYTES = 5 * 1024 * 1024;
 export const MAX_DICTIONARY_FILE_BYTES = 32 * 1024 * 1024;
 export const MAX_LANGUAGE_PACK_BYTES = 128 * 1024 * 1024;
 const LANGUAGE_TAG = /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/;
+const SF_SYMBOL = /^[a-z0-9]+(\.[a-z0-9]+)*$/;
 
 /** Files named by `contributes.dictionaries` (exempt from MAX_FILE_BYTES). */
 export function dictionaryFiles(raw) {
@@ -210,6 +211,11 @@ export function checkManifest(raw, dir, folderId) {
     for (const key of ["templates", "snippets"]) if (c[key] !== undefined) needDir(c[key], `contributes.${key}`);
     const arr = (key) => (c[key] === undefined ? [] : Array.isArray(c[key]) ? c[key] : (errors.push(`contributes.${key} must be an array.`), []));
     const network = isObject(perms) && Array.isArray(perms.network) ? perms.network : [];
+    // Typora ignores a malformed name and falls back to its default icon.
+    const needSymbol = (value, where) => {
+      if (value !== undefined && (typeof value !== "string" || !SF_SYMBOL.test(value)))
+        errors.push(`${where} must be an SF Symbol name such as checklist or chart.bar.xaxis.`);
+    };
     arr("themes").forEach((t, i) => {
       const path = typeof t === "string" ? t : isObject(t) ? t.path : undefined;
       needFile(path, `contributes.themes[${i}]`);
@@ -229,6 +235,7 @@ export function checkManifest(raw, dir, folderId) {
       const where = `contributes.detailViews[${i}]`;
       if (!isObject(v)) return errors.push(`${where} must be an object.`);
       if (v.entry !== undefined) needFile(v.entry, `${where}.entry`);
+      needSymbol(v.sfSymbol, `${where}.sfSymbol`);
       if (v.provider === "main" && raw.main === undefined) errors.push(`${where} uses provider: "main" but there is no main.`);
     });
     arr("fileViewers").forEach((v, i) => {
@@ -245,6 +252,7 @@ export function checkManifest(raw, dir, folderId) {
       } catch {
         errors.push(`contributes.inlineRules[${i}]: invalid pattern.`);
       }
+      if (isObject(r.index)) needSymbol(r.index.sfSymbol, `contributes.inlineRules[${i}].index.sfSymbol`);
     });
     const locales = new Set();
     arr("localizations").forEach((l, i) => {

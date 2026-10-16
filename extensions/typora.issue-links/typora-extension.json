@@ -1,7 +1,7 @@
 {
   "id": "typora.issue-links",
   "name": "Issue Links & Tags",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "#123 links to an issue of your repository; #tags open a search and are listed in a Tags view.",
   "author": "Typora samples",
   "contributes": {
@@ -19,7 +19,7 @@
         "class": "md-ext-tag",
         "title": "Tag #$1 (⌘-click to search)",
         "action": { "command": "search.global", "args": { "query": "#$1" } },
-        "index": { "title": "Tags", "icon": "tags", "groupBy": "#$1" }
+        "index": { "title": "Tags", "icon": "tags", "sfSymbol": "tag", "groupBy": "#$1" }
       }
     ],
     "configuration": {
