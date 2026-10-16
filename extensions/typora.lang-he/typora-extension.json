@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-he",
   "name": "עברית Language Pack",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Shows Typora in Hebrew, and checks Hebrew spelling when the system spellchecker has no Hebrew dictionary.",
   "author": "Typora",
   "keywords": [
