@@ -1,0 +1,21 @@
+{
+  "id": "typora.diagrams",
+  "name": "Offline Diagrams",
+  "version": "1.0.0",
+  "description": "Graphviz, erd, Vega, Vega-Lite, WaveDrom, nomnoml and BPMN code blocks drawn on your computer: no server, no network.",
+  "author": "Typora Team",
+  "categories": ["Markdown Extension"],
+  "keywords": ["diagram", "graphviz", "dot", "erd", "vega", "vega-lite", "wavedrom", "nomnoml", "bpmn", "uml", "chart", "offline"],
+  "contributes": {
+    "fenceRenderers": [
+      { "id": "graphviz", "lang": ["graphviz", "dot"], "mode": "static", "entry": "renderer.html" },
+      { "id": "erd", "lang": ["erd"], "mode": "static", "entry": "renderer.html" },
+      { "id": "vega", "lang": ["vega"], "mode": "static", "entry": "renderer.html" },
+      { "id": "vegalite", "lang": ["vegalite", "vega-lite"], "mode": "static", "entry": "renderer.html" },
+      { "id": "wavedrom", "lang": ["wavedrom"], "mode": "static", "entry": "renderer.html" },
+      { "id": "nomnoml", "lang": ["nomnoml"], "mode": "static", "entry": "renderer.html" },
+      { "id": "bpmn", "lang": ["bpmn"], "mode": "static", "entry": "renderer.html" }
+    ],
+    "snippets": "snippets"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "typora.plantuml",
+  "name": "PlantUML",
+  "version": "1.0.0",
+  "description": "PlantUML and ditaa code blocks, drawn by PlantUML on your computer (the plantuml command, or Java and plantuml.jar) or by a Kroki server.",
+  "author": "Typora Team",
+  "categories": ["Markdown Extension"],
+  "keywords": ["diagram", "plantuml", "puml", "uml", "ditaa", "sequence", "class", "offline", "kroki"],
+  "permissions": {
+    "process": ["plantuml", "java"],
+    "network": ["https://kroki.io"]
+  },
+  "contributes": {
+    "fenceRenderers": [
+      { "id": "plantuml", "lang": ["plantuml", "puml"], "mode": "static", "entry": "renderer.html" },
+      { "id": "ditaa", "lang": ["ditaa"], "mode": "static", "entry": "renderer.html" }
+    ],
+    "configuration": {
+      "title": "PlantUML",
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["command", "java", "kroki"],
+          "enumLabels": ["plantuml command", "Java and plantuml.jar", "Kroki server"],
+          "default": "command",
+          "title": "Draw with",
+          "description": "The plantuml command and Java run on your computer and work offline. Kroki sends the diagram's source to a server."
+        },
+        "command": {
+          "type": "string",
+          "format": "file",
+          "default": "plantuml",
+          "title": "Command",
+          "description": "The plantuml program, by name (looked up on your PATH) or full path. Homebrew: brew install plantuml.",
+          "when": { "backend": "command" }
+        },
+        "java": {
+          "type": "string",
+          "format": "file",
+          "default": "java",
+          "title": "Java",
+          "description": "The java program, by name or full path. PlantUML needs Java 11 or later.",
+          "when": { "backend": "java" }
+        },
+        "jar": {
+          "type": "string",
+          "format": "file",
+          "fileExtensions": ["jar"],
+          "default": "",
+          "title": "plantuml.jar",
+          "placeholder": "/path/to/plantuml.jar",
+          "description": "Download it from plantuml.com/download.",
+          "when": { "backend": "java" }
+        },
+        "server": {
+          "type": "string",
+          "default": "https://kroki.io",
+          "title": "Kroki server",
+          "description": "A self-hosted server must also be allowed in the extension's network permission.",
+          "when": { "backend": "kroki" }
+        }
+      }
+    }
+  }
+}

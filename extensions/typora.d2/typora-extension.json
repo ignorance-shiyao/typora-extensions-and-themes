@@ -1,0 +1,59 @@
+{
+  "id": "typora.d2",
+  "name": "D2 Diagrams",
+  "version": "1.0.0",
+  "description": "D2 code blocks, drawn by the d2 program on your computer or by a Kroki server.",
+  "author": "Typora Team",
+  "categories": ["Markdown Extension"],
+  "keywords": ["diagram", "d2", "terrastruct", "architecture", "offline", "kroki"],
+  "permissions": {
+    "process": ["d2"],
+    "network": ["https://kroki.io"]
+  },
+  "contributes": {
+    "fenceRenderers": [{ "id": "d2", "lang": ["d2"], "mode": "static", "entry": "renderer.html" }],
+    "configuration": {
+      "title": "D2",
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["command", "kroki"],
+          "enumLabels": ["d2 command", "Kroki server"],
+          "default": "command",
+          "title": "Draw with",
+          "description": "The d2 command runs on your computer and works offline. Kroki sends the diagram's source to a server."
+        },
+        "command": {
+          "type": "string",
+          "format": "file",
+          "default": "d2",
+          "title": "Command",
+          "description": "The d2 program, by name (looked up on your PATH) or full path. Install it from d2lang.com or with brew install d2.",
+          "when": { "backend": "command" }
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["dagre", "elk"],
+          "enumLabels": ["dagre", "ELK"],
+          "default": "dagre",
+          "title": "Layout",
+          "description": "Unless the diagram sets its own layout-engine.",
+          "when": { "backend": "command" }
+        },
+        "sketch": {
+          "type": "boolean",
+          "default": false,
+          "title": "Hand-drawn look",
+          "when": { "backend": "command" }
+        },
+        "server": {
+          "type": "string",
+          "default": "https://kroki.io",
+          "title": "Kroki server",
+          "description": "A self-hosted server must also be allowed in the extension's network permission.",
+          "when": { "backend": "kroki" }
+        }
+      }
+    }
+  }
+}
