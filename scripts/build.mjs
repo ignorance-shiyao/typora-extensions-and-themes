@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Build the store into dist/:
 //   dist/index.json                     catalog (schemaVersion 1)
-//   dist/download/<id>-<version>.zip    one deterministic package per extension
+//   dist/download/<id>-<version>.typora-extension
+//                                       one deterministic package (a zip) per extension
 //   dist/index.html, dist/<id>/index.html, 404.html, robots.txt, sitemap.xml
 //   dist/assets/*                       content-hashed CSS / JS / icon
 //
@@ -83,12 +84,12 @@ for (const id of extensionIds()) {
   const files = packageFiles(dir);
   const archive = zip(files.map((name) => ({ name, data: readFileSync(join(dir, name)) })));
   if (archive.length > MAX_DOWNLOAD_BYTES) {
-    console.error(`✗ ${id}: the zip is ${(archive.length / 1024 / 1024).toFixed(1)} MB; the app downloads at most 50 MB.`);
+    console.error(`✗ ${id}: the package is ${(archive.length / 1024 / 1024).toFixed(1)} MB; the app downloads at most 50 MB.`);
     failed = true;
     continue;
   }
-  const zipName = `${id}-${manifest.version}.zip`;
-  write(`download/${zipName}`, archive);
+  const packageName = `${id}-${manifest.version}.typora-extension`;
+  write(`download/${packageName}`, archive);
 
   const contributes = Object.keys(manifest.contributes ?? {}).filter((k) => CONTRIBUTION_KEYS.includes(k));
   if (manifest.main !== undefined) contributes.push("main");
@@ -110,7 +111,7 @@ for (const id of extensionIds()) {
     localizations: (manifest.contributes?.localizations ?? []).map((l) => l.locale),
     dictionaries: (manifest.contributes?.dictionaries ?? []).map((d) => d.language),
     page: `${origin}/${id}/`,
-    download: { url: `${origin}/download/${zipName}`, sha256: sha256(archive), size: archive.length },
+    download: { url: `${origin}/download/${packageName}`, sha256: sha256(archive), size: archive.length },
     updatedAt: gitTime(`extensions/${id}`) ?? isoSeconds(now),
   };
   entries.push(entry);
@@ -120,7 +121,7 @@ for (const id of extensionIds()) {
     ? renderMarkdown(readFileSync(join(dir, readmeName), "utf8"), `${REPO_URL}/blob/main/extensions/${id}`)
     : null;
   pages.push({ entry, manifest, files, readme });
-  console.log(`✓ ${id} ${manifest.version} ${entry.tier} ${zipName} ${archive.length} B ${entry.download.sha256.slice(0, 12)}…`);
+  console.log(`✓ ${id} ${manifest.version} ${entry.tier} ${packageName} ${archive.length} B ${entry.download.sha256.slice(0, 12)}…`);
 }
 
 if (failed) {

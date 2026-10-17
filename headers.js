@@ -12,6 +12,10 @@ export const CORS_HEADERS = {
   "access-control-max-age": "86400",
 };
 
+/** A package in /download/: a zip the app installs (it stays a download in browsers). */
+export const PACKAGE_EXTENSION = ".typora-extension";
+export const PACKAGE_CONTENT_TYPE = "application/x-typora-extension";
+
 export const SECURITY_HEADERS = {
   "x-content-type-options": "nosniff",
   "referrer-policy": "strict-origin-when-cross-origin",
@@ -20,7 +24,7 @@ export const SECURITY_HEADERS = {
 /**
  * Cache policy:
  * - /index.json changes on every publish: short cache.
- * - /download/<id>-<version>.zip is never rewritten (a change needs a new
+ * - /download/<id>-<version>.typora-extension is never rewritten (a change needs a new
  *   version, enforced by scripts/permission-diff.mjs): immutable.
  * - /assets/* names carry a content hash: immutable.
  * - HTML revalidates every time.

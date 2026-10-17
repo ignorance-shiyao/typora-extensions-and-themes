@@ -21,7 +21,7 @@ extensions/<id>/            one folder per extension, named after its id
 scripts/
   validate.mjs              manifest and file checks (npm run validate)
   permission-diff.mjs       permission / version diff against a base ref (PRs)
-  build.mjs                 zips, index.json and the website → dist/
+  build.mjs                 packages, index.json and the website → dist/
   language-packs.mjs        (re)generates the typora.lang-* language packs
   site.mjs                  HTML templates for the website
   serve.mjs                 local server that mimics the Worker
@@ -35,7 +35,7 @@ worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
 | Path | What |
 | --- | --- |
 | `dist/index.json` | The catalog the app reads (`schemaVersion: 1`) |
-| `dist/download/<id>-<version>.zip` | The package; `typora-extension.json` at the archive root. Deterministic: the same source always gives the same SHA-256 |
+| `dist/download/<id>-<version>.typora-extension` | The package: a zip with `typora-extension.json` at the archive root. Deterministic: the same source always gives the same SHA-256 |
 | `dist/index.html`, `dist/<id>/index.html` | The store website |
 | `dist/404.html`, `robots.txt`, `sitemap.xml` | |
 
@@ -51,7 +51,7 @@ pages), **L2** (has `main` / `background` code).
    *Reload* after each change.
 3. Run `npm run validate` and `npm run build` locally.
 4. Open a pull request. CI validates the manifest and files, prints a
-   permission diff against `main` in the job summary, and builds the zip.
+   permission diff against `main` in the job summary, and builds the package.
 5. After review and merge, the deploy workflow publishes the new version
    within a few minutes.
 

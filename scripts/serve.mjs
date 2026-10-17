@@ -6,7 +6,7 @@
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
-import { CORS_HEADERS, SECURITY_HEADERS, cacheControlFor } from "../headers.js";
+import { CORS_HEADERS, PACKAGE_CONTENT_TYPE, PACKAGE_EXTENSION, SECURITY_HEADERS, cacheControlFor } from "../headers.js";
 import { ROOT } from "./lib.mjs";
 
 const DIST = join(ROOT, "dist");
@@ -17,7 +17,7 @@ const TYPES = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
-  ".zip": "application/zip",
+  [PACKAGE_EXTENSION]: PACKAGE_CONTENT_TYPE,
   ".xml": "application/xml; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
   ".png": "image/png",

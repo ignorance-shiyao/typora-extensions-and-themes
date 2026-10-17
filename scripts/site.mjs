@@ -305,9 +305,9 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
         <li>Open Typora ▸ <strong>Settings ▸ Extensions</strong>.</li>
         <li>Search for <strong>${esc(entry.name)}</strong> and click <strong>Install</strong>.</li>
       </ol>
-      <a class="button" href="${esc(entry.download.url)}" download>Download .zip <span>${esc(formatSize(entry.download.size))}</span></a>
-      <p class="small">Then use <em>Settings ▸ Extensions ▸ Install from File…</em></p>
-      <p class="small hash" title="SHA-256 of the .zip">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
+      <a class="button" href="${esc(entry.download.url)}" download>Download <span>${esc(formatSize(entry.download.size))}</span></a>
+      <p class="small">Then open the file with Typora, or use <em>Settings ▸ Extensions ▸ Install from File…</em></p>
+      <p class="small hash" title="SHA-256 of the .typora-extension file">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
     </div>
     <dl class="facts">
       <dt>ID</dt><dd><code>${esc(entry.id)}</code></dd>
