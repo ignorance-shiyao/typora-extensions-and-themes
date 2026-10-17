@@ -208,14 +208,43 @@ export function contributionSummary(manifest, files) {
 
 /** Very small Markdown → HTML for extension READMEs (escaped; no raw HTML). */
 export function renderMarkdown(text, baseUrl) {
-  const inline = (s) =>
-    esc(s)
-      .replace(/`([^`]+)`/g, "<code>$1</code>")
+  // Code spans first (any backtick run, so `` ` ```js ` `` works), kept out of
+  // the emphasis and link rules below.
+  const inline = (s) => {
+    const codes = [];
+    const text = s.replace(/(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)/g, (_, ticks, code) => {
+      codes.push(`<code>${esc(/^ .* $/.test(code) ? code.slice(1, -1) : code)}</code>`);
+      return `\0${codes.length - 1}\0`;
+    });
+    return emphasis(esc(text)).replace(/\0(\d+)\0/g, (_, n) => codes[n]);
+  };
+  const emphasis = (s) =>
+    s
       .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, alt, url) => link(url, alt || url))
       .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, url) => link(url, label))
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*\w])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>")
       .replace(/(^|\W)_([^_\s][^_]*)_(?=\W|$)/g, "$1<em>$2</em>");
+  // GFM table cells: split on | outside code spans; \| is a literal bar.
+  const cells = (row) => {
+    const out = [""];
+    for (let i = 0, ticks = 0; i < row.length; i++) {
+      const c = row[i];
+      if (c === "\\" && row[i + 1] === "|") out[out.length - 1] += row[++i];
+      else if (c === "`") {
+        let n = 1;
+        while (row[i + n] === "`") n++;
+        ticks = ticks === n ? 0 : ticks || n;
+        out[out.length - 1] += row.slice(i, i + n);
+        i += n - 1;
+      } else if (c === "|" && !ticks) out.push("");
+      else out[out.length - 1] += c;
+    }
+    if (/^\s*\|/.test(row)) out.shift();
+    if (/\|\s*$/.test(row) && !/\\\|\s*$/.test(row)) out.pop();
+    return out.map((cell) => cell.trim());
+  };
+  const isDelimiterRow = (line) => /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/.test(line) && line.includes("-");
   const link = (url, label) => {
     const href = url.replace(/&amp;/g, "&");
     if (/^https?:\/\//i.test(href)) return `<a href="${esc(href)}" rel="nofollow">${label}</a>`;
@@ -240,6 +269,14 @@ export function renderMarkdown(text, baseUrl) {
       const body = [];
       while (++i < lines.length && !lines[i].startsWith(m[1])) body.push(lines[i]);
       out.push(`<pre><code>${esc(body.join("\n"))}</code></pre>`);
+    } else if (line.includes("|") && i + 1 < lines.length && isDelimiterRow(lines[i + 1])) {
+      flush();
+      const align = cells(lines[++i]).map((c) => (c.endsWith(":") ? (c.startsWith(":") ? "center" : "right") : c.startsWith(":") ? "left" : ""));
+      const row = (cols, tag) =>
+        `<tr>${align.map((a, n) => `<${tag}${a ? ` style="text-align:${a}"` : ""}>${inline(cols[n] ?? "")}</${tag}>`).join("")}</tr>`;
+      const body = [];
+      while (i + 1 < lines.length && lines[i + 1].includes("|") && !/^\s*$/.test(lines[i + 1])) body.push(row(cells(lines[++i]), "td"));
+      out.push(`<div class="table"><table><thead>${row(cells(line), "th")}</thead><tbody>${body.join("")}</tbody></table></div>`);
     } else if ((m = /^(#{1,6})\s+(.*?)\s*#*$/.exec(line))) {
       flush();
       const level = Math.min(6, m[1].length + 1); // the page owns <h1>
@@ -309,12 +346,17 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
   <aside class="detail-side">
     <div class="install">
       <h2>Install</h2>
-      <ol>
-        <li>Open Typora ▸ <strong>Settings ▸ Extensions</strong>.</li>
-        <li>Search for <strong>${esc(entry.name)}</strong> and click <strong>Install</strong>.</li>
-      </ol>
-      <a class="button" href="${esc(entry.download.url)}" download>Download <span>${esc(formatSize(entry.download.size))}</span></a>
-      <p class="small">Then open the file with Typora, or use <em>Settings ▸ Extensions ▸ Install from File…</em></p>
+      <div class="split">
+        <a class="button" href="typora://extension/${esc(entry.id)}">Install</a>
+        <details class="split-menu">
+          <summary class="button" aria-label="More ways to install"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="menu">
+            <a href="${esc(entry.download.url)}" download><span class="menu-label">Download</span><span class="menu-size">${esc(formatSize(entry.download.size))}</span>
+              <span class="menu-note">Open the file with Typora, or use Settings ▸ Extensions ▸ Install from File…</span></a>
+          </div>
+        </details>
+      </div>
+      <p class="small">Opens Typora, which asks before installing. Or in Typora, open <em>Settings ▸ Extensions</em> and search for <strong>${esc(entry.name)}</strong>.</p>
       <p class="small hash" title="SHA-256 of the .typora-extension file">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
     </div>
     <dl class="facts">
@@ -331,7 +373,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
     title: `${entry.name} · Typora Extensions`,
     description: entry.description || `${entry.name}, an extension for Typora.`,
     canonical: entry.page,
-    assets: { ...assets, js: null },
+    assets,
     body,
     origin: siteOrigin,
   });

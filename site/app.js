@@ -1,4 +1,5 @@
-// Home page search and tag filter. Cards are server-rendered; this only hides them.
+// Home page search and tag filter (cards are server-rendered; this only hides
+// them) and the Install menu on extension pages.
 (() => {
   const input = document.getElementById("search");
   const cards = [...document.querySelectorAll(".card")];
@@ -69,4 +70,19 @@
     }
   });
   update();
+})();
+
+// Extension page: the Install ▾ menu closes on a click outside, Escape or a pick.
+(() => {
+  const menu = document.querySelector(".split-menu");
+  if (!menu) return;
+  document.addEventListener("click", (event) => {
+    if (menu.open && (!menu.contains(event.target) || event.target.closest(".menu a"))) menu.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menu.open) {
+      menu.open = false;
+      menu.querySelector("summary").focus();
+    }
+  });
 })();
