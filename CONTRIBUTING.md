@@ -25,6 +25,9 @@ not every line for escapes.
   every referenced file (`main`, `background`, entries, templates,
   snippets) exists.
 - Files: no symbolic links, at most 1 MB per file and 5 MB per extension.
+- Vendored libraries (like xterm.js) are taken unchanged from their
+  published package and named with their version in the README; their
+  minified-line warning is expected.
 - Code: flags `eval(`, `new Function(`, remote `import()` /
   `importScripts()` / `<script src>` and very long (minified) lines.
 - Permission diff against `main`: permissions added or removed, network
@@ -37,6 +40,7 @@ not every line for escapes.
 | --- | --- |
 | L0 (data only), no `network` | Automated checks plus a light review |
 | Declares `network`, `document`, `workspace` or `clipboard` | Human review of the code paths that use them |
+| Declares `process` | Human review of every place it starts a program, and why it needs to; the README says what it runs |
 | An update that widens permissions | Human review; users are asked to consent again on update |
 
 ## Rules
@@ -50,6 +54,11 @@ not every line for escapes.
 - **Ask for the least.** Request only the permissions you use; list
   network origins exactly (`https://kroki.io`, not `https://*`). Explain
   each permission in the PR description.
+- **Programs come from the system or from source.** With `process`, run
+  programs the user has (a shell, `git`, `pandoc`) or ones Typora's CI
+  builds from source in this repository; prebuilt `binaries` are not
+  accepted. Name the commands (`["git"]`) unless the extension is a
+  terminal; `"*"` needs a reason in the PR description.
 - **Widening permissions needs re-review.** Adding an origin, going from
   `document: read` to `write`, or adding `workspace` / `clipboard` is a
   separate, explicit change in the PR description.

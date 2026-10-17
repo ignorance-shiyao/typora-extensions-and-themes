@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-sk",
   "name": "Slovenčina Language Pack",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Shows Typora in Slovak, and checks Slovak spelling when the system spellchecker has no Slovak dictionary.",
   "author": "Typora",
   "keywords": [

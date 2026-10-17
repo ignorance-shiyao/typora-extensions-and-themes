@@ -62,13 +62,15 @@ const changed = (id) => {
 };
 
 const DOC_LEVEL = { "": 0, read: 1, write: 2 };
-const SENSITIVE = (p) => !!(p.network?.length || p.document || p.workspace || p.clipboard);
+const SENSITIVE = (p) => !!(p.network?.length || p.document || p.workspace || p.clipboard || p.process);
+const processText = (p) => (p === "*" ? "process: any program" : `process: ${p.length ? p.map((c) => `\`${c}\``).join(", ") : "its own binaries"}`);
 const describe = (p) => {
   const out = [];
   if (p.network?.length) out.push(`network: ${p.network.map((o) => `\`${o}\``).join(", ")}`);
   if (p.document) out.push(`document: ${p.document}`);
   if (p.workspace) out.push(`workspace: ${p.workspace}`);
   if (p.clipboard) out.push("clipboard");
+  if (p.process) out.push(processText(p.process));
   return out.length ? out.join("; ") : "none";
 };
 const semver = (v) => (String(v).match(/^(\d+)\.(\d+)\.(\d+)/) ?? []).slice(1).map(Number);
@@ -124,6 +126,11 @@ for (const id of ids) {
   if (!headPerms.workspace && oldPerms.workspace) removed.push("workspace: read");
   if (headPerms.clipboard && !oldPerms.clipboard) added.push("clipboard");
   if (!headPerms.clipboard && oldPerms.clipboard) removed.push("clipboard");
+  // Any change to what it may run widens or narrows it: name it either way.
+  if (JSON.stringify(headPerms.process ?? null) !== JSON.stringify(oldPerms.process ?? null)) {
+    if (headPerms.process) added.push(processText(headPerms.process));
+    if (oldPerms.process) removed.push(processText(oldPerms.process));
+  }
 
   const widened = !!old && added.length > 0;
   let review;

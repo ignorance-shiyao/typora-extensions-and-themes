@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code ni nameščen v tem računalniku.",
   "Codex isn't installed on this computer.": "Codex ni nameščen v tem računalniku.",
   "OpenCode isn't installed on this computer.": "OpenCode ni nameščen v tem računalniku.",
-  "Couldn't read Codex's model list.": "Seznama modelov Codex ni bilo mogoče prebrati."
+  "Couldn't read Codex's model list.": "Seznama modelov Codex ni bilo mogoče prebrati.",
+  "Run any program on your computer, including your shell": "Zaganjanje katerega koli programa v računalniku, tudi vaše lupine",
+  "Run {0}": "Zaganjanje {0}",
+  "Run the programs it comes with": "Zaganjanje priloženih programov",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Programi, ki jih zažene, delujejo v vašem imenu: lahko berejo in spreminjajo katero koli vašo datoteko in uporabljajo omrežje. Dovolite le razširitve, ki jim zaupate.",
+  "Allow extensions to run programs": "Dovoli razširitvam zaganjanje programov",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Razširitve, kot je terminal, zaganjajo programe v računalniku v vašem imenu, zunaj peskovnika. Vsaka vas vseeno prosi za dovoljenje.",
+  "Needs “Allow extensions to run programs”": "Zahteva »Dovoli razširitvam zaganjanje programov«",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} je nameščeno. Zaganja programe: vklopite »Dovoli razširitvam zaganjanje programov«, če ga želite uporabljati."
 }

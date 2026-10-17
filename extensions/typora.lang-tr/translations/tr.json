@@ -2084,5 +2084,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code bu bilgisayarda yüklü değil.",
   "Codex isn't installed on this computer.": "Codex bu bilgisayarda yüklü değil.",
   "OpenCode isn't installed on this computer.": "OpenCode bu bilgisayarda yüklü değil.",
-  "Couldn't read Codex's model list.": "Codex'in model listesi okunamadı."
+  "Couldn't read Codex's model list.": "Codex'in model listesi okunamadı.",
+  "Run any program on your computer, including your shell": "Bilgisayarınızda kabuğunuz dahil herhangi bir programı çalıştırma",
+  "Run {0}": "{0} çalıştırma",
+  "Run the programs it comes with": "Birlikte gelen programları çalıştırma",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Çalıştırdığı programlar sizin adınıza hareket eder: dosyalarınızın herhangi birini okuyup değiştirebilir ve ağı kullanabilir. Yalnızca güvendiğiniz uzantılara izin verin.",
+  "Allow extensions to run programs": "Uzantıların program çalıştırmasına izin ver",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Terminal gibi uzantılar, bilgisayarınızda sizin adınıza ve korumalı alanın dışında programlar çalıştırır. Yine de her biri izninizi ister.",
+  "Needs “Allow extensions to run programs”": "“Uzantıların program çalıştırmasına izin ver” gerekli",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} yüklendi. Program çalıştırıyor: kullanmak için “Uzantıların program çalıştırmasına izin ver” seçeneğini açın."
 }

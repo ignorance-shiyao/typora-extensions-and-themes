@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code chưa được cài đặt trên máy tính này.",
   "Codex isn't installed on this computer.": "Codex chưa được cài đặt trên máy tính này.",
   "OpenCode isn't installed on this computer.": "OpenCode chưa được cài đặt trên máy tính này.",
-  "Couldn't read Codex's model list.": "Không thể đọc danh sách mô hình của Codex."
+  "Couldn't read Codex's model list.": "Không thể đọc danh sách mô hình của Codex.",
+  "Run any program on your computer, including your shell": "Chạy bất kỳ chương trình nào trên máy tính, kể cả shell của bạn",
+  "Run {0}": "Chạy {0}",
+  "Run the programs it comes with": "Chạy các chương trình đi kèm",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Các chương trình nó chạy sẽ hoạt động dưới danh nghĩa của bạn: có thể đọc, thay đổi mọi tệp của bạn và dùng mạng. Chỉ cho phép những tiện ích mở rộng bạn tin tưởng.",
+  "Allow extensions to run programs": "Cho phép tiện ích mở rộng chạy chương trình",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Các tiện ích mở rộng như terminal chạy chương trình trên máy tính dưới danh nghĩa của bạn, bên ngoài hộp cát. Mỗi tiện ích vẫn xin phép bạn.",
+  "Needs “Allow extensions to run programs”": "Cần bật “Cho phép tiện ích mở rộng chạy chương trình”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "Đã cài đặt {0}. Tiện ích này chạy chương trình: bật “Cho phép tiện ích mở rộng chạy chương trình” để sử dụng."
 }

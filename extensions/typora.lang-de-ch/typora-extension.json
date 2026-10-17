@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-de-ch",
   "name": "Deutsch (Schweiz) Language Pack",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Shows Typora in German (Switzerland), and checks German (Switzerland) spelling when the system spellchecker has no German (Switzerland) dictionary.",
   "author": "Typora",
   "keywords": [

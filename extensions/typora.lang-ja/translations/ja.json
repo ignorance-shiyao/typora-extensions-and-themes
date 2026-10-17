@@ -2082,5 +2082,13 @@
   "Claude Code isn't installed on this computer.": "このコンピュータには Claude Code がインストールされていません。",
   "Codex isn't installed on this computer.": "このコンピュータには Codex がインストールされていません。",
   "OpenCode isn't installed on this computer.": "このコンピュータには OpenCode がインストールされていません。",
-  "Couldn't read Codex's model list.": "Codex のモデル一覧を読み込めませんでした。"
+  "Couldn't read Codex's model list.": "Codex のモデル一覧を読み込めませんでした。",
+  "Run any program on your computer, including your shell": "コンピュータ上の任意のプログラム（シェルを含む）を実行",
+  "Run {0}": "{0} を実行",
+  "Run the programs it comes with": "同梱のプログラムを実行",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "実行されるプログラムはあなたとして動作します。あなたのファイルを読み書きでき、ネットワークも使えます。信頼できる拡張機能だけを許可してください。",
+  "Allow extensions to run programs": "拡張機能にプログラムの実行を許可",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "ターミナルなどの拡張機能は、サンドボックスの外であなたとしてプログラムを実行します。拡張機能ごとに許可が求められます。",
+  "Needs “Allow extensions to run programs”": "「拡張機能にプログラムの実行を許可」が必要です",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} をインストールしました。プログラムを実行するため、使うには「拡張機能にプログラムの実行を許可」をオンにしてください。"
 }

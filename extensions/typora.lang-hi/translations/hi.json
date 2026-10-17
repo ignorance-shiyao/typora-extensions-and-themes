@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "इस कंप्यूटर पर Claude Code इंस्टॉल नहीं है।",
   "Codex isn't installed on this computer.": "इस कंप्यूटर पर Codex इंस्टॉल नहीं है।",
   "OpenCode isn't installed on this computer.": "इस कंप्यूटर पर OpenCode इंस्टॉल नहीं है।",
-  "Couldn't read Codex's model list.": "Codex की मॉडल सूची पढ़ी नहीं जा सकी।"
+  "Couldn't read Codex's model list.": "Codex की मॉडल सूची पढ़ी नहीं जा सकी।",
+  "Run any program on your computer, including your shell": "आपके कंप्यूटर पर कोई भी प्रोग्राम चलाना, आपके शेल सहित",
+  "Run {0}": "{0} चलाना",
+  "Run the programs it comes with": "इसके साथ आने वाले प्रोग्राम चलाना",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "यह जो प्रोग्राम चलाता है वे आपकी तरह काम करते हैं: वे आपकी कोई भी फ़ाइल पढ़ और बदल सकते हैं और नेटवर्क का उपयोग कर सकते हैं। केवल उन्हीं एक्सटेंशन को अनुमति दें जिन पर आपको भरोसा है।",
+  "Allow extensions to run programs": "एक्सटेंशन को प्रोग्राम चलाने दें",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "टर्मिनल जैसे एक्सटेंशन आपके कंप्यूटर पर आपकी तरह, सैंडबॉक्स के बाहर प्रोग्राम चलाते हैं। फिर भी हर एक आपकी अनुमति माँगता है।",
+  "Needs “Allow extensions to run programs”": "“एक्सटेंशन को प्रोग्राम चलाने दें” आवश्यक है",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} इंस्टॉल हो गया। यह प्रोग्राम चलाता है: इसे उपयोग करने के लिए “एक्सटेंशन को प्रोग्राम चलाने दें” चालू करें।"
 }

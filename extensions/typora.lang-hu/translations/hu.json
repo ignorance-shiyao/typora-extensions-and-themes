@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "A Claude Code nincs telepítve ezen a számítógépen.",
   "Codex isn't installed on this computer.": "A Codex nincs telepítve ezen a számítógépen.",
   "OpenCode isn't installed on this computer.": "Az OpenCode nincs telepítve ezen a számítógépen.",
-  "Couldn't read Codex's model list.": "Nem sikerült beolvasni a Codex modellistáját."
+  "Couldn't read Codex's model list.": "Nem sikerült beolvasni a Codex modellistáját.",
+  "Run any program on your computer, including your shell": "Bármilyen program futtatása a számítógépen, a parancsértelmezőt is beleértve",
+  "Run {0}": "{0} futtatása",
+  "Run the programs it comes with": "A mellékelt programok futtatása",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Az általa futtatott programok az Ön nevében járnak el: bármelyik fájlját olvashatják és módosíthatják, és használhatják a hálózatot. Csak megbízható bővítményeket engedélyezzen.",
+  "Allow extensions to run programs": "Programok futtatásának engedélyezése bővítményeknek",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "A terminálhoz hasonló bővítmények az Ön nevében, a homokozón kívül futtatnak programokat a számítógépen. Mindegyik ettől függetlenül engedélyt kér.",
+  "Needs “Allow extensions to run programs”": "Szükséges: „Programok futtatásának engedélyezése bővítményeknek”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "A(z) {0} telepítve. Programokat futtat: a használatához kapcsolja be ezt: „Programok futtatásának engedélyezése bővítményeknek”."
 }

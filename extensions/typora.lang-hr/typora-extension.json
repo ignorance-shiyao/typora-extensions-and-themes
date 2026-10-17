@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-hr",
   "name": "Hrvatski Language Pack",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Shows Typora in Croatian, and checks Croatian spelling when the system spellchecker has no Croatian dictionary.",
   "author": "Typora",
   "keywords": [

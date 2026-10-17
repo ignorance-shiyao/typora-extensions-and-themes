@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "Níl Claude Code suiteáilte ar an ríomhaire seo.",
   "Codex isn't installed on this computer.": "Níl Codex suiteáilte ar an ríomhaire seo.",
   "OpenCode isn't installed on this computer.": "Níl OpenCode suiteáilte ar an ríomhaire seo.",
-  "Couldn't read Codex's model list.": "Níorbh fhéidir liosta samhlacha Codex a léamh."
+  "Couldn't read Codex's model list.": "Níorbh fhéidir liosta samhlacha Codex a léamh.",
+  "Run any program on your computer, including your shell": "Aon ríomhchlár ar do ríomhaire a rith, do bhlaosc san áireamh",
+  "Run {0}": "{0} a rith",
+  "Run the programs it comes with": "Na ríomhchláir a thagann léi a rith",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Gníomhaíonn na ríomhchláir a ritheann sí mar thusa: is féidir leo aon chomhad de do chuid a léamh agus a athrú agus an líonra a úsáid. Ná ceadaigh ach eisínteachtaí a bhfuil muinín agat astu.",
+  "Allow extensions to run programs": "Ceadaigh d’eisínteachtaí ríomhchláir a rith",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Ritheann eisínteachtaí cosúil le teirminéal ríomhchláir ar do ríomhaire mar thusa, lasmuigh den bhosca gainimh. Iarrann gach ceann acu do chead mar sin féin.",
+  "Needs “Allow extensions to run programs”": "Teastaíonn “Ceadaigh d’eisínteachtaí ríomhchláir a rith”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "Suiteáladh {0}. Ritheann sé ríomhchláir: cas air “Ceadaigh d’eisínteachtaí ríomhchláir a rith” chun é a úsáid."
 }

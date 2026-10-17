@@ -1,0 +1,26 @@
+{
+  "id": "typora.terminal",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "description": "A terminal in the detail panel, opened in the current folder. It keeps running while you switch tabs and documents.",
+  "author": "Typora samples",
+  "permissions": { "process": "*" },
+  "contributes": {
+    "detailViews": [
+      { "id": "terminal", "title": "Terminal", "icon": "terminal", "sfSymbol": "terminal", "entry": "view/terminal.html" }
+    ],
+    "configuration": {
+      "title": "Terminal",
+      "properties": {
+        "shell": {
+          "type": "string",
+          "default": "",
+          "title": "Shell",
+          "description": "Full path of the program to run. Empty: your login shell."
+        },
+        "fontSize": { "type": "number", "default": 12, "title": "Font size" },
+        "scrollback": { "type": "number", "default": 5000, "title": "Scrollback lines" }
+      }
+    }
+  }
+}

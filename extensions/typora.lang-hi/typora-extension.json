@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-hi",
   "name": "हिन्दी Language Pack",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Shows Typora in Hindi, and checks Hindi spelling when the system spellchecker has no Hindi dictionary.",
   "author": "Typora",
   "keywords": [

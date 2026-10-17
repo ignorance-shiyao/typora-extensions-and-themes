@@ -2082,5 +2082,13 @@
   "Claude Code isn't installed on this computer.": "ไม่ได้ติดตั้ง Claude Code บนคอมพิวเตอร์เครื่องนี้",
   "Codex isn't installed on this computer.": "ไม่ได้ติดตั้ง Codex บนคอมพิวเตอร์เครื่องนี้",
   "OpenCode isn't installed on this computer.": "ไม่ได้ติดตั้ง OpenCode บนคอมพิวเตอร์เครื่องนี้",
-  "Couldn't read Codex's model list.": "ไม่สามารถอ่านรายการโมเดลของ Codex ได้"
+  "Couldn't read Codex's model list.": "ไม่สามารถอ่านรายการโมเดลของ Codex ได้",
+  "Run any program on your computer, including your shell": "เรียกใช้โปรแกรมใดก็ได้บนคอมพิวเตอร์ รวมถึงเชลล์ของคุณ",
+  "Run {0}": "เรียกใช้ {0}",
+  "Run the programs it comes with": "เรียกใช้โปรแกรมที่มาพร้อมกับส่วนขยาย",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "โปรแกรมที่ส่วนขยายเรียกใช้จะทำงานในนามของคุณ: อ่านและแก้ไขไฟล์ใดก็ได้ของคุณ และใช้เครือข่ายได้ อนุญาตเฉพาะส่วนขยายที่คุณไว้ใจ",
+  "Allow extensions to run programs": "อนุญาตให้ส่วนขยายเรียกใช้โปรแกรม",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "ส่วนขยายอย่างเทอร์มินัลจะเรียกใช้โปรแกรมบนคอมพิวเตอร์ในนามของคุณ นอกแซนด์บ็อกซ์ แต่ละส่วนขยายยังคงขออนุญาตจากคุณ",
+  "Needs “Allow extensions to run programs”": "ต้องเปิด “อนุญาตให้ส่วนขยายเรียกใช้โปรแกรม”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "ติดตั้ง {0} แล้ว ส่วนขยายนี้เรียกใช้โปรแกรม: เปิด “อนุญาตให้ส่วนขยายเรียกใช้โปรแกรม” เพื่อใช้งาน"
 }

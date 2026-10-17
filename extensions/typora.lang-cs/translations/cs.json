@@ -2084,5 +2084,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code není v tomto počítači nainstalován.",
   "Codex isn't installed on this computer.": "Codex není v tomto počítači nainstalován.",
   "OpenCode isn't installed on this computer.": "OpenCode není v tomto počítači nainstalován.",
-  "Couldn't read Codex's model list.": "Seznam modelů Codexu se nepodařilo načíst."
+  "Couldn't read Codex's model list.": "Seznam modelů Codexu se nepodařilo načíst.",
+  "Run any program on your computer, including your shell": "Spouštět libovolný program v počítači včetně vašeho shellu",
+  "Run {0}": "Spouštět {0}",
+  "Run the programs it comes with": "Spouštět programy, které obsahuje",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Programy, které spouští, jednají vaším jménem: mohou číst a měnit jakékoli vaše soubory a používat síť. Povolujte jen rozšíření, kterým důvěřujete.",
+  "Allow extensions to run programs": "Povolit rozšířením spouštět programy",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Rozšíření jako terminál spouštějí v počítači programy vaším jménem, mimo sandbox. Každé z nich vás přesto žádá o svolení.",
+  "Needs “Allow extensions to run programs”": "Vyžaduje „Povolit rozšířením spouštět programy“",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "Rozšíření {0} je nainstalováno. Spouští programy: pro jeho použití zapněte „Povolit rozšířením spouštět programy“."
 }

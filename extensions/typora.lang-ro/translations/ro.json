@@ -2083,5 +2083,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code nu este instalat pe acest computer.",
   "Codex isn't installed on this computer.": "Codex nu este instalat pe acest computer.",
   "OpenCode isn't installed on this computer.": "OpenCode nu este instalat pe acest computer.",
-  "Couldn't read Codex's model list.": "Lista de modele Codex nu a putut fi citită."
+  "Couldn't read Codex's model list.": "Lista de modele Codex nu a putut fi citită.",
+  "Run any program on your computer, including your shell": "Rularea oricărui program de pe computer, inclusiv a shell-ului",
+  "Run {0}": "Rularea {0}",
+  "Run the programs it comes with": "Rularea programelor incluse",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Programele pe care le rulează acționează în numele tău: pot citi și modifica oricare dintre fișierele tale și pot folosi rețeaua. Permite doar extensiile în care ai încredere.",
+  "Allow extensions to run programs": "Permite extensiilor să ruleze programe",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Extensiile precum un terminal rulează programe pe computer în numele tău, în afara sandboxului. Fiecare îți cere totuși permisiunea.",
+  "Needs “Allow extensions to run programs”": "Necesită „Permite extensiilor să ruleze programe”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} a fost instalată. Rulează programe: activează „Permite extensiilor să ruleze programe” pentru a o folosi."
 }

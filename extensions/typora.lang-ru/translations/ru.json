@@ -2081,5 +2081,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code не установлен на этом компьютере.",
   "Codex isn't installed on this computer.": "Codex не установлен на этом компьютере.",
   "OpenCode isn't installed on this computer.": "OpenCode не установлен на этом компьютере.",
-  "Couldn't read Codex's model list.": "Не удалось прочитать список моделей Codex."
+  "Couldn't read Codex's model list.": "Не удалось прочитать список моделей Codex.",
+  "Run any program on your computer, including your shell": "Запускать любые программы на компьютере, включая вашу оболочку",
+  "Run {0}": "Запускать {0}",
+  "Run the programs it comes with": "Запускать входящие в него программы",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Запускаемые им программы действуют от вашего имени: они могут читать и изменять любые ваши файлы и пользоваться сетью. Разрешайте только расширения, которым доверяете.",
+  "Allow extensions to run programs": "Разрешить расширениям запускать программы",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Расширения вроде терминала запускают программы на компьютере от вашего имени, вне песочницы. Каждое всё равно запрашивает ваше разрешение.",
+  "Needs “Allow extensions to run programs”": "Требуется «Разрешить расширениям запускать программы»",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} установлено. Оно запускает программы: включите «Разрешить расширениям запускать программы», чтобы им пользоваться."
 }

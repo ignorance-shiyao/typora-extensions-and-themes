@@ -2083,5 +2083,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code no está instalado en este ordenador.",
   "Codex isn't installed on this computer.": "Codex no está instalado en este ordenador.",
   "OpenCode isn't installed on this computer.": "OpenCode no está instalado en este ordenador.",
-  "Couldn't read Codex's model list.": "No se pudo leer la lista de modelos de Codex."
+  "Couldn't read Codex's model list.": "No se pudo leer la lista de modelos de Codex.",
+  "Run any program on your computer, including your shell": "Ejecutar cualquier programa en tu ordenador, incluido tu shell",
+  "Run {0}": "Ejecutar {0}",
+  "Run the programs it comes with": "Ejecutar los programas que incluye",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Los programas que ejecuta actúan como tú: pueden leer y cambiar cualquiera de tus archivos y usar la red. Permite solo extensiones de confianza.",
+  "Allow extensions to run programs": "Permitir que las extensiones ejecuten programas",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Extensiones como un terminal ejecutan programas en tu ordenador como tú, fuera del entorno aislado. Aun así, cada una te pide permiso.",
+  "Needs “Allow extensions to run programs”": "Requiere «Permitir que las extensiones ejecuten programas»",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "Se instaló {0}. Ejecuta programas: activa «Permitir que las extensiones ejecuten programas» para usarla."
 }

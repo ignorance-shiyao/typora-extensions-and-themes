@@ -2083,5 +2083,13 @@
   "Claude Code isn't installed on this computer.": "Το Claude Code δεν είναι εγκατεστημένο σε αυτόν τον υπολογιστή.",
   "Codex isn't installed on this computer.": "Το Codex δεν είναι εγκατεστημένο σε αυτόν τον υπολογιστή.",
   "OpenCode isn't installed on this computer.": "Το OpenCode δεν είναι εγκατεστημένο σε αυτόν τον υπολογιστή.",
-  "Couldn't read Codex's model list.": "Δεν ήταν δυνατή η ανάγνωση της λίστας μοντέλων του Codex."
+  "Couldn't read Codex's model list.": "Δεν ήταν δυνατή η ανάγνωση της λίστας μοντέλων του Codex.",
+  "Run any program on your computer, including your shell": "Εκτέλεση οποιουδήποτε προγράμματος στον υπολογιστή σας, μαζί με το κέλυφός σας",
+  "Run {0}": "Εκτέλεση {0}",
+  "Run the programs it comes with": "Εκτέλεση των προγραμμάτων που περιλαμβάνει",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Τα προγράμματα που εκτελεί ενεργούν ως εσείς: μπορούν να διαβάσουν και να αλλάξουν οποιοδήποτε αρχείο σας και να χρησιμοποιήσουν το δίκτυο. Να επιτρέπετε μόνο επεκτάσεις που εμπιστεύεστε.",
+  "Allow extensions to run programs": "Να επιτρέπεται στις επεκτάσεις η εκτέλεση προγραμμάτων",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Επεκτάσεις όπως ένα τερματικό εκτελούν προγράμματα στον υπολογιστή σας ως εσείς, εκτός του sandbox. Η καθεμία ζητά ωστόσο την άδειά σας.",
+  "Needs “Allow extensions to run programs”": "Απαιτείται «Να επιτρέπεται στις επεκτάσεις η εκτέλεση προγραμμάτων»",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "Εγκαταστάθηκε το {0}. Εκτελεί προγράμματα: ενεργοποιήστε το «Να επιτρέπεται στις επεκτάσεις η εκτέλεση προγραμμάτων» για να το χρησιμοποιήσετε."
 }

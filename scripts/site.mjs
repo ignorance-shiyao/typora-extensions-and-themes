@@ -18,6 +18,7 @@ const PERMISSION_BADGES = {
   "document:write": "Edits document",
   workspace: "Reads folder",
   clipboard: "Clipboard",
+  process: "Runs programs",
 };
 
 export function permissionKeys(p) {
@@ -26,6 +27,7 @@ export function permissionKeys(p) {
   if (p.document) out.push(`document:${p.document}`);
   if (p.workspace) out.push("workspace");
   if (p.clipboard) out.push("clipboard");
+  if (p.process) out.push("process");
   return out;
 }
 
@@ -40,6 +42,8 @@ export function permissionSentences(p) {
   if (p.document === "write") out.push("Read and edit the open document.");
   if (p.workspace === "read") out.push("List and read files in the open folder.");
   if (p.clipboard) out.push("Read and write clipboard text.");
+  if (p.process === "*") out.push("Run any program on your computer as you, including your shell. Programs are outside the sandbox.");
+  else if (p.process) out.push(`Run ${p.process.length ? p.process.map((c) => `<code>${esc(c)}</code>`).join(", ") : "the programs it comes with"} as you, outside the sandbox.`);
   return out;
 }
 

@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code är inte installerat på den här datorn.",
   "Codex isn't installed on this computer.": "Codex är inte installerat på den här datorn.",
   "OpenCode isn't installed on this computer.": "OpenCode är inte installerat på den här datorn.",
-  "Couldn't read Codex's model list.": "Det gick inte att läsa modellistan från Codex."
+  "Couldn't read Codex's model list.": "Det gick inte att läsa modellistan från Codex.",
+  "Run any program on your computer, including your shell": "Köra vilket program som helst på datorn, även ditt skal",
+  "Run {0}": "Köra {0}",
+  "Run the programs it comes with": "Köra programmen som följer med",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Programmen den kör agerar som du: de kan läsa och ändra alla dina filer och använda nätverket. Tillåt bara tillägg du litar på.",
+  "Allow extensions to run programs": "Tillåt tillägg att köra program",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Tillägg som en terminal kör program på datorn som du, utanför sandlådan. Vart och ett ber ändå om ditt tillstånd.",
+  "Needs “Allow extensions to run programs”": "Kräver ”Tillåt tillägg att köra program”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} har installerats. Det kör program: slå på ”Tillåt tillägg att köra program” för att använda det."
 }

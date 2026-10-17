@@ -35,6 +35,10 @@ export function dictionaryFiles(raw) {
 export const EXTENSION_ID_PATTERN = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/;
 export const VERSION_PATTERN = /^\d+\.\d+\.\d+([-+].*)?$/;
 const NETWORK_ORIGIN = /^https?:\/\/(\*\.)?[a-z0-9.-]+(:\d{1,5})?$/i;
+/** A command named in permissions.process (no paths). */
+const COMMAND_NAME = /^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$/;
+/** `<os>-<arch>` keys of a binaries entry. */
+export const BINARY_TARGETS = ["darwin-arm64", "darwin-x64", "darwin-universal", "linux-arm64", "linux-x64", "win32-arm64", "win32-x64"];
 
 export const CONTRIBUTION_KEYS = [
   "localizations",
@@ -68,6 +72,7 @@ const MANIFEST_KEYS = new Set([
   "keywords",
   "l10n",
   "permissions",
+  "binaries",
   "contributes",
   "main",
   "background",
@@ -182,7 +187,7 @@ export function checkManifest(raw, dir, folderId) {
     if (!isObject(perms)) errors.push("permissions must be an object.");
     else {
       for (const key of Object.keys(perms))
-        if (!["network", "document", "workspace", "clipboard"].includes(key))
+        if (!["network", "document", "workspace", "clipboard", "process"].includes(key))
           errors.push(`Unknown permission "${key}".`);
       if (perms.network !== undefined) {
         if (!Array.isArray(perms.network) || !perms.network.length)
@@ -199,6 +204,32 @@ export function checkManifest(raw, dir, folderId) {
         errors.push('permissions.workspace must be "read".');
       if (perms.clipboard !== undefined && perms.clipboard !== true)
         errors.push("permissions.clipboard must be true when present.");
+      if (
+        perms.process !== undefined &&
+        perms.process !== "*" &&
+        !(Array.isArray(perms.process) && perms.process.every((name) => typeof name === "string" && COMMAND_NAME.test(name)))
+      )
+        errors.push('permissions.process must be "*" or a list of command names.');
+    }
+  }
+
+  // binaries: programs in the package, one file per <os>-<arch>
+  if (raw.binaries !== undefined) {
+    if (!isObject(raw.binaries)) errors.push("binaries must be an object.");
+    else {
+      if (!isObject(perms) || perms.process === undefined) errors.push("binaries need permissions.process.");
+      for (const [name, targets] of Object.entries(raw.binaries)) {
+        if (!isObject(targets)) {
+          errors.push(`binaries.${name} must map <os>-<arch> to a file.`);
+          continue;
+        }
+        for (const [target, path] of Object.entries(targets)) {
+          if (!BINARY_TARGETS.includes(target)) errors.push(`binaries.${name}: unknown target ${target}.`);
+          else needFile(path, `binaries.${name}.${target}`);
+        }
+      }
+      // The store builds every program from reviewed source; that build is not there yet.
+      errors.push("Extensions with binaries cannot be published in the store yet: Typora's CI has to build them from source (§8.6).");
     }
   }
 
@@ -298,6 +329,8 @@ export function normalizePermissions(raw) {
   if (p.document === "read" || p.document === "write") out.document = p.document;
   if (p.workspace === "read") out.workspace = "read";
   if (p.clipboard === true) out.clipboard = true;
+  if (p.process === "*") out.process = "*";
+  else if (Array.isArray(p.process)) out.process = [...new Set(p.process.map(String))].sort();
   return out;
 }
 

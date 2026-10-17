@@ -2080,5 +2080,13 @@
   "Claude Code isn't installed on this computer.": "이 컴퓨터에 Claude Code가 설치되어 있지 않습니다.",
   "Codex isn't installed on this computer.": "이 컴퓨터에 Codex가 설치되어 있지 않습니다.",
   "OpenCode isn't installed on this computer.": "이 컴퓨터에 OpenCode가 설치되어 있지 않습니다.",
-  "Couldn't read Codex's model list.": "Codex의 모델 목록을 읽을 수 없습니다."
+  "Couldn't read Codex's model list.": "Codex의 모델 목록을 읽을 수 없습니다.",
+  "Run any program on your computer, including your shell": "컴퓨터의 모든 프로그램 실행(셸 포함)",
+  "Run {0}": "{0} 실행",
+  "Run the programs it comes with": "함께 제공되는 프로그램 실행",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "실행하는 프로그램은 사용자 권한으로 동작합니다. 모든 파일을 읽고 변경할 수 있고 네트워크를 사용할 수 있습니다. 신뢰하는 확장만 허용하세요.",
+  "Allow extensions to run programs": "확장의 프로그램 실행 허용",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "터미널 같은 확장은 샌드박스 밖에서 사용자 권한으로 프로그램을 실행합니다. 그래도 확장마다 권한을 요청합니다.",
+  "Needs “Allow extensions to run programs”": "‘확장의 프로그램 실행 허용’ 필요",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0}을(를) 설치했습니다. 프로그램을 실행하므로 사용하려면 ‘확장의 프로그램 실행 허용’을(를) 켜세요."
 }

@@ -1,0 +1,56 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--typora-background);
+  color: var(--typora-foreground);
+  font: 12px var(--typora-font, system-ui, sans-serif);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--typora-border);
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.bar button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--typora-border);
+  border-radius: 5px;
+  padding: 1px 8px;
+}
+
+.bar button:hover {
+  background: var(--typora-panel);
+}
+
+.terminal {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 0 0 6px;
+}
+
+/* xterm.css paints the viewport black; the theme paints only the rows. */
+.xterm,
+.xterm .xterm-viewport {
+  background-color: var(--typora-background) !important;
+}

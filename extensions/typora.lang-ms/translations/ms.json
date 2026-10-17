@@ -2081,5 +2081,13 @@
   "Claude Code isn't installed on this computer.": "Claude Code tidak dipasang pada komputer ini.",
   "Codex isn't installed on this computer.": "Codex tidak dipasang pada komputer ini.",
   "OpenCode isn't installed on this computer.": "OpenCode tidak dipasang pada komputer ini.",
-  "Couldn't read Codex's model list.": "Senarai model Codex tidak dapat dibaca."
+  "Couldn't read Codex's model list.": "Senarai model Codex tidak dapat dibaca.",
+  "Run any program on your computer, including your shell": "Menjalankan sebarang program pada komputer anda, termasuk shell anda",
+  "Run {0}": "Menjalankan {0}",
+  "Run the programs it comes with": "Menjalankan program yang disertakan",
+  "Programs it runs act as you: they can read and change any of your files and use the network. Allow only extensions you trust.": "Program yang dijalankannya bertindak sebagai anda: boleh membaca dan menukar mana-mana fail anda dan menggunakan rangkaian. Benarkan hanya sambungan yang anda percayai.",
+  "Allow extensions to run programs": "Benarkan sambungan menjalankan program",
+  "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "Sambungan seperti terminal menjalankan program pada komputer anda sebagai anda, di luar kotak pasir. Setiap satu tetap meminta kebenaran anda.",
+  "Needs “Allow extensions to run programs”": "Memerlukan “Benarkan sambungan menjalankan program”",
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} dipasang. Ia menjalankan program: hidupkan “Benarkan sambungan menjalankan program” untuk menggunakannya."
 }
