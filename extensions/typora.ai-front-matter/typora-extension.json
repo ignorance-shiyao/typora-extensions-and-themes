@@ -1,0 +1,73 @@
+{
+  "id": "typora.ai-front-matter",
+  "name": "AI Front Matter",
+  "version": "1.0.0",
+  "description": "Writes a title, a one-line description, tags and a URL slug into a note's front matter with your AI model, reusing the tags your other notes already use.",
+  "author": "Typora Team",
+  "tags": ["AI", "Writing"],
+  "keywords": ["front matter", "yaml", "metadata", "tags", "title", "slug", "seo", "excerpt", "blog", "llm"],
+  "permissions": { "document": "write", "workspace": "read", "ai": true },
+  "contributes": {
+    "commands": [
+      { "id": "generate", "title": "Generate Front Matter", "category": "AI Front Matter" },
+      { "id": "tags", "title": "Suggest Tags", "category": "AI Front Matter" },
+      { "id": "title", "title": "Suggest a Title", "category": "AI Front Matter" }
+    ],
+    "menus": {
+      "inlinePalette": [{ "command": "generate" }, { "command": "tags" }]
+    },
+    "configuration": {
+      "title": "AI Front Matter",
+      "properties": {
+        "includeTitle": { "type": "boolean", "default": true, "title": "Title", "description": "Generate Front Matter suggests titles to pick from." },
+        "includeDescription": { "type": "boolean", "default": true, "title": "Description", "description": "One sentence for search results and post excerpts." },
+        "includeTags": { "type": "boolean", "default": true, "title": "Tags" },
+        "includeSlug": { "type": "boolean", "default": true, "title": "Slug", "description": "A URL slug, in English words for non-Latin titles." },
+        "overwrite": {
+          "type": "boolean",
+          "default": false,
+          "title": "Replace existing values",
+          "description": "Off: keeps a title, description or slug the document already has, and adds new tags to its tags."
+        },
+        "folderTags": {
+          "type": "boolean",
+          "default": true,
+          "title": "Reuse tags from the open folder",
+          "description": "Reads the front matter of up to 300 notes in the folder and asks the model to prefer those tags."
+        },
+        "maxTags": { "type": "number", "default": 5, "minimum": 1, "maximum": 15, "title": "Most tags" },
+        "descriptionKey": {
+          "type": "string",
+          "enum": ["description", "excerpt", "summary"],
+          "default": "description",
+          "title": "Description key"
+        },
+        "tagsKey": { "type": "string", "enum": ["tags", "keywords", "categories"], "default": "tags", "title": "Tags key" },
+        "listStyle": {
+          "type": "string",
+          "enum": ["flow", "block"],
+          "enumLabels": ["One line: [a, b]", "One per line: - a"],
+          "default": "flow",
+          "title": "Write new lists as",
+          "description": "Lists already in the front matter keep their style."
+        },
+        "language": {
+          "type": "string",
+          "default": "",
+          "title": "Language",
+          "placeholder": "The document's language",
+          "description": "Write titles and descriptions in this language, e.g. English."
+        },
+        "maxChars": {
+          "type": "number",
+          "default": 12000,
+          "minimum": 1000,
+          "maximum": 100000,
+          "title": "Characters sent",
+          "description": "How much of the document, from the start, goes to the model."
+        }
+      }
+    }
+  },
+  "main": "main.js"
+}

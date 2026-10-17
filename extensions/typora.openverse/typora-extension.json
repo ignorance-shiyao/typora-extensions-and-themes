@@ -1,0 +1,42 @@
+{
+  "id": "typora.openverse",
+  "name": "Openverse Images",
+  "version": "1.0.0",
+  "description": "Search hundreds of millions of openly licensed photos in the detail panel and insert them with a credit line — no account or API key needed.",
+  "author": "Typora Team",
+  "tags": ["Media", "View"],
+  "keywords": ["images", "photos", "stock", "creative commons", "cc0", "openverse", "free"],
+  "permissions": {
+    "document": "write",
+    "network": ["https://api.openverse.org"]
+  },
+  "contributes": {
+    "detailViews": [
+      { "id": "images", "title": "Images", "icon": "image", "sfSymbol": "photo.on.rectangle", "entry": "view/index.html" }
+    ],
+    "configuration": {
+      "title": "Openverse Images",
+      "properties": {
+        "license": {
+          "type": "string",
+          "enum": ["any", "commercial", "modification", "commercial,modification"],
+          "enumLabels": ["Any license", "Commercial use allowed", "Modification allowed", "Commercial use and modification"],
+          "default": "any",
+          "title": "Licenses",
+          "description": "Only show images whose license allows this."
+        },
+        "attribution": {
+          "type": "boolean",
+          "default": true,
+          "title": "Add a credit line",
+          "description": "Inserts the title, creator and license under the image, as most Creative Commons licenses require."
+        },
+        "mature": {
+          "type": "boolean",
+          "default": false,
+          "title": "Include mature results"
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 // HTML for extensions.typora.io. Plain strings; everything user-supplied goes
 // through esc().
 
-import { DOCS_URL, REPO_URL, TAGS } from "./lib.mjs";
+import { CONFIG_ORIGIN, DOCS_URL, REPO_URL, TAGS } from "./lib.mjs";
 
 export const esc = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -18,6 +18,7 @@ const PERMISSION_BADGES = {
   "document:write": "Edits document",
   workspace: "Reads folder",
   clipboard: "Clipboard",
+  ai: "Uses your AI model",
   process: "Runs programs",
 };
 
@@ -27,14 +28,18 @@ export function permissionKeys(p) {
   if (p.document) out.push(`document:${p.document}`);
   if (p.workspace) out.push("workspace");
   if (p.clipboard) out.push("clipboard");
+  if (p.ai) out.push("ai");
   if (p.process) out.push("process");
   return out;
 }
 
-const origin = (o) =>
-  o.includes("*.") ? `any subdomain of <code>${esc(o.replace("*.", ""))}</code>` : `<code>${esc(o)}</code>`;
-
-export function permissionSentences(p) {
+/** `settings`: the manifest's configuration properties, to name a `{config.<key>}` origin. */
+export function permissionSentences(p, settings = {}) {
+  const origin = (o) => {
+    const key = CONFIG_ORIGIN.exec(o)?.[1];
+    if (key !== undefined) return `the server you enter in its <em>${esc(settings[key]?.title ?? key)}</em> option`;
+    return o.includes("*.") ? `any subdomain of <code>${esc(o.replace("*.", ""))}</code>` : `<code>${esc(o)}</code>`;
+  };
   const out = [];
   if (p.network?.length)
     out.push(`Send and receive data from ${p.network.map(origin).join(", ")}.`);
@@ -42,6 +47,7 @@ export function permissionSentences(p) {
   if (p.document === "write") out.push("Read and edit the open document.");
   if (p.workspace === "read") out.push("List and read files in the open folder.");
   if (p.clipboard) out.push("Read and write clipboard text.");
+  if (p.ai) out.push("Send text to the AI model you set up in Typora's Settings ▸ Intelligence.");
   if (p.process === "*") out.push("Run any program on your computer as you, including your shell. Programs are outside the sandbox.");
   else if (p.process) out.push(`Run ${p.process.length ? p.process.map((c) => `<code>${esc(c)}</code>`).join(", ") : "the programs it comes with"} as you, outside the sandbox.`);
   return out;
@@ -92,7 +98,7 @@ function permissionBadges(p) {
 }
 
 /** `?tag=` value of a tag: "Markdown Extension" → "markdown-extension". */
-export const tagSlug = (tag) => tag.toLowerCase().replace(/\s+/g, "-");
+export const tagSlug = (tag) => tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 // A picture that fails to load (say, WebP in an old Safari) leaves its gray panel.
 const ON_ERROR = `onerror="this.hidden=true"`;
@@ -311,7 +317,7 @@ const formatDate = (iso) =>
   new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
 
 export function extensionPage({ entry, manifest, files, readme, assets, origin: siteOrigin }) {
-  const perms = permissionSentences(entry.permissions);
+  const perms = permissionSentences(entry.permissions, manifest.contributes?.configuration?.properties);
   const tier = TIERS[entry.tier];
   const body = `<nav class="crumbs"><a href="/">Extensions</a> <span>/</span> ${esc(entry.name)}</nav>
 <div class="detail">

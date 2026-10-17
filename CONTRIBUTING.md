@@ -15,8 +15,8 @@ not every line for escapes.
 - `name`, `version` (semver) and a one-sentence `description` are required;
   `author`, `tags` and `keywords` help people find it. `tags` are the
   store's filters: `Language Pack`, `Markdown Extension`, `Diagram`,
-  `Math`, `Theme`, `Writing`, `Template`, `Productivity`, `File Viewer`,
-  `View`, `Developer`.
+  `Math`, `Theme`, `Writing`, `Template`, `AI`, `Media`, `Export / Share`,
+  `Productivity`, `File Viewer`, `View`, `Developer`.
 - Store images (not packaged), Typora showing the extension at work:
   - `cover.webp`: 800 × 400 (2:1), on the store card. Crop it from the
     screenshot without the window title bar.
@@ -51,7 +51,7 @@ not every line for escapes.
 | The extension | Review |
 | --- | --- |
 | L0 (data only), no `network` | Automated checks plus a light review |
-| Declares `network`, `document`, `workspace` or `clipboard` | Human review of the code paths that use them |
+| Declares `network`, `document`, `workspace`, `clipboard` or `ai` | Human review of the code paths that use them |
 | Declares `process` | Human review of every place it starts a program, and why it needs to; the README says what it runs |
 | An update that widens permissions | Human review; users are asked to consent again on update |
 
@@ -64,7 +64,8 @@ not every line for escapes.
   use a build step, commit its output in readable form together with the
   source, and say so in the PR.
 - **Ask for the least.** Request only the permissions you use; list
-  network origins exactly (`https://kroki.io`, not `https://*`). Explain
+  network origins exactly (`https://kroki.io`, not `https://*`); for the
+  user's own server use `{config.<setting>}` with an empty default. Explain
   each permission in the PR description.
 - **Programs come from the system or from source.** With `process`, run
   programs the user has (a shell, `git`, `pandoc`) or ones Typora's CI

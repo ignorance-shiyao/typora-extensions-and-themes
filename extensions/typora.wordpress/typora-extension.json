@@ -1,0 +1,67 @@
+{
+  "id": "typora.wordpress",
+  "name": "WordPress",
+  "version": "1.0.0",
+  "description": "Copy a document as clean WordPress blocks or classic-editor HTML, or publish it to your site as a draft or post.",
+  "author": "Typora Team",
+  "tags": ["Export / Share"],
+  "keywords": ["wordpress", "gutenberg", "blog", "publish", "export", "html"],
+  "permissions": {
+    "document": "write",
+    "clipboard": true,
+    "network": ["{config.siteUrl}"]
+  },
+  "contributes": {
+    "commands": [
+      { "id": "copyBlocks", "title": "Copy for WordPress (Blocks)", "category": "WordPress" },
+      { "id": "copyClassic", "title": "Copy for WordPress (Classic Editor)", "category": "WordPress" },
+      { "id": "publish", "title": "Publish to WordPress…", "category": "WordPress" },
+      { "id": "signOut", "title": "Sign Out of WordPress", "category": "WordPress" }
+    ],
+    "configuration": {
+      "title": "WordPress",
+      "properties": {
+        "siteUrl": {
+          "type": "string",
+          "default": "",
+          "title": "Site",
+          "placeholder": "https://example.com",
+          "description": "Your site's address. Publishing signs in with an Application Password (in WordPress: Users ▸ Profile ▸ Application Passwords). Only this site is contacted."
+        },
+        "username": {
+          "type": "string",
+          "default": "",
+          "title": "User name",
+          "description": "Leave empty to be asked the first time you publish."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "pending", "private", "publish"],
+          "enumLabels": ["Draft", "Pending review", "Private", "Published"],
+          "default": "draft",
+          "title": "New posts are",
+          "description": "A status in the front matter wins. Updating a post keeps its status."
+        },
+        "uploadImages": {
+          "type": "boolean",
+          "default": true,
+          "title": "Upload local images",
+          "description": "Publishing uploads images stored on this computer to the Media Library and links the post to them."
+        },
+        "removeTitleHeading": {
+          "type": "boolean",
+          "default": true,
+          "title": "Leave the title heading out",
+          "description": "When the document starts with a # heading that is its title, the heading becomes the post title only, not part of the content."
+        },
+        "classicParagraphs": {
+          "type": "boolean",
+          "default": false,
+          "title": "Keep <p> tags in classic HTML",
+          "description": "Off: paragraphs are separated by blank lines, and the classic editor adds the tags itself."
+        }
+      }
+    }
+  },
+  "main": "main.js"
+}

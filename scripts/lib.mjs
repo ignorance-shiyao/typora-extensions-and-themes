@@ -35,6 +35,8 @@ export function dictionaryFiles(raw) {
 export const EXTENSION_ID_PATTERN = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/;
 export const VERSION_PATTERN = /^\d+\.\d+\.\d+([-+].*)?$/;
 const NETWORK_ORIGIN = /^https?:\/\/(\*\.)?[a-z0-9.-]+(:\d{1,5})?$/i;
+/** `{config.<key>}`: the server the user enters in that setting. */
+export const CONFIG_ORIGIN = /^\{config\.([A-Za-z][A-Za-z0-9_.-]{0,63})\}$/;
 /** A command named in permissions.process (no paths). */
 const COMMAND_NAME = /^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$/;
 /** `<os>-<arch>` keys of a binaries entry. */
@@ -99,7 +101,7 @@ export function extensionIds() {
 }
 
 /** Store tags, in the order the website lists them. */
-export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "Productivity", "File Viewer", "View", "Developer"];
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Export / Share", "Productivity", "File Viewer", "View", "Developer"];
 
 /**
  * Store images in the extension folder, shown on the website only and not
@@ -229,16 +231,27 @@ export function checkManifest(raw, dir, folderId) {
     if (!isObject(perms)) errors.push("permissions must be an object.");
     else {
       for (const key of Object.keys(perms))
-        if (!["network", "document", "workspace", "clipboard", "process"].includes(key))
+        if (!["network", "document", "workspace", "clipboard", "process", "ai"].includes(key))
           errors.push(`Unknown permission "${key}".`);
       if (perms.network !== undefined) {
         if (!Array.isArray(perms.network) || !perms.network.length)
           errors.push("permissions.network must be a non-empty array of origins.");
         else
-          for (const origin of perms.network)
-            if (typeof origin !== "string" || !NETWORK_ORIGIN.test(origin.replace(/\/$/, "")))
-              errors.push(`permissions.network: "${origin}" is not an https?://host[:port] origin.`);
+          for (const origin of perms.network) {
+            const key = typeof origin === "string" ? CONFIG_ORIGIN.exec(origin)?.[1] : undefined;
+            if (key !== undefined) {
+              const properties = isObject(raw.contributes?.configuration?.properties) ? raw.contributes.configuration.properties : {};
+              const property = properties[key];
+              const literal = perms.network.filter((o) => typeof o === "string" && NETWORK_ORIGIN.test(o.replace(/\/$/, "")));
+              if (!isObject(property) || property.type !== "string")
+                errors.push(`permissions.network: ${origin} needs a string setting named ${key}.`);
+              // Only the user may point it somewhere: a default must be listed itself.
+              else if (property.default && !literal.some((o) => o.replace(/\/$/, "") === settingOrigin(property.default)))
+                errors.push(`permissions.network: the default of ${key} must be empty or one of the listed origins.`);
+            } else if (typeof origin !== "string" || !NETWORK_ORIGIN.test(origin.replace(/\/$/, "")))
+              errors.push(`permissions.network: "${origin}" is not an https?://host[:port] origin or {config.<setting>}.`);
             else if (origin.startsWith("http:")) warnings.push(`permissions.network: ${origin} is not https.`);
+          }
       }
       if (perms.document !== undefined && perms.document !== "read" && perms.document !== "write")
         errors.push('permissions.document must be "read" or "write".');
@@ -246,6 +259,7 @@ export function checkManifest(raw, dir, folderId) {
         errors.push('permissions.workspace must be "read".');
       if (perms.clipboard !== undefined && perms.clipboard !== true)
         errors.push("permissions.clipboard must be true when present.");
+      if (perms.ai !== undefined && perms.ai !== true) errors.push("permissions.ai must be true when present.");
       if (
         perms.process !== undefined &&
         perms.process !== "*" &&
@@ -371,9 +385,22 @@ export function normalizePermissions(raw) {
   if (p.document === "read" || p.document === "write") out.document = p.document;
   if (p.workspace === "read") out.workspace = "read";
   if (p.clipboard === true) out.clipboard = true;
+  if (p.ai === true) out.ai = true;
   if (p.process === "*") out.process = "*";
   else if (Array.isArray(p.process)) out.process = [...new Set(p.process.map(String))].sort();
   return out;
+}
+
+/** The origin of a server address typed into a setting (https assumed), or null. */
+export function settingOrigin(value) {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const text = value.trim();
+  try {
+    const url = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(text) ? text : `https://${text}`);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : null;
+  } catch {
+    return null;
+  }
 }
 
 /** True when an L1 page ships with the extension. */
