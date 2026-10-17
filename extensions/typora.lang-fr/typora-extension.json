@@ -3,7 +3,7 @@
   "name": "Français Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in French, and checks French spelling when the system spellchecker has no French dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "fr",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

@@ -3,7 +3,8 @@
   "name": "Terminal",
   "version": "1.0.0",
   "description": "A terminal in the detail panel, opened in the current folder. It keeps running while you switch tabs and documents.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["View", "Developer"],
   "permissions": { "process": "*" },
   "contributes": {
     "detailViews": [

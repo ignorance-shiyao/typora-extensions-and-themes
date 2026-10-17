@@ -13,9 +13,21 @@ not every line for escapes.
   equals the manifest `id` (`author.name`: lowercase letters, digits, dots,
   hyphens). The id is permanent.
 - `name`, `version` (semver) and a one-sentence `description` are required;
-  `author` and `keywords` help people find it.
+  `author`, `tags` and `keywords` help people find it. `tags` are the
+  store's filters: `Language Pack`, `Markdown Extension`, `Diagram`,
+  `Math`, `Theme`, `Writing`, `Template`, `Productivity`, `File Viewer`,
+  `View`, `Developer`.
+- Store images (not packaged), Typora showing the extension at work:
+  - `cover.webp`: 800 × 400 (2:1), on the store card. Crop it from the
+    screenshot without the window title bar.
+  - `screenshot.webp`: 1760 × 1100 (16:10, a 880 × 550 window at 2x, no
+    scrollbars), on the extension's page.
+  Use lossless WebP for screenshots so text stays sharp, and keep each
+  image under 300 KB (validate warns). PNG and JPEG also work, up to 1 MB.
+  Language packs get both from `scripts/language-pack-images.mjs`.
 - Bump `version` with every change to the folder. Published downloads are
-  immutable; CI fails a PR that changes files without a bump.
+  immutable; CI fails a PR that changes files without a bump. Store images
+  alone are exempt.
 - A `README.md` in the folder is shown on the extension's store page.
 - Run `npm run validate` before pushing.
 

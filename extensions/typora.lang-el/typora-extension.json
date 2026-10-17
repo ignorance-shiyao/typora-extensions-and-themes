@@ -3,7 +3,7 @@
   "name": "Ελληνικά Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Greek, and checks Greek spelling when the system spellchecker has no Greek dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "el",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

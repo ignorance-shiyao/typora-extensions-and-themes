@@ -3,7 +3,8 @@
   "name": "Tasks & Links",
   "version": "1.0.1",
   "description": "Detail views listing open tasks, TODO / FIXME notes and every link in the document.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["View", "Productivity"],
   "contributes": {
     "detailViews": [
       {

@@ -25,6 +25,8 @@ import {
   isoSeconds,
   packageFiles,
   readManifest,
+  storeImage,
+  TAGS,
   tierOf,
   zip,
 } from "./lib.mjs";
@@ -95,6 +97,17 @@ for (const id of extensionIds()) {
   if (manifest.main !== undefined) contributes.push("main");
   if (manifest.background !== undefined) contributes.push("background");
 
+  // Store images, content-hashed under /assets like the site's files.
+  const images = {};
+  for (const kind of ["cover", "screenshot"]) {
+    const name = storeImage(dir, kind);
+    if (!name) continue;
+    const data = readFileSync(join(dir, name));
+    const path = `assets/${kind}s/${id}.${sha256(data).slice(0, 10)}.${name.split(".").pop().toLowerCase()}`;
+    write(path, data);
+    images[kind] = `${origin}/${path}`;
+  }
+
   const entry = {
     id,
     name: manifest.name.trim(),
@@ -103,6 +116,8 @@ for (const id of extensionIds()) {
     author: typeof manifest.author === "string" ? manifest.author : "",
     repository: `${REPO_URL}/tree/main/extensions/${id}`,
     keywords: Array.isArray(manifest.keywords) ? manifest.keywords.filter((k) => typeof k === "string") : [],
+    tags: TAGS.filter((t) => Array.isArray(manifest.tags) && manifest.tags.includes(t)),
+    ...images,
     engines: manifest.engines && typeof manifest.engines === "object" ? manifest.engines : {},
     permissions: manifest.permissions && typeof manifest.permissions === "object" ? manifest.permissions : {},
     contributes,
@@ -133,7 +148,9 @@ const catalog = { schemaVersion: 1, generatedAt: isoSeconds(now), extensions: en
 write("index.json", `${JSON.stringify(catalog, null, 2)}\n`);
 
 // ── Site ───────────────────────────────────────────────────────────────
-const byName = [...entries].sort((a, b) => a.name.localeCompare(b.name, "en"));
+// Language packs after the rest, so they do not crowd out the other extensions.
+const isPack = (e) => e.tags.includes("Language Pack");
+const byName = [...entries].sort((a, b) => isPack(a) - isPack(b) || a.name.localeCompare(b.name, "en"));
 write("index.html", homePage({ entries: byName, assets, origin }));
 for (const page of pages) write(`${page.entry.id}/index.html`, extensionPage({ ...page, assets, origin }));
 write("404.html", notFoundPage({ assets, origin }));

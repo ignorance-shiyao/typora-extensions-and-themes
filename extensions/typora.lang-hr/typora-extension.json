@@ -3,7 +3,7 @@
   "name": "Hrvatski Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Croatian, and checks Croatian spelling when the system spellchecker has no Croatian dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "hr",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

@@ -3,7 +3,7 @@
   "name": "Português (Brasil) Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Portuguese (Brazil), and checks Portuguese (Brazil) spelling when the system spellchecker has no Portuguese (Brazil) dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "pt-BR",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

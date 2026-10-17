@@ -70,6 +70,7 @@ const MANIFEST_KEYS = new Set([
   "author",
   "repository",
   "keywords",
+  "tags",
   "l10n",
   "permissions",
   "binaries",
@@ -97,12 +98,49 @@ export function extensionIds() {
     .sort();
 }
 
-/** Files that go into the package: relative `/` paths, sorted, dotfiles skipped. */
+/** Store tags, in the order the website lists them. */
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "Productivity", "File Viewer", "View", "Developer"];
+
+/**
+ * Store images in the extension folder, shown on the website only and not
+ * packaged: `cover.webp` (2:1) on the card, `screenshot.webp` (16:10) on the
+ * extension's page. PNG and JPEG work too.
+ */
+export const STORE_IMAGE_PATTERN = /^(cover|screenshot)\.(png|jpe?g|webp)$/i;
+/** Width / height each store image should have. */
+export const STORE_IMAGE_RATIOS = { cover: 2, screenshot: 1.6 };
+
+export function storeImage(dir, kind) {
+  return readdirSync(dir).find((name) => STORE_IMAGE_PATTERN.test(name) && name.split(".")[0].toLowerCase() === kind) ?? null;
+}
+
+/** Store images above this get a warning: compress them (lossless WebP for screenshots). */
+export const STORE_IMAGE_WARN_BYTES = 300 * 1024;
+
+/** `{ width, height }` of a PNG or WebP, or null for other formats. */
+export function imageSize(buf) {
+  if (buf.length >= 24 && buf.toString("ascii", 1, 4) === "PNG")
+    return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  if (buf.length < 30 || buf.toString("ascii", 0, 4) !== "RIFF" || buf.toString("ascii", 8, 12) !== "WEBP") return null;
+  const chunk = buf.toString("ascii", 12, 16);
+  if (chunk === "VP8 ") return { width: buf.readUInt16LE(26) & 0x3fff, height: buf.readUInt16LE(28) & 0x3fff };
+  if (chunk === "VP8L") {
+    const bits = buf.readUInt32LE(21);
+    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
+  }
+  if (chunk === "VP8X") return { width: buf.readUIntLE(24, 3) + 1, height: buf.readUIntLE(27, 3) + 1 };
+  return null;
+}
+
+/**
+ * Files that go into the package: relative `/` paths, sorted, dotfiles and
+ * store images skipped.
+ */
 export function packageFiles(dir) {
   const out = [];
   const walk = (rel) => {
     for (const entry of readdirSync(join(dir, rel), { withFileTypes: true })) {
-      if (entry.name.startsWith(".")) continue;
+      if (entry.name.startsWith(".") || (!rel && STORE_IMAGE_PATTERN.test(entry.name))) continue;
       const path = rel ? `${rel}/${entry.name}` : entry.name;
       if (entry.isDirectory()) walk(path);
       else out.push(path);
@@ -160,6 +198,10 @@ export function checkManifest(raw, dir, folderId) {
     errors.push('engines must look like { "typora": ">=2.0.0" }.');
   if (raw.keywords !== undefined && !(Array.isArray(raw.keywords) && raw.keywords.every(nonEmpty)))
     errors.push("keywords must be an array of strings.");
+  if (raw.tags !== undefined) {
+    if (!Array.isArray(raw.tags)) errors.push(`tags must be an array of: ${TAGS.join(", ")}.`);
+    else for (const tag of raw.tags) if (!TAGS.includes(tag)) errors.push(`Unknown tag "${tag}" (use ${TAGS.join(", ")}).`);
+  } else warnings.push("tags is empty; the store filters by them.");
 
   const exists = (rel) => existsSync(join(dir, rel));
   const isDir = (rel) => exists(rel) && statSync(join(dir, rel)).isDirectory();

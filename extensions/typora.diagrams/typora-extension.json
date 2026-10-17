@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Graphviz, erd, Vega, Vega-Lite, WaveDrom, nomnoml and BPMN code blocks drawn on your computer: no server, no network.",
   "author": "Typora Team",
-  "categories": ["Markdown Extension"],
+  "tags": ["Markdown Extension", "Diagram"],
   "keywords": ["diagram", "graphviz", "dot", "erd", "vega", "vega-lite", "wavedrom", "nomnoml", "bpmn", "uml", "chart", "offline"],
   "contributes": {
     "fenceRenderers": [

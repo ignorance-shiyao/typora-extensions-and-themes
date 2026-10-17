@@ -3,7 +3,7 @@
   "name": "Deutsch Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in German, and checks German spelling when the system spellchecker has no German dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "de",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

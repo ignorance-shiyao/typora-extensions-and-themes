@@ -3,7 +3,8 @@
   "name": "Issue Links & Tags",
   "version": "1.0.1",
   "description": "#123 links to an issue of your repository; #tags open a search and are listed in a Tags view.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Markdown Extension", "View", "Developer"],
   "contributes": {
     "inlineRules": [
       {

@@ -3,13 +3,16 @@
   "name": "日本語 Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Japanese.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
     "Japanese",
     "日本語",
     "ja"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

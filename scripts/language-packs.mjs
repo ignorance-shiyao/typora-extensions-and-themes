@@ -130,8 +130,9 @@ for (const [locale, name, englishName, lproj, dictionaryList] of PACKS) {
     name: `${name} Language Pack`,
     version: existingVersion(dir),
     description,
-    author: "Typora",
+    author: "Typora Team",
     keywords: ["language pack", "translation", englishName, name, locale, ...(dictionaries.length ? ["spelling", "dictionary"] : [])],
+    tags: ["Language Pack"],
     contributes: {
       localizations: [{ locale, name, englishName, path: `translations/${locale}.json` }],
       ...(dictionaries.length ? { dictionaries } : {}),
@@ -159,8 +160,9 @@ for (const [locale, name, englishName, lproj, dictionaryList] of PACKS) {
     name: "English Spelling Dictionaries",
     version: existingVersion(dir),
     description,
-    author: "Typora",
+    author: "Typora Team",
     keywords: ["language pack", "spelling", "dictionary", "English", "en"],
+    tags: ["Language Pack"],
     contributes: { dictionaries },
   });
   writeFileSync(

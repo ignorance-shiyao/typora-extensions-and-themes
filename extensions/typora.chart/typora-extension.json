@@ -1,9 +1,10 @@
 {
   "id": "typora.chart",
   "name": "Charts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "```chart fences drawn as bar, line or pie charts from a few lines of data. Works offline and exports as SVG.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Markdown Extension", "Diagram"],
   "contributes": {
     "fenceRenderers": [
       { "id": "chart", "lang": ["chart"], "mode": "static", "entry": "renderer.html" }

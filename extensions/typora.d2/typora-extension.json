@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "D2 code blocks, drawn by the d2 program on your computer or by a Kroki server.",
   "author": "Typora Team",
-  "categories": ["Markdown Extension"],
+  "tags": ["Markdown Extension", "Diagram"],
   "keywords": ["diagram", "d2", "terrastruct", "architecture", "offline", "kroki"],
   "permissions": {
     "process": ["d2"],

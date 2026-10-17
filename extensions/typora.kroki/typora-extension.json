@@ -1,9 +1,10 @@
 {
   "id": "typora.kroki",
   "name": "Kroki Diagrams",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PlantUML, Graphviz, D2, WaveDrom, BPMN and more, drawn by a Kroki server (typora-issues#1138).",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Markdown Extension", "Diagram"],
   "permissions": {
     "network": ["https://kroki.io"]
   },

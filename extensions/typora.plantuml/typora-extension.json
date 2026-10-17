@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "PlantUML and ditaa code blocks, drawn by PlantUML on your computer (the plantuml command, or Java and plantuml.jar) or by a Kroki server.",
   "author": "Typora Team",
-  "categories": ["Markdown Extension"],
+  "tags": ["Markdown Extension", "Diagram"],
   "keywords": ["diagram", "plantuml", "puml", "uml", "ditaa", "sequence", "class", "offline", "kroki"],
   "permissions": {
     "process": ["plantuml", "java"],

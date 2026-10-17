@@ -3,7 +3,7 @@
   "name": "Slovenščina Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Slovenian, and checks Slovenian spelling when the system spellchecker has no Slovenian dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "sl",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

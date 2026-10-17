@@ -9,12 +9,11 @@
 // Writes Markdown to $GITHUB_STEP_SUMMARY when set, and always to stdout.
 
 import { appendFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import {
   EXTENSIONS_DIR,
   MANIFEST,
-  ROOT,
+  STORE_IMAGE_PATTERN,
   extensionIds,
   git,
   normalizePermissions,
@@ -51,14 +50,15 @@ const baseFiles = (id) =>
     .split("\n")
     .filter(Boolean)
     .map((p) => p.slice(`extensions/${id}/`.length));
+/** Whether a packaged file changed; store images alone need no bump. */
 const changed = (id) => {
-  try {
-    execFileSync("git", ["diff", "--quiet", base, "--", `extensions/${id}`], { cwd: ROOT });
+  const prefix = `extensions/${id}/`;
+  const paths = [
+    ...git(["diff", "--name-only", base, "--", prefix]).split("\n"),
     // Untracked files are not seen by git diff; count them too.
-    return git(["ls-files", "--others", "--exclude-standard", "--", `extensions/${id}`]).trim() !== "";
-  } catch {
-    return true;
-  }
+    ...git(["ls-files", "--others", "--exclude-standard", "--", prefix]).split("\n"),
+  ];
+  return paths.some((p) => p && !STORE_IMAGE_PATTERN.test(p.slice(prefix.length)));
 };
 
 const DOC_LEVEL = { "": 0, read: 1, write: 2 };

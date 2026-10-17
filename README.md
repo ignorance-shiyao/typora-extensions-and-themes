@@ -17,12 +17,15 @@ To write an extension, start with the developer guide:
 ```
 extensions/<id>/            one folder per extension, named after its id
   typora-extension.json     the manifest (docs.typora.io/extensions/)
+  cover.webp                optional store card image, 2:1 (not packaged)
+  screenshot.webp           optional store page image, 16:10 (not packaged)
   …                         everything else the manifest references
 scripts/
   validate.mjs              manifest and file checks (npm run validate)
   permission-diff.mjs       permission / version diff against a base ref (PRs)
   build.mjs                 packages, index.json and the website → dist/
   language-packs.mjs        (re)generates the typora.lang-* language packs
+  language-pack-images.mjs  their cover / screenshot images (.claude/skills/language-pack-images)
   site.mjs                  HTML templates for the website
   serve.mjs                 local server that mimics the Worker
 site/                       CSS, JS and icon for the website
@@ -37,6 +40,7 @@ worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
 | `dist/index.json` | The catalog the app reads (`schemaVersion: 1`) |
 | `dist/download/<id>-<version>.typora-extension` | The package: a zip with `typora-extension.json` at the archive root. Deterministic: the same source always gives the same SHA-256 |
 | `dist/index.html`, `dist/<id>/index.html` | The store website |
+| `dist/assets/{covers,screenshots}/<id>.<hash>.<ext>` | Store images, linked from `index.json` as `cover` / `screenshot` |
 | `dist/404.html`, `robots.txt`, `sitemap.xml` | |
 
 Each catalog entry has a tier: **L0** (data only), **L1** (ships HTML

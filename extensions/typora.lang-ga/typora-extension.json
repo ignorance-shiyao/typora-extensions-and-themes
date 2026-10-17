@@ -3,7 +3,7 @@
   "name": "Gaeilge Language Pack",
   "version": "1.0.7",
   "description": "Shows Typora in Irish, and checks Irish spelling when the system spellchecker has no Irish dictionary.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "translation",
@@ -12,6 +12,9 @@
     "ga",
     "spelling",
     "dictionary"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "localizations": [

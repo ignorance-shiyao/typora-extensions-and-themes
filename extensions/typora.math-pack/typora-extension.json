@@ -1,9 +1,10 @@
 {
   "id": "typora.math-pack",
   "name": "Math Pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Common TeX macros (\\R, \\N, \\abs, \\norm, \\set …) and snippets for theorem / proof blocks.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Markdown Extension", "Math", "Writing"],
   "contributes": {
     "texMacros": {
       "R": "\\mathbb{R}",

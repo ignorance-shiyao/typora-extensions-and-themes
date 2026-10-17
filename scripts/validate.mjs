@@ -13,10 +13,14 @@ import {
   MAX_FILE_BYTES,
   MAX_LANGUAGE_PACK_BYTES,
   MAX_PACKAGE_BYTES,
+  STORE_IMAGE_PATTERN,
+  STORE_IMAGE_RATIOS,
+  STORE_IMAGE_WARN_BYTES,
   checkManifest,
   dictionaryFiles,
   extensionIds,
   hiddenFiles,
+  imageSize,
 } from "./lib.mjs";
 
 const CI = !!process.env.GITHUB_ACTIONS;
@@ -70,7 +74,15 @@ function validate(id) {
     }
     if (!stat.isFile()) continue;
     if (path.split("/").some((part) => part.startsWith("."))) continue;
-    total += stat.size;
+    // Store images are not packaged but have the same per-file limit.
+    if (STORE_IMAGE_PATTERN.test(path)) {
+      const kind = path.split(".")[0].toLowerCase();
+      const size = imageSize(readFileSync(join(dir, path)));
+      if (size && Math.abs(size.width / size.height - STORE_IMAGE_RATIOS[kind]) > 0.02)
+        warnings.push(`${path} is ${size.width}×${size.height}; ${kind === "cover" ? "a cover is 2:1 (800×400)" : "a screenshot is 16:10 (1760×1100)"}.`);
+      if (stat.size > STORE_IMAGE_WARN_BYTES)
+        warnings.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB; compress it (lossless WebP for screenshots) to stay under ${STORE_IMAGE_WARN_BYTES / 1024} KB.`);
+    } else total += stat.size;
     const limit = dictionaries.has(path) ? MAX_DICTIONARY_FILE_BYTES : MAX_FILE_BYTES;
     if (stat.size > limit)
       errors.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB (limit ${limit / 1024} KB).`);

@@ -1,15 +1,18 @@
 {
   "id": "typora.lang-en",
   "name": "English Spelling Dictionaries",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Checks English (US and UK) spelling when the system has no spellchecker or no English dictionary, as on Linux.",
-  "author": "Typora",
+  "author": "Typora Team",
   "keywords": [
     "language pack",
     "spelling",
     "dictionary",
     "English",
     "en"
+  ],
+  "tags": [
+    "Language Pack"
   ],
   "contributes": {
     "dictionaries": [

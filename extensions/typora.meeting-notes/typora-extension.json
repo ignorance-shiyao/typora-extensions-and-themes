@@ -1,9 +1,10 @@
 {
   "id": "typora.meeting-notes",
   "name": "Meeting Notes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Templates for meeting notes, weekly reports and a daily journal, plus action-item snippets.",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Writing", "Template", "Productivity"],
   "contributes": {
     "templates": "templates",
     "snippets": "snippets"

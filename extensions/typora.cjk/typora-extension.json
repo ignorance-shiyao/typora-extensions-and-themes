@@ -1,9 +1,10 @@
 {
   "id": "typora.cjk",
   "name": "CJK Typography",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pairs CJK brackets and quotes as you type, and adds spaces between CJK and Latin text (盘古之白).",
-  "author": "Typora samples",
+  "author": "Typora Team",
+  "tags": ["Writing"],
   "permissions": { "document": "write" },
   "contributes": {
     "inputRules": [

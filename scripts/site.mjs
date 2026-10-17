@@ -1,7 +1,7 @@
 // HTML for extensions.typora.io. Plain strings; everything user-supplied goes
 // through esc().
 
-import { DOCS_URL, REPO_URL } from "./lib.mjs";
+import { DOCS_URL, REPO_URL, TAGS } from "./lib.mjs";
 
 export const esc = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -65,7 +65,7 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ""}
 <body>
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="/"><img class="mark" src="${assets.icon}" width="28" height="28" alt=""><span>Typora <b>Extensions</b></span></a>
+    <a class="brand" href="/"><img class="mark" src="${assets.icon}" width="28" height="28" alt=""><span>Typora <span class="v2">2.0</span> <b>Extensions</b></span></a>
     <nav>
       <a href="${DOCS_URL}">Docs</a>
       <a href="${REPO_URL}">GitHub</a>
@@ -85,44 +85,50 @@ ${assets.js ? `<script src="${assets.js}" defer></script>` : ""}
 `;
 }
 
-function tierBadge(tier) {
-  const t = TIERS[tier];
-  return `<span class="badge tier tier-${tier.toLowerCase()}" title="${esc(t.explain)}">${esc(t.label)}</span>`;
-}
-
 function permissionBadges(p) {
   const keys = permissionKeys(p);
   if (!keys.length) return `<span class="badge perm perm-none">No permissions</span>`;
   return keys.map((k) => `<span class="badge perm">${esc(PERMISSION_BADGES[k])}</span>`).join("");
 }
 
+/** `?tag=` value of a tag: "Markdown Extension" → "markdown-extension". */
+export const tagSlug = (tag) => tag.toLowerCase().replace(/\s+/g, "-");
+
+// A picture that fails to load (say, WebP in an old Safari) leaves its gray panel.
+const ON_ERROR = `onerror="this.hidden=true"`;
+
+/** Card picture: the cover, else the screenshot cropped, else the name on a plain panel. */
+function cardMedia(entry) {
+  const src = entry.cover ?? entry.screenshot;
+  if (src) return `<div class="card-media"><img src="${esc(src)}" alt="" loading="lazy" decoding="async" ${ON_ERROR}></div>`;
+  return `<div class="card-media placeholder" aria-hidden="true"><span>${esc(entry.name)}</span></div>`;
+}
+
 export function homePage({ entries, assets, origin: siteOrigin }) {
   const cards = entries
     .map((e) => {
-      const search = [e.name, e.description, e.id, e.author, ...e.keywords].join(" ").toLowerCase();
-      const perms = permissionKeys(e.permissions);
-      return `<a class="card" href="/${esc(e.id)}/" data-search="${esc(search)}" data-tier="${e.tier}" data-perms="${esc(perms.join(" ") || "none")}">
-  <div class="card-head"><h2>${esc(e.name)}</h2>${tierBadge(e.tier)}</div>
-  <p class="card-desc">${esc(e.description)}</p>
-  <div class="card-foot"><span class="mono">${esc(e.id)}</span><span class="dot">·</span><span>v${esc(e.version)}</span></div>
-  <div class="badges">${permissionBadges(e.permissions)}</div>
+      const search = [e.name, e.description, e.id, e.author, ...e.keywords, ...e.tags].join(" ").toLowerCase();
+      return `<a class="card" href="/${esc(e.id)}/" data-search="${esc(search)}" data-tags="${esc(e.tags.map(tagSlug).join(" "))}">
+  ${cardMedia(e)}
+  <div class="card-body">
+    <div class="card-head"><h2>${esc(e.name)}</h2><span class="version">v${esc(e.version)}</span></div>
+    <p class="card-desc">${esc(e.description)}</p>
+    <div class="card-foot">${e.author ? `<span class="author">${esc(e.author)}</span>` : ""}<span class="pills">${e.tags.map((t) => `<span class="badge tag">${esc(t)}</span>`).join("")}${permissionBadges(e.permissions)}<span class="badge more" hidden>»</span></span></div>
+  </div>
 </a>`;
     })
     .join("\n");
+  const used = TAGS.filter((t) => entries.some((e) => e.tags.includes(t)));
   const body = `<section class="hero">
-  <h1>Extensions for Typora</h1>
+  <h1>Extensions for Typora <span class="v2">2.0</span></h1>
   <p class="lead">Diagrams, views, templates, file viewers and more. Install them in Typora from <strong>Settings ▸ Extensions</strong>.</p>
 </section>
 <section class="toolbar" aria-label="Search and filter">
   <input id="search" type="search" placeholder="Search extensions" autocomplete="off" spellcheck="false" aria-label="Search extensions">
-  <div class="filters" role="group" aria-label="Filter">
-    <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
-    <button type="button" class="chip" data-filter="L0" aria-pressed="false" title="${esc(TIERS.L0.explain)}">Data</button>
-    <button type="button" class="chip" data-filter="L1" aria-pressed="false" title="${esc(TIERS.L1.explain)}">Pages</button>
-    <button type="button" class="chip" data-filter="L2" aria-pressed="false" title="${esc(TIERS.L2.explain)}">Code</button>
-    <button type="button" class="chip" data-filter="none" aria-pressed="false" title="Needs no permissions">No permissions</button>
+  <div class="filters" role="group" aria-label="Tags">
+    <button type="button" class="chip" data-tag="" aria-pressed="true">All</button>
+${used.map((t) => `    <button type="button" class="chip" data-tag="${esc(tagSlug(t))}" aria-pressed="false">${esc(t)}</button>`).join("\n")}
   </div>
-  <p class="count" id="count" aria-live="polite">${entries.length} extension${entries.length === 1 ? "" : "s"}</p>
 </section>
 <section class="grid" id="grid">
 ${cards}
@@ -277,8 +283,10 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
       <h1>${esc(entry.name)}</h1>
       <p class="meta">${entry.author ? `by ${esc(entry.author)} · ` : ""}v${esc(entry.version)} · updated ${esc(formatDate(entry.updatedAt))}</p>
       <p class="lead">${esc(entry.description)}</p>
-      <div class="badges">${tierBadge(entry.tier)}${permissionBadges(entry.permissions)}${entry.keywords.map((k) => `<span class="badge kw">${esc(k)}</span>`).join("")}</div>
+      <div class="badges">${entry.tags.map((t) => `<a class="badge tag" href="/?tag=${esc(tagSlug(t))}">${esc(t)}</a>`).join("")}${permissionBadges(entry.permissions)}${entry.keywords.map((k) => `<span class="badge kw">${esc(k)}</span>`).join("")}</div>
     </header>
+
+    ${entry.screenshot ? `<div class="detail-media"><img src="${esc(entry.screenshot)}" alt="${esc(`${entry.name} in Typora`)}" ${ON_ERROR}></div>` : ""}
 
     <section>
       <h2>Permissions</h2>
@@ -310,6 +318,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
       <p class="small hash" title="SHA-256 of the .typora-extension file">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
     </div>
     <dl class="facts">
+      ${entry.author ? `<dt>Author</dt><dd>${esc(entry.author)}</dd>` : ""}
       <dt>ID</dt><dd><code>${esc(entry.id)}</code></dd>
       <dt>Version</dt><dd>${esc(entry.version)}</dd>
       ${entry.engines.typora ? `<dt>Requires</dt><dd>Typora ${esc(entry.engines.typora)}</dd>` : ""}
