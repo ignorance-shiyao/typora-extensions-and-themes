@@ -1,7 +1,7 @@
 // HTML for extensions.typora.io. Plain strings; everything user-supplied goes
 // through esc().
 
-import { CONFIG_ORIGIN, DOCS_URL, REPO_URL, TAGS } from "./lib.mjs";
+import { CONFIG_ORIGIN, DOCS_URL, OS_NAMES, REPO_URL, TAGS, platformLabel } from "./lib.mjs";
 
 export const esc = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -97,6 +97,12 @@ function permissionBadges(p) {
   return keys.map((k) => `<span class="badge perm">${esc(PERMISSION_BADGES[k])}</span>`).join("");
 }
 
+/** "macOS only" (etc.) for an extension limited by `os`; nothing when it runs everywhere. */
+function platformBadge(os) {
+  const label = platformLabel(os);
+  return label ? `<span class="badge platform" title="Runs on ${esc(os.map((o) => OS_NAMES[o]).join(", "))}">${esc(label)}</span>` : "";
+}
+
 /** `?tag=` value of a tag: "Markdown Extension" → "markdown-extension". */
 export const tagSlug = (tag) => tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -113,13 +119,13 @@ function cardMedia(entry) {
 export function homePage({ entries, assets, origin: siteOrigin }) {
   const cards = entries
     .map((e) => {
-      const search = [e.name, e.description, e.id, e.author, ...e.keywords, ...e.tags].join(" ").toLowerCase();
+      const search = [e.name, e.description, e.id, e.author, ...e.keywords, ...e.tags, platformLabel(e.os) ?? ""].join(" ").toLowerCase();
       return `<a class="card" href="/${esc(e.id)}/" data-search="${esc(search)}" data-tags="${esc(e.tags.map(tagSlug).join(" "))}">
   ${cardMedia(e)}
   <div class="card-body">
     <div class="card-head"><h2>${esc(e.name)}</h2><span class="version">v${esc(e.version)}</span></div>
     <p class="card-desc">${esc(e.description)}</p>
-    <div class="card-foot">${e.author ? `<span class="author">${esc(e.author)}</span>` : ""}<span class="pills">${e.tags.map((t) => `<span class="badge tag">${esc(t)}</span>`).join("")}${permissionBadges(e.permissions)}<span class="badge more" hidden>»</span></span></div>
+    <div class="card-foot">${e.author ? `<span class="author">${esc(e.author)}</span>` : ""}<span class="pills">${platformBadge(e.os)}${e.tags.map((t) => `<span class="badge tag">${esc(t)}</span>`).join("")}${permissionBadges(e.permissions)}<span class="badge more" hidden>»</span></span></div>
   </div>
 </a>`;
     })
@@ -182,6 +188,11 @@ export function contributionSummary(manifest, files) {
   if (Array.isArray(c.fileViewers) && c.fileViewers.length)
     add("File viewers", c.fileViewers.map((v) => `${esc(v.title ?? v.id)} (${plainNames((v.extensions ?? []).map((x) => `.${x}`))})${v.editable ? ", editable" : ""}`).join("<br>"));
   if (Array.isArray(c.detailViews) && c.detailViews.length) add("Detail views", plainNames(c.detailViews.map((v) => v.title ?? v.id)));
+  if (Array.isArray(c.imageUploaders) && c.imageUploaders.length)
+    add(
+      c.imageUploaders.length === 1 ? "Image uploader" : "Image uploaders",
+      `${plainNames(c.imageUploaders.map((u) => u.title ?? u.id))} — pick it in <em>Settings ▸ Image ▸ Image Uploader</em>`,
+    );
   if (Array.isArray(c.inlineRules) && c.inlineRules.length)
     add("Inline rules", plainNames(c.inlineRules.map((r) => r.index?.title ?? r.title?.replace(/\$\d/g, "…") ?? r.id)));
   if (Array.isArray(c.commands) && c.commands.length) add("Commands", plainNames(c.commands.map((cmd) => cmd.title ?? cmd.id)));
@@ -326,7 +337,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
       <h1>${esc(entry.name)}</h1>
       <p class="meta">${entry.author ? `by ${esc(entry.author)} · ` : ""}v${esc(entry.version)} · updated ${esc(formatDate(entry.updatedAt))}</p>
       <p class="lead">${esc(entry.description)}</p>
-      <div class="badges">${entry.tags.map((t) => `<a class="badge tag" href="/?tag=${esc(tagSlug(t))}">${esc(t)}</a>`).join("")}${permissionBadges(entry.permissions)}${entry.keywords.map((k) => `<span class="badge kw">${esc(k)}</span>`).join("")}</div>
+      <div class="badges">${platformBadge(entry.os)}${entry.tags.map((t) => `<a class="badge tag" href="/?tag=${esc(tagSlug(t))}">${esc(t)}</a>`).join("")}${permissionBadges(entry.permissions)}${entry.keywords.map((k) => `<span class="badge kw">${esc(k)}</span>`).join("")}</div>
     </header>
 
     ${entry.screenshot ? `<div class="detail-media"><img src="${esc(entry.screenshot)}" alt="${esc(`${entry.name} in Typora`)}" ${ON_ERROR}></div>` : ""}
@@ -362,6 +373,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
           </div>
         </details>
       </div>
+      ${platformLabel(entry.os) ? `<p class="small platform-note">Requires ${esc(entry.os.map((o) => OS_NAMES[o]).join(" or "))}. Typora on other platforms lists it as unavailable.</p>` : ""}
       <p class="small">Opens Typora, which asks before installing. Or in Typora, open <em>Settings ▸ Extensions</em> and search for <strong>${esc(entry.name)}</strong>.</p>
       <p class="small hash" title="SHA-256 of the .typora-extension file">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
     </div>
@@ -369,6 +381,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
       ${entry.author ? `<dt>Author</dt><dd>${esc(entry.author)}</dd>` : ""}
       <dt>ID</dt><dd><code>${esc(entry.id)}</code></dd>
       <dt>Version</dt><dd>${esc(entry.version)}</dd>
+      <dt>Platforms</dt><dd>${esc(platformLabel(entry.os) ? entry.os.map((o) => OS_NAMES[o]).join(", ") : "macOS, Windows, Linux")}</dd>
       ${entry.engines.typora ? `<dt>Requires</dt><dd>Typora ${esc(entry.engines.typora)}</dd>` : ""}
       <dt>Source</dt><dd><a href="${esc(entry.repository)}">GitHub</a></dd>
       <dt>Problems?</dt><dd><a href="${esc(`${REPO_URL}/issues/new?title=${encodeURIComponent(`${entry.id}: `)}`)}">Report an issue</a></dd>

@@ -15,8 +15,14 @@ not every line for escapes.
 - `name`, `version` (semver) and a one-sentence `description` are required;
   `author`, `tags` and `keywords` help people find it. `tags` are the
   store's filters: `Language Pack`, `Markdown Extension`, `Diagram`,
-  `Math`, `Theme`, `Writing`, `Template`, `AI`, `Media`, `Export / Share`,
-  `Productivity`, `File Viewer`, `View`, `Developer`.
+  `Math`, `Theme`, `Writing`, `Template`, `AI`, `Media`, `Image Uploader`,
+  `Export / Share`, `Productivity`, `File Viewer`, `View`, `Developer`.
+  Give image uploaders (`contributes.imageUploaders`) the `Image Uploader`
+  tag: Typora's *Settings ▸ Image* uploader menu links to that filter.
+- An extension that only works on some platforms lists them in `os`
+  (`["darwin"]`, `["darwin", "win32"]`; values `darwin`, `win32`,
+  `linux`). The store marks it *macOS only* and Typora elsewhere shows it as
+  unavailable. Leave `os` out when it runs everywhere.
 - Store images (not packaged), Typora showing the extension at work:
   - `cover.webp`: 800 × 400 (2:1), on the store card. Crop it from the
     screenshot without the window title bar.
@@ -28,7 +34,9 @@ not every line for escapes.
 - Bump `version` with every change to the folder. Published downloads are
   immutable; CI fails a PR that changes files without a bump. Store images
   alone are exempt.
-- A `README.md` in the folder is shown on the extension's store page.
+- A `README.md` in the folder is shown on the extension's store page. An
+  image uploader that drives a companion app (iPic, uPic, …) names the app,
+  links where to get it and says what the extension sends it.
 - Run `npm run validate` before pushing.
 
 ## Automated checks (every PR)

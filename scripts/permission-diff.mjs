@@ -17,6 +17,7 @@ import {
   extensionIds,
   git,
   normalizePermissions,
+  platformLabel,
   packageFiles,
   readManifest,
   tierOf,
@@ -89,7 +90,7 @@ for (const id of ids) {
   const headExists = extensionIds().includes(id);
   const baseText = show(`extensions/${id}/${MANIFEST}`);
   if (!headExists) {
-    rows.push({ id, status: "removed", version: "", perms: "", change: "", tier: "", review: "Confirm the removal" });
+    rows.push({ id, status: "removed", version: "", platforms: "", perms: "", change: "", tier: "", review: "Confirm the removal" });
     continue;
   }
   if (baseText !== null && !changed(id)) continue;
@@ -148,10 +149,13 @@ for (const id of ids) {
     else if (cmp < 0) problems.push(`${id}: version went down (${old.version} → ${head.version}).`);
   }
 
+  // Platforms (`os`) are informational: they don't widen what it may do.
+  const platforms = (os) => platformLabel(os) ?? "all";
   rows.push({
     id,
     status: old ? "updated" : "new",
     version: old ? `${old.version} → ${head.version}` : head.version,
+    platforms: old && platforms(old.os) !== platforms(head.os) ? `${platforms(old.os)} → ${platforms(head.os)}` : platforms(head.os),
     perms: describe(headPerms),
     change: old
       ? [added.length && `➕ ${added.join(", ")}`, removed.length && `➖ ${removed.join(", ")}`].filter(Boolean).join("<br>") ||
@@ -165,10 +169,10 @@ for (const id of ids) {
 let md = `## Extension changes vs \`${base}\`\n\n`;
 if (!rows.length) md += "No extension changed.\n";
 else {
-  md += "| Extension | Status | Version | Tier | Permissions | Permission change | Review |\n";
-  md += "| --- | --- | --- | --- | --- | --- | --- |\n";
+  md += "| Extension | Status | Version | Platforms | Tier | Permissions | Permission change | Review |\n";
+  md += "| --- | --- | --- | --- | --- | --- | --- | --- |\n";
   for (const r of rows)
-    md += `| \`${r.id}\` | ${r.status} | ${r.version} | ${r.tier} | ${r.perms} | ${r.change} | ${r.review} |\n`;
+    md += `| \`${r.id}\` | ${r.status} | ${r.version} | ${r.platforms} | ${r.tier} | ${r.perms} | ${r.change} | ${r.review} |\n`;
 }
 if (problems.length) md += `\n### Problems\n\n${problems.map((p) => `- ${p}`).join("\n")}\n`;
 

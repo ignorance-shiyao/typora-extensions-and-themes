@@ -1,0 +1,22 @@
+{
+  "id": "typora.ipic",
+  "name": "iPic",
+  "version": "1.0.0",
+  "description": "Upload images to Imgur, Flickr, S3, Qiniu, UpYun and other image hosts with iPic, the macOS image-hosting app.",
+  "author": "Typora Team",
+  "os": ["darwin"],
+  "tags": ["Image Uploader"],
+  "keywords": ["ipic", "image upload", "image hosting", "imgur", "flickr", "s3", "qiniu", "upyun", "macos"],
+  "permissions": { "process": ["osascript"] },
+  "contributes": {
+    "imageUploaders": [
+      {
+        "id": "ipic",
+        "title": "iPic",
+        "description": "Uploads with the image hosts set up in iPic.",
+        "url": "https://apps.apple.com/app/id1101244278"
+      }
+    ]
+  },
+  "main": "main.js"
+}

@@ -60,6 +60,7 @@ export const CONTRIBUTION_KEYS = [
   "menus",
   "inputRules",
   "configuration",
+  "imageUploaders",
 ];
 
 const MANIFEST_KEYS = new Set([
@@ -76,6 +77,7 @@ const MANIFEST_KEYS = new Set([
   "l10n",
   "permissions",
   "binaries",
+  "os",
   "contributes",
   "main",
   "background",
@@ -101,7 +103,21 @@ export function extensionIds() {
 }
 
 /** Store tags, in the order the website lists them. */
-export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Export / Share", "Productivity", "File Viewer", "View", "Developer"];
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export / Share", "Productivity", "File Viewer", "View", "Developer"];
+
+/** Values of the manifest's `os`, and how the store names them. */
+export const OS_NAMES = { darwin: "macOS", win32: "Windows", linux: "Linux" };
+
+/** Local ids inside `contributes` (same rule as manifest.ts). */
+const LOCAL_ID = /^[A-Za-z0-9._-]{1,64}$/;
+
+/** "macOS only", "macOS and Windows", or null for every platform (no `os`). */
+export function platformLabel(os) {
+  if (!Array.isArray(os) || !os.length) return null;
+  const names = Object.keys(OS_NAMES).filter((key) => os.includes(key)).map((key) => OS_NAMES[key]);
+  if (!names.length || names.length === Object.keys(OS_NAMES).length) return null;
+  return names.length === 1 ? `${names[0]} only` : names.join(" and ");
+}
 
 /**
  * Store images in the extension folder, shown on the website only and not
@@ -204,6 +220,14 @@ export function checkManifest(raw, dir, folderId) {
     if (!Array.isArray(raw.tags)) errors.push(`tags must be an array of: ${TAGS.join(", ")}.`);
     else for (const tag of raw.tags) if (!TAGS.includes(tag)) errors.push(`Unknown tag "${tag}" (use ${TAGS.join(", ")}).`);
   } else warnings.push("tags is empty; the store filters by them.");
+  if (raw.os !== undefined) {
+    const known = Object.keys(OS_NAMES);
+    if (!Array.isArray(raw.os) || !raw.os.length) errors.push(`os must be a non-empty array of: ${known.join(", ")}.`);
+    else {
+      for (const value of raw.os) if (!known.includes(value)) errors.push(`Unknown os "${value}" (use ${known.join(", ")}).`);
+      if (new Set(raw.os).size !== raw.os.length) errors.push("os lists a platform twice.");
+    }
+  }
 
   const exists = (rel) => existsSync(join(dir, rel));
   const isDir = (rel) => exists(rel) && statSync(join(dir, rel)).isDirectory();
@@ -324,6 +348,18 @@ export function checkManifest(raw, dir, folderId) {
       if (v.entry !== undefined) needFile(v.entry, `${where}.entry`);
       needSymbol(v.sfSymbol, `${where}.sfSymbol`);
       if (v.provider === "main" && raw.main === undefined) errors.push(`${where} uses provider: "main" but there is no main.`);
+    });
+    const uploaderIds = new Set();
+    arr("imageUploaders").forEach((u, i) => {
+      const where = `contributes.imageUploaders[${i}]`;
+      if (!isObject(u)) return errors.push(`${where} must be an object.`);
+      if (typeof u.id !== "string" || !LOCAL_ID.test(u.id)) errors.push(`${where}.id must be letters, digits, ".", "_" or "-" (at most 64).`);
+      else if (uploaderIds.has(u.id)) errors.push(`${where}: id ${u.id} appears twice.`);
+      else uploaderIds.add(u.id);
+      if (!nonEmpty(u.title)) errors.push(`${where} needs a title (shown in Settings ▸ Image).`);
+      if (u.description !== undefined && typeof u.description !== "string") errors.push(`${where}.description must be a string.`);
+      if (u.url !== undefined && !(typeof u.url === "string" && /^https:\/\/\S+$/.test(u.url))) errors.push(`${where}.url must be an https:// link.`);
+      if (raw.main === undefined) errors.push(`${where} needs main (typora.images.registerUploader).`);
     });
     arr("fileViewers").forEach((v, i) => {
       const where = `contributes.fileViewers[${i}]`;

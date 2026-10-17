@@ -209,6 +209,7 @@ h3 { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
 }
 .badge.perm { border: 1px solid var(--border-strong); background: transparent; }
 .badge.perm-none { border-style: dashed; color: var(--muted-fg); }
+.badge.platform { background: var(--info-muted); color: var(--info); }
 a.badge.tag { text-decoration: none; background: var(--primary); color: var(--primary-fg); }
 a.badge.tag:hover { background: var(--primary-hover); }
 .badge.kw { background: transparent; color: var(--muted-fg); padding: 0 2px; }
@@ -246,6 +247,7 @@ a.badge.tag:hover { background: var(--primary-hover); }
 .detail-side { position: sticky; top: calc(var(--nav-height) + 24px); display: flex; flex-direction: column; gap: 20px; }
 .install { border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 18px 20px; }
 .install h2 { font-size: 1rem; margin-bottom: 12px; }
+.install .platform-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--info-muted); color: var(--info); }
 .button {
   display: flex;
   align-items: center;

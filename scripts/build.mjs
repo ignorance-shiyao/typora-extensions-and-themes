@@ -17,6 +17,7 @@ import {
   CONTRIBUTION_KEYS,
   EXTENSIONS_DIR,
   REPO_URL,
+  OS_NAMES,
   ROOT,
   SITE_ORIGIN,
   checkManifest,
@@ -117,6 +118,10 @@ for (const id of extensionIds()) {
     repository: `${REPO_URL}/tree/main/extensions/${id}`,
     keywords: Array.isArray(manifest.keywords) ? manifest.keywords.filter((k) => typeof k === "string") : [],
     tags: TAGS.filter((t) => Array.isArray(manifest.tags) && manifest.tags.includes(t)),
+    // Platforms it runs on; absent means all of them.
+    ...(Array.isArray(manifest.os) && manifest.os.length
+      ? { os: Object.keys(OS_NAMES).filter((key) => manifest.os.includes(key)) }
+      : {}),
     ...images,
     engines: manifest.engines && typeof manifest.engines === "object" ? manifest.engines : {},
     permissions: manifest.permissions && typeof manifest.permissions === "object" ? manifest.permissions : {},
