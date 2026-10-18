@@ -12,12 +12,14 @@ import {
   MAX_DICTIONARY_FILE_BYTES,
   MAX_FILE_BYTES,
   MAX_LANGUAGE_PACK_BYTES,
+  MAX_MATH_FONT_FILE_BYTES,
   MAX_PACKAGE_BYTES,
   STORE_IMAGE_PATTERN,
   STORE_IMAGE_RATIOS,
   STORE_IMAGE_WARN_BYTES,
   checkManifest,
   dictionaryFiles,
+  mathFontFolders,
   extensionIds,
   hiddenFiles,
   imageSize,
@@ -65,6 +67,8 @@ function validate(id) {
     /* reported below */
   }
   const dictionaries = dictionaryFiles(manifestJson);
+  const fontFolders = mathFontFolders(manifestJson);
+  const inFontFolder = (path) => fontFolders.some((folder) => path.startsWith(`${folder}/`));
   let total = 0;
   for (const path of walkAll(dir)) {
     const stat = lstatSync(join(dir, path));
@@ -83,7 +87,11 @@ function validate(id) {
       if (stat.size > STORE_IMAGE_WARN_BYTES)
         warnings.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB; compress it (lossless WebP for screenshots) to stay under ${STORE_IMAGE_WARN_BYTES / 1024} KB.`);
     } else total += stat.size;
-    const limit = dictionaries.has(path) ? MAX_DICTIONARY_FILE_BYTES : MAX_FILE_BYTES;
+    const limit = dictionaries.has(path)
+      ? MAX_DICTIONARY_FILE_BYTES
+      : inFontFolder(path)
+        ? MAX_MATH_FONT_FILE_BYTES
+        : MAX_FILE_BYTES;
     if (stat.size > limit)
       errors.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB (limit ${limit / 1024} KB).`);
 
@@ -105,10 +113,11 @@ function validate(id) {
       }
     });
     const longest = lines.reduce((n, l) => Math.max(n, l.length), 0);
-    if (longest > MINIFIED_LINE)
+    // MathJax's font data is generated, one long line per table.
+    if (longest > MINIFIED_LINE && !inFontFolder(path))
       warnings.push(`${path} has a ${longest}-character line; minified or generated sources are not accepted (§8.6).`);
   }
-  const packageLimit = dictionaries.size ? MAX_LANGUAGE_PACK_BYTES : MAX_PACKAGE_BYTES;
+  const packageLimit = dictionaries.size || fontFolders.length ? MAX_LANGUAGE_PACK_BYTES : MAX_PACKAGE_BYTES;
   if (total > packageLimit)
     errors.push(`The package is ${(total / 1024 / 1024).toFixed(1)} MB (limit ${packageLimit / 1024 / 1024} MB).`);
   for (const path of hiddenFiles(dir)) warnings.push(`${path} is hidden and will not be packaged.`);

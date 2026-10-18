@@ -45,6 +45,9 @@ not every line for escapes.
   every referenced file (`main`, `background`, entries, templates,
   snippets) exists.
 - Files: no symbolic links, at most 1 MB per file and 5 MB per extension.
+  Language packs (dictionaries) and MathJax fonts (`contributes.mathjax.fonts`
+  folders, copied unchanged from `@mathjax/mathjax-<name>-font`) may be larger:
+  32 MB per dictionary, 8 MB per font file, 128 MB per extension.
 - Vendored libraries (like xterm.js) are taken unchanged from their
   published package and named with their version in the README; their
   minified-line warning is expected.

@@ -205,6 +205,13 @@ export function contributionSummary(manifest, files) {
   }
   if (c.texMacros && typeof c.texMacros === "object")
     add("TeX macros", listNames(Object.keys(c.texMacros).map((m) => `\\${m.replace(/^\\/, "")}`)));
+  if (Array.isArray(c.mathjax?.fonts) && c.mathjax.fonts.length)
+    add(
+      c.mathjax.fonts.length === 1 ? "Math font" : "Math fonts",
+      `${plainNames(c.mathjax.fonts.map((f) => f.name ?? f.id))} — pick it in <em>Settings ▸ Markdown ▸ Math ▸ Math Font</em>`,
+    );
+  if (Array.isArray(c.mathjax?.packages) && c.mathjax.packages.length)
+    add("TeX packages", listNames(c.mathjax.packages.map((p) => p.id)));
   if (c.templates) add("Templates", plainNames(folderNames(c.templates)) || "A templates folder");
   if (c.snippets) add("Snippets", plainNames(folderNames(c.snippets)) || "A snippets folder");
   if (Array.isArray(c.customFormats) && c.customFormats.length) add("Custom formats", plainNames(c.customFormats.map((f) => f.name)));
