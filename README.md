@@ -93,7 +93,6 @@ with `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` set.
 | `typora.tasks` | L0 rule-based detail views over Iteration (open tasks, TODO notes, links) | typora_plugin TODO / right outline |
 | `typora.math-pack` | L0 TeX macros and snippets | V1 users' MathJax macro requests |
 | `typora.meeting-notes` | L0 templates and snippets | typora-issues#863 |
-| `typora.cjk` | L0 input rules (CJK pairs) + L2 `main` command and formatter (CJK/Latin spacing) | typora_plugin cjk_symbol_pairing, md_padding |
 | `typora.chart` | L1 static fence renderer (` ```chart `) | typora_plugin chart / echarts |
 | `typora.diagrams` | L1 static fence renderer with vendored libraries and WebAssembly: Graphviz, erd, Vega, Vega-Lite, WaveDrom, nomnoml, BPMN, offline | typora-issues#1138 |
 | `typora.plantuml` | L1 static fence renderer that runs a local program (`plantuml`, or `java -jar plantuml.jar`, kept running in pipe mode) or calls Kroki; options form with `enumLabels` / `when` / `format: "file"`; `process` list + network | typora-issues#1138 |
