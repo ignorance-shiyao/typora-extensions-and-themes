@@ -86,6 +86,7 @@ export const CONTRIBUTION_KEYS = [
   "inputRules",
   "configuration",
   "imageUploaders",
+  "syncProviders",
 ];
 
 const MANIFEST_KEYS = new Set([
@@ -406,6 +407,15 @@ export function checkManifest(raw, dir, folderId) {
       if (v.entry !== undefined) needFile(v.entry, `${where}.entry`);
       needSymbol(v.sfSymbol, `${where}.sfSymbol`);
       if (v.provider === "main" && raw.main === undefined) errors.push(`${where} uses provider: "main" but there is no main.`);
+    });
+    const syncIds = new Set();
+    arr("syncProviders").forEach((provider, i) => {
+      const where = `contributes.syncProviders[${i}]`;
+      if (!isObject(provider)) return errors.push(`${where} must be an object.`);
+      if (typeof provider.id !== "string" || !LOCAL_ID.test(provider.id) || syncIds.has(provider.id)) errors.push(`${where} needs a unique local id.`);
+      syncIds.add(provider.id);
+      for (const key of ["title", "scope", "authorizeUrl", "tokenUrl"]) if (!nonEmpty(provider[key])) errors.push(`${where} needs ${key}.`);
+      if (raw.main === undefined) errors.push(`${where} needs main (typora.sync.registerProvider).`);
     });
     const uploaderIds = new Set();
     arr("imageUploaders").forEach((u, i) => {

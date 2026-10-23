@@ -1,0 +1,23 @@
+{
+  "id": "typora.sync-dropbox",
+  "name": "Dropbox Sync",
+  "version": "1.0.0",
+  "description": "Sync folders with Dropbox using Typora's per-file sync engine.",
+  "author": "Typora Team",
+  "main": "main.js",
+  "permissions": {
+    "network": ["https://api.dropboxapi.com", "https://content.dropboxapi.com"]
+  },
+  "contributes": {
+    "syncProviders": [
+      {
+        "id": "dropbox",
+        "title": "Dropbox",
+        "authorizeUrl": "https://www.dropbox.com/oauth2/authorize",
+        "tokenUrl": "https://api.dropboxapi.com/oauth2/token",
+        "scope": "files.metadata.read files.content.read files.content.write account_info.read",
+        "extra": { "token_access_type": "offline" }
+      }
+    ]
+  }
+}

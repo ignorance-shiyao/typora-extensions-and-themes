@@ -1,0 +1,21 @@
+{
+  "id": "typora.sync-google-drive",
+  "name": "Google Drive Sync",
+  "version": "1.0.0",
+  "description": "Sync folders with Google Drive using Typora's per-file sync engine.",
+  "author": "Typora Team",
+  "main": "main.js",
+  "permissions": { "network": ["https://www.googleapis.com"] },
+  "contributes": {
+    "syncProviders": [
+      {
+        "id": "google-drive",
+        "title": "Google Drive",
+        "authorizeUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+        "tokenUrl": "https://oauth2.googleapis.com/token",
+        "scope": "https://www.googleapis.com/auth/drive",
+        "extra": { "access_type": "offline", "prompt": "consent" }
+      }
+    ]
+  }
+}
