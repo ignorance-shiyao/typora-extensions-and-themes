@@ -45,3 +45,10 @@ test("Google Drive rejects upload acknowledgements paired with a newer version",
   assert.equal(result.error.status, 412);
   assert.equal(calls.find(c => c.options.method === "PATCH").options.headers["If-Match"], "old");
 });
+
+test("Dropbox exposes its account root without calling get_metadata with an empty path", async () => {
+  const run = load("dropbox", async () => {throw Error("unexpected metadata call");});
+  const result = await run({op: "stat", root: "", path: "", accessToken: "token"});
+  assert.equal(result.directory, true);
+  assert.equal(result.path, "");
+});

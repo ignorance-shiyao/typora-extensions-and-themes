@@ -64,6 +64,7 @@ typora.sync.registerProvider("dropbox", async (request) => {
       return user.account_id + ":" + folder.id;
     }
     if (op === "stat") {
+      if (!target) return {path, id: "root", directory: true, version: ""};
       const file = await metadata();
       return (
         file && {
