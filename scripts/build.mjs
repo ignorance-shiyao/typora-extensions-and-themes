@@ -117,6 +117,7 @@ for (const id of extensionIds()) {
     author: typeof manifest.author === "string" ? manifest.author : "",
     repository: `${REPO_URL}/tree/main/extensions/${id}`,
     keywords: Array.isArray(manifest.keywords) ? manifest.keywords.filter((k) => typeof k === "string") : [],
+    ...(manifest.unlisted === true ? { unlisted: true } : {}),
     tags: TAGS.filter((t) => Array.isArray(manifest.tags) && manifest.tags.includes(t)),
     // Platforms it runs on; absent means all of them.
     ...(Array.isArray(manifest.os) && manifest.os.length
@@ -160,10 +161,11 @@ write("index.html", homePage({ entries: byName, assets, origin }));
 for (const page of pages) write(`${page.entry.id}/index.html`, extensionPage({ ...page, assets, origin }));
 write("404.html", notFoundPage({ assets, origin }));
 write("robots.txt", `User-agent: *\nAllow: /\nDisallow: /download/\n\nSitemap: ${origin}/sitemap.xml\n`);
-const latest = entries.map((e) => e.updatedAt).sort().at(-1) ?? isoSeconds(now);
+const listedEntries = entries.filter((e) => e.unlisted !== true);
+const latest = listedEntries.map((e) => e.updatedAt).sort().at(-1) ?? isoSeconds(now);
 const urls = [
   { loc: `${origin}/`, lastmod: latest },
-  ...entries.map((e) => ({ loc: e.page, lastmod: e.updatedAt })),
+  ...listedEntries.map((e) => ({ loc: e.page, lastmod: e.updatedAt })),
 ];
 write(
   "sitemap.xml",

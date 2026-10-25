@@ -53,7 +53,7 @@ export function permissionSentences(p, settings = {}) {
   return out;
 }
 
-function layout({ title, description, canonical, assets, body, origin: siteOrigin }) {
+function layout({ title, description, canonical, assets, body, origin: siteOrigin, noindex = false }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -64,6 +64,7 @@ function layout({ title, description, canonical, assets, body, origin: siteOrigi
 ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ""}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
+${noindex ? '<meta name="robots" content="noindex">' : ""}
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="${assets.favicon}" type="image/png">
 <link rel="stylesheet" href="${assets.css}">
@@ -117,6 +118,7 @@ function cardMedia(entry) {
 }
 
 export function homePage({ entries, assets, origin: siteOrigin }) {
+  entries = entries.filter((e) => e.unlisted !== true);
   const cards = entries
     .map((e) => {
       const search = [e.name, e.description, e.id, e.author, ...e.keywords, ...e.tags, platformLabel(e.os) ?? ""].join(" ").toLowerCase();
@@ -130,7 +132,7 @@ export function homePage({ entries, assets, origin: siteOrigin }) {
 </a>`;
     })
     .join("\n");
-  const used = TAGS.filter((t) => entries.some((e) => e.tags.includes(t)));
+  const used = TAGS.filter((t) => t === "Data Sync" || entries.some((e) => e.tags.includes(t)));
   const body = `<section class="hero">
   <h1>Extensions for Typora <span class="v2">2.0</span></h1>
   <p class="lead">Diagrams, views, templates, file viewers and more. Install them in Typora from <strong>Settings ▸ Extensions</strong>.</p>
@@ -381,7 +383,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
         </details>
       </div>
       ${platformLabel(entry.os) ? `<p class="small platform-note">Requires ${esc(entry.os.map((o) => OS_NAMES[o]).join(" or "))}. Typora on other platforms lists it as unavailable.</p>` : ""}
-      <p class="small">Opens Typora, which asks before installing. Or in Typora, open <em>Settings ▸ Extensions</em> and search for <strong>${esc(entry.name)}</strong>.</p>
+      <p class="small">Opens Typora, which asks before installing.${manifest.unlisted === true ? "" : ` Or in Typora, open <em>Settings ▸ Extensions</em> and search for <strong>${esc(entry.name)}</strong>.`}</p>
       <p class="small hash" title="SHA-256 of the .typora-extension file">SHA-256 <code>${esc(entry.download.sha256)}</code></p>
     </div>
     <dl class="facts">
@@ -399,6 +401,7 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
     title: `${entry.name} · Typora Extensions`,
     description: entry.description || `${entry.name}, an extension for Typora.`,
     canonical: entry.page,
+    noindex: manifest.unlisted === true,
     assets,
     body,
     origin: siteOrigin,

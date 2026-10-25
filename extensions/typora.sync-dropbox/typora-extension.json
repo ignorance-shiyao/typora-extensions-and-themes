@@ -1,7 +1,9 @@
 {
   "id": "typora.sync-dropbox",
   "name": "Dropbox Sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "tags": ["Data Sync"],
+  "unlisted": true,
   "description": "Sync folders with Dropbox using Typora's per-file sync engine.",
   "author": "Typora Team",
   "main": "main.js",

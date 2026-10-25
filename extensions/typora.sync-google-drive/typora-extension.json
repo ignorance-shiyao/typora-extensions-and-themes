@@ -1,7 +1,9 @@
 {
   "id": "typora.sync-google-drive",
   "name": "Google Drive Sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "tags": ["Data Sync"],
+  "unlisted": true,
   "description": "Sync folders with Google Drive using Typora's per-file sync engine.",
   "author": "Typora Team",
   "main": "main.js",

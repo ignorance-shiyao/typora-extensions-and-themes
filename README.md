@@ -47,6 +47,13 @@ Each catalog entry has a tier: **L0** (data only), **L1** (ships HTML
 pages), **L2** (has `main` / `background` code). An entry with `os`
 (`["darwin"]`) runs only on those platforms; without it, on all of them.
 
+An entry with `unlisted: true` remains in `index.json` for direct-link
+installation but is excluded from homepage cards, website and app search,
+and the sitemap. Its direct page and downloads still work; the page carries
+`noindex`. In `typora-extension.json`, omit this optional boolean or set it
+to `false` for public listing. This controls discovery, not access. See
+[CONTRIBUTING.md](./CONTRIBUTING.md) for publishing requirements.
+
 ## Adding or updating an extension
 
 1. Fork this repository and add `extensions/<your.id>/` (the folder name

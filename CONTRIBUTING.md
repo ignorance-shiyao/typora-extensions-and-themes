@@ -16,9 +16,16 @@ not every line for escapes.
   `author`, `tags` and `keywords` help people find it. `tags` are the
   store's filters: `Language Pack`, `Markdown Extension`, `Diagram`,
   `Math`, `Theme`, `Writing`, `Template`, `AI`, `Media`, `Image Uploader`,
-  `Export / Share`, `Productivity`, `File Viewer`, `View`, `Developer`.
+  `Export / Share`, `Data Sync`, `Productivity`, `File Viewer`, `View`, `Developer`.
   Give image uploaders (`contributes.imageUploaders`) the `Image Uploader`
   tag: Typora's *Settings ▸ Image* uploader menu links to that filter.
+- For an extension still in development, set `"unlisted": true` in
+  `typora-extension.json`. It is omitted from homepage cards, website and app
+  search results, and the sitemap; its detail page requests `noindex`. Its
+  direct URL and downloads still work. Omit the key or set it to `false` to
+  list it publicly. The JSON catalog retains the record for direct-link
+  installation, so this is discoverability control, not access control.
+  Give sync providers the `Data Sync` tag.
 - An extension that only works on some platforms lists them in `os`
   (`["darwin"]`, `["darwin", "win32"]`; values `darwin`, `win32`,
   `linux`). The store marks it *macOS only* and Typora elsewhere shows it as

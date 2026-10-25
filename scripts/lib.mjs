@@ -100,6 +100,7 @@ const MANIFEST_KEYS = new Set([
   "repository",
   "keywords",
   "tags",
+  "unlisted",
   "l10n",
   "permissions",
   "binaries",
@@ -129,7 +130,7 @@ export function extensionIds() {
 }
 
 /** Store tags, in the order the website lists them. */
-export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export / Share", "Productivity", "File Viewer", "View", "Developer"];
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export / Share", "Data Sync", "Productivity", "File Viewer", "View", "Developer"];
 
 /** Values of the manifest's `os`, and how the store names them. */
 export const OS_NAMES = { darwin: "macOS", win32: "Windows", linux: "Linux" };
@@ -242,6 +243,8 @@ export function checkManifest(raw, dir, folderId) {
     errors.push('engines must look like { "typora": ">=2.0.0" }.');
   if (raw.keywords !== undefined && !(Array.isArray(raw.keywords) && raw.keywords.every(nonEmpty)))
     errors.push("keywords must be an array of strings.");
+  if (raw.unlisted !== undefined && typeof raw.unlisted !== "boolean")
+    errors.push("unlisted must be a boolean.");
   if (raw.tags !== undefined) {
     if (!Array.isArray(raw.tags)) errors.push(`tags must be an array of: ${TAGS.join(", ")}.`);
     else for (const tag of raw.tags) if (!TAGS.includes(tag)) errors.push(`Unknown tag "${tag}" (use ${TAGS.join(", ")}).`);
