@@ -43,7 +43,7 @@ These front matter keys are read:
 | `status` | `draft`, `pending`, `private` or `publish`; overrides the option. |
 | `date` | `2026-10-17` or `2026-10-17 09:30`, in the site's time zone. |
 | `featured_image` (or `cover`, `image`) | A local image to upload and set as the featured image. |
-| `wordpress_id`, `wordpress_url` | Written after the first publish, so the next one updates the same post. Delete them to publish a new post. |
+| `wordpress_id`, `wordpress_url` | Legacy bindings adopted for the same site. New bindings are kept in ExtensionData. |
 
 Publishing a post publicly, or updating one that is live, asks first.
 Updating keeps a post's status unless the front matter sets one.
@@ -61,15 +61,12 @@ files on your computer.
   their contents, so publishing again, or another post using the same file,
   reuses them; a changed file is uploaded again.
 - Images on the web stay as they are.
-- An image that can't be read or uploaded keeps its local address in the
-  post, and the final message names it. A user whose role can't upload
-  media (contributors) still gets the post, without the images.
+- An image that cannot be read or uploaded stops publication before the article is written. Successfully uploaded media may remain in the Media Library.
 - The front matter's `featured_image` (or `cover`, or `image`) becomes the
   post's featured image when it is a local image. Use the same file in the
   document, as Typora only reads images the document shows.
 
-Turn off *Upload local images* in the options to leave local images out;
-the final message then says how many weren't uploaded.
+With *Upload local images* off, documents containing local images cannot be published; use hosted URLs first.
 
 Math is kept as `$…$` / `$$…$$` text for a math plugin such as KaTeX or
 MathJax to draw. Task lists become ☐ / ☑ items, and `==highlight==`,
@@ -79,10 +76,8 @@ MathJax to draw. Task lists become ☐ / ☑ items, and `==highlight==`,
 
 - `network: {config.siteUrl}` — only the site you enter in the options, and
   nothing until you do. The copy commands never use the network.
-- `document: "write"` — reads the document to convert it (and the local
-  images it shows, to upload them), and adds
-  `wordpress_id` / `wordpress_url` to its front matter after publishing (one
-  undoable edit).
+- `document: "read"` — reads Markdown and referenced local images for conversion
+  and upload. Publication records are stored separately.
 - `clipboard` — the two copy commands.
 
 The Application Password is kept in the extension's private storage in
@@ -96,3 +91,27 @@ it in WordPress at any time.
 `vendor/marked.esm.js` is [marked](https://github.com/markedjs/marked)
 16.4.2 unchanged from npm (`marked/lib/marked.esm.js`), MIT license in
 `vendor/LICENSE-marked.md`.
+
+## Publish protocol v1 (1.1)
+
+Adapter key: `typora.wordpress:wordpress`. Copy commands remain Export
+features; publication is contributed separately under Publish. The CLI uses
+the same adapter, including media upload and comment reads:
+
+```sh
+typora publish ./posts --to typora.wordpress:wordpress --dry-run
+typora publish ./posts --to typora.wordpress:wordpress
+typora publish status article.md --to typora.wordpress:wordpress --refresh --comments --json
+```
+
+Sign in once using **Publish to WordPress…** before CLI use. The CLI requires
+a running Typora and reads saved files. The Publish command uses live editor
+content. New bindings no longer modify front matter; back up ExtensionData.
+Use a unique `publish_id` before first publication to retain identity across
+moves, or use `--bind <post-id>` to associate a moved/existing article.
+Remote conflicts, missing posts and uncertain write outcomes are reported
+without silently creating another article.
+
+Comment retrieval currently returns the first 100 comments and explicitly
+marks a full page as potentially truncated. Core WordPress does not provide view
+statistics; this adapter advertises no metrics capability.

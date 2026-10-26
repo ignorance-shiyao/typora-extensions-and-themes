@@ -1,14 +1,25 @@
 // WordPress — `main`: copy the document as block-editor markup or classic
 // HTML, and publish it as a post through the WordPress REST API.
-import { isLocalImage, leadingTitle, localImages, parseFrontMatter, setFrontMatterKeys, toBlocks, toClassicHtml } from "./convert.js";
+import { adapter } from "./adapter.js";
+import { leadingTitle, parseFrontMatter, toBlocks, toClassicHtml } from "./convert.js";
 
 const STATUS_WORDS = { draft: "Draft saved", pending: "Submitted for review", private: "Saved as private", publish: "Published", future: "Scheduled" };
 
 export function activate(ctx) {
   ctx.subscriptions.push(
+    typora.publish.registerAdapter("wordpress", adapter),
     typora.commands.register("copyBlocks", () => copy("blocks").catch(report)),
     typora.commands.register("copyClassic", () => copy("classic").catch(report)),
-    typora.commands.register("publish", () => publish().catch(report)),
+    typora.commands.register("publish", async () => {
+      const base = siteBase();
+      if (!base) return typora.ui.toast("Set your WordPress site first.");
+      if (!await signIn(base, new URL(base).host)) return;
+      if (!await typora.ui.confirm("Publish this document to WordPress?")) return;
+      try {
+        const result = await typora.publish.current("wordpress");
+        await typora.ui.toast(result.error || `${result.action || result.sync}: ${result.remote?.url || result.remote?.editUrl || ""}`);
+      } catch (error) { report(error); }
+    }),
     typora.commands.register("signOut", signOut),
   );
 }
@@ -247,118 +258,5 @@ async function uploadImages(client, base, sources, notes) {
 /** The front matter's featured image source, if any. */
 const featuredSource = (meta) => [meta.featured_image, meta.cover, meta.image].find((v) => typeof v === "string" && v.trim())?.trim() ?? null;
 
-// ── Publish ────────────────────────────────────────────────────────────
 
-async function publish() {
-  const base = siteBase();
-  if (!base) {
-    await typora.ui.toast("Set your site in Settings ▸ Extensions ▸ WordPress ▸ Options first.");
-    return;
-  }
-  const host = new URL(base).host;
-  const markdown = await typora.editor.getMarkdown();
-  const info = await typora.document.info();
-  const settings = typora.settings.get();
-  const meta = parseFrontMatter(markdown).data;
-  const { title, drop: dropTitle } = titleOf(markdown, info);
-
-  const auth = await signIn(base, host);
-  if (!auth) return;
-  const client = createClient(base, auth);
-
-  // An earlier publish to this site: update that post.
-  let existing = null;
-  const sameSite = meta.wordpress_url && safeHost(meta.wordpress_url) === host;
-  if (Number.isInteger(meta.wordpress_id) && sameSite) {
-    try {
-      existing = await client.request("GET", `/posts/${meta.wordpress_id}`, { query: { context: "edit" } });
-    } catch (error) {
-      if (error.status === 401 || error.status === 403) return refused(base, error);
-      if (error.status !== 404 && error.status !== 410) throw error;
-      if (!(await typora.ui.confirm(`Post ${meta.wordpress_id} is gone from ${host}. Publish this as a new post?`))) return;
-    }
-  }
-
-  const status = ["draft", "pending", "private", "publish"].includes(meta.status) ? meta.status : existing ? null : settings.status;
-  const live = (existing?.status === "publish" && status !== "draft") || (!existing && status === "publish");
-  if (live && !(await typora.ui.confirm(existing ? `“${title}” is live on ${host}. Update it?` : `Publish “${title}” publicly on ${host}?`))) return;
-
-  const notes = [];
-  // Local images: to the Media Library, unless turned off or Typora can't read them.
-  const local = localImages(markdown);
-  const featured = featuredSource(meta);
-  const canUpload = typeof typora.document.readImage === "function";
-  let uploads = new Map();
-  if (settings.uploadImages !== false && canUpload) {
-    const sources = [...new Set([...local, ...(featured && isLocalImage(featured) ? [featured] : [])])];
-    try {
-      uploads = await uploadImages(client, base, sources, notes);
-    } catch (error) {
-      if (error.status === 401) return refused(base, error);
-      throw error;
-    }
-  } else if (local.length) {
-    const why = canUpload ? "upload them to the site first, or turn on “Upload local images”" : "this version of Typora can't upload them";
-    notes.push(`${plural(local.length, "local image")} ${local.length === 1 ? "wasn't" : "weren't"} uploaded; ${why}.`);
-  }
-  const post = { title, content: toBlocks(markdown, { dropTitle, images: uploads }) };
-  if (featured) {
-    if (uploads.has(featured)) post.featured_media = uploads.get(featured).id;
-    else if (!isLocalImage(featured)) notes.push("The featured image must be a local image (or already in the Media Library); a web address can't be set.");
-  }
-  if (status) post.status = status;
-  if (meta.slug) post.slug = String(meta.slug);
-  const excerpt = meta.excerpt ?? meta.description;
-  if (excerpt) post.excerpt = String(excerpt);
-  const date = postDate(meta.date);
-  if (date) post.date = date;
-  try {
-    const tags = list(meta.tags);
-    if (tags.length) post.tags = await termIds(client, "tags", tags, notes);
-    const categories = list(meta.categories ?? meta.category);
-    if (categories.length) post.categories = await termIds(client, "categories", categories, notes);
-  } catch (error) {
-    if (error.status === 401 || error.status === 403) return refused(base, error);
-    throw error;
-  }
-
-  let saved;
-  try {
-    saved = await client.request("POST", existing ? `/posts/${existing.id}` : "/posts", { body: post });
-  } catch (error) {
-    if (error.status === 401 || error.status === 403) return refused(base, error);
-    throw error;
-  }
-
-  await remember(saved);
-  const done = existing && saved.status === "publish" ? "Updated" : (STATUS_WORDS[saved.status] ?? "Saved");
-  await typora.ui.toast([`${done}: ${saved.link}`, ...notes].join(" — "));
-}
-
-const safeHost = (url) => {
-  try {
-    return new URL(url).host;
-  } catch {
-    return null;
-  }
-};
-
-/** 401: the password is wrong or revoked, so forget it. 403: this user may not do that. */
-async function refused(base, error) {
-  const host = new URL(base).host;
-  if (error.status !== 401) return typora.ui.toast(`${host} refused: ${error.message}`);
-  await typora.storage.remove(authKey(base));
-  await typora.ui.toast(`${host} didn't accept the user name or Application Password. Publish again to enter it.`);
-}
-
-/** Note the post in the front matter, so the next publish updates it. */
-async function remember(saved) {
-  const markdown = await typora.editor.getMarkdown();
-  const meta = parseFrontMatter(markdown).data;
-  if (meta.wordpress_id === saved.id && meta.wordpress_url === saved.link) return;
-  try {
-    await typora.editor.replaceDocument(setFrontMatterKeys(markdown, { wordpress_id: saved.id, wordpress_url: saved.link }));
-  } catch {
-    await typora.ui.toast(`Add “wordpress_id: ${saved.id}” to the front matter so the next publish updates this post.`);
-  }
-}
+export { siteBase, createClient, termIds, list, postDate, uploadImages, featuredSource, authKey };

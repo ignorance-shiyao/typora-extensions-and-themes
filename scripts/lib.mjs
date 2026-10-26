@@ -86,6 +86,7 @@ export const CONTRIBUTION_KEYS = [
   "inputRules",
   "configuration",
   "imageUploaders",
+  "publishAdapters",
   "syncProviders",
 ];
 
@@ -130,7 +131,7 @@ export function extensionIds() {
 }
 
 /** Store tags, in the order the website lists them. */
-export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export / Share", "Data Sync", "Productivity", "File Viewer", "View", "Developer"];
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export", "Publish", "Data Sync", "Productivity", "File Viewer", "View", "Developer"];
 
 /** Values of the manifest's `os`, and how the store names them. */
 export const OS_NAMES = { darwin: "macOS", win32: "Windows", linux: "Linux" };
@@ -419,6 +420,16 @@ export function checkManifest(raw, dir, folderId) {
       syncIds.add(provider.id);
       for (const key of ["title", "scope", "authorizeUrl", "tokenUrl"]) if (!nonEmpty(provider[key])) errors.push(`${where} needs ${key}.`);
       if (raw.main === undefined) errors.push(`${where} needs main (typora.sync.registerProvider).`);
+    });
+    const publishIds = new Set();
+    arr("publishAdapters").forEach((a, i) => {
+      const where = `contributes.publishAdapters[${i}]`;
+      if (!isObject(a)) return errors.push(`${where} must be an object.`);
+      if (!nonEmpty(a.id) || !LOCAL_ID.test(a.id) || publishIds.has(a.id)) errors.push(`${where} needs a unique local id.`);
+      publishIds.add(a.id);
+      if (!nonEmpty(a.title)) errors.push(`${where} needs title.`);
+      if (!Array.isArray(a.capabilities) || a.capabilities.some(c => !["draft", "media", "metrics", "comments"].includes(c))) errors.push(`${where} has invalid capabilities.`);
+      if (!raw.main || !raw.permissions?.document) errors.push(`${where} needs main and document permission.`);
     });
     const uploaderIds = new Set();
     arr("imageUploaders").forEach((u, i) => {

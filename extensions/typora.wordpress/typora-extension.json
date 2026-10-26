@@ -1,22 +1,50 @@
 {
   "id": "typora.wordpress",
   "name": "WordPress",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Copy a document as clean WordPress blocks or classic-editor HTML, or publish it to your site as a draft or post.",
   "author": "Typora Team",
-  "tags": ["Export / Share"],
-  "keywords": ["wordpress", "gutenberg", "blog", "publish", "export", "html"],
+  "tags": [
+    "Export",
+    "Publish"
+  ],
+  "keywords": [
+    "wordpress",
+    "gutenberg",
+    "blog",
+    "publish",
+    "export",
+    "html"
+  ],
   "permissions": {
-    "document": "write",
+    "document": "read",
     "clipboard": true,
-    "network": ["{config.siteUrl}"]
+    "network": [
+      "{config.siteUrl}"
+    ]
   },
   "contributes": {
     "commands": [
-      { "id": "copyBlocks", "title": "Copy for WordPress (Blocks)", "category": "WordPress" },
-      { "id": "copyClassic", "title": "Copy for WordPress (Classic Editor)", "category": "WordPress" },
-      { "id": "publish", "title": "Publish to WordPress…", "category": "WordPress" },
-      { "id": "signOut", "title": "Sign Out of WordPress", "category": "WordPress" }
+      {
+        "id": "copyBlocks",
+        "title": "Copy for WordPress (Blocks)",
+        "category": "WordPress"
+      },
+      {
+        "id": "copyClassic",
+        "title": "Copy for WordPress (Classic Editor)",
+        "category": "WordPress"
+      },
+      {
+        "id": "publish",
+        "title": "Publish to WordPress\u2026",
+        "category": "WordPress"
+      },
+      {
+        "id": "signOut",
+        "title": "Sign Out of WordPress",
+        "category": "WordPress"
+      }
     ],
     "configuration": {
       "title": "WordPress",
@@ -26,7 +54,7 @@
           "default": "",
           "title": "Site",
           "placeholder": "https://example.com",
-          "description": "Your site's address. Publishing signs in with an Application Password (in WordPress: Users ▸ Profile ▸ Application Passwords). Only this site is contacted."
+          "description": "Your site's address. Publishing signs in with an Application Password (in WordPress: Users \u25b8 Profile \u25b8 Application Passwords). Only this site is contacted."
         },
         "username": {
           "type": "string",
@@ -36,8 +64,18 @@
         },
         "status": {
           "type": "string",
-          "enum": ["draft", "pending", "private", "publish"],
-          "enumLabels": ["Draft", "Pending review", "Private", "Published"],
+          "enum": [
+            "draft",
+            "pending",
+            "private",
+            "publish"
+          ],
+          "enumLabels": [
+            "Draft",
+            "Pending review",
+            "Private",
+            "Published"
+          ],
           "default": "draft",
           "title": "New posts are",
           "description": "A status in the front matter wins. Updating a post keeps its status."
@@ -61,7 +99,18 @@
           "description": "Off: paragraphs are separated by blank lines, and the classic editor adds the tags itself."
         }
       }
-    }
+    },
+    "publishAdapters": [
+      {
+        "id": "wordpress",
+        "title": "WordPress",
+        "capabilities": [
+          "draft",
+          "media",
+          "comments"
+        ]
+      }
+    ]
   },
   "main": "main.js"
 }

@@ -1,0 +1,63 @@
+{
+  "id": "typora.pika",
+  "name": "Pika",
+  "version": "1.0.0",
+  "description": "Publish Markdown to Pika, update articles and query publication status.",
+  "author": "Typora Team",
+  "tags": [
+    "Publish"
+  ],
+  "permissions": {
+    "document": "read",
+    "network": [
+      "{config.siteUrl}",
+      "https://pika.page"
+    ]
+  },
+  "main": "main.js",
+  "contributes": {
+    "publishAdapters": [
+      {
+        "id": "pika",
+        "title": "Pika",
+        "capabilities": [
+          "draft",
+          "media"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "id": "signIn",
+        "title": "Sign In to Pika",
+        "category": "Pika"
+      },
+      {
+        "id": "signOut",
+        "title": "Sign Out of Pika",
+        "category": "Pika"
+      },
+      {
+        "id": "publish",
+        "title": "Publish to Pika\u2026",
+        "category": "Pika"
+      },
+      {
+        "id": "status",
+        "title": "Check Pika Publication",
+        "category": "Pika"
+      }
+    ],
+    "configuration": {
+      "title": "Pika",
+      "properties": {
+        "siteUrl": {
+          "type": "string",
+          "title": "Site",
+          "default": "",
+          "description": "Your blog HTTPS URL (including custom domain), used as the stable publication account identity."
+        }
+      }
+    }
+  }
+}

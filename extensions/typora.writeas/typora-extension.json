@@ -1,0 +1,68 @@
+{
+  "id": "typora.writeas",
+  "name": "Write.as",
+  "version": "1.0.0",
+  "description": "Publish Markdown to Write.as, update articles and query publication status.",
+  "author": "Typora Team",
+  "tags": [
+    "Publish"
+  ],
+  "permissions": {
+    "document": "read",
+    "network": [
+      "{config.siteUrl}",
+      "https://write.as"
+    ]
+  },
+  "main": "main.js",
+  "contributes": {
+    "publishAdapters": [
+      {
+        "id": "writeas",
+        "title": "Write.as",
+        "capabilities": [
+          "metrics"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "id": "signIn",
+        "title": "Sign In to Write.as",
+        "category": "Write.as"
+      },
+      {
+        "id": "signOut",
+        "title": "Sign Out of Write.as",
+        "category": "Write.as"
+      },
+      {
+        "id": "publish",
+        "title": "Publish to Write.as\u2026",
+        "category": "Write.as"
+      },
+      {
+        "id": "status",
+        "title": "Check Write.as Publication",
+        "category": "Write.as"
+      }
+    ],
+    "configuration": {
+      "title": "Write.as",
+      "properties": {
+        "siteUrl": {
+          "type": "string",
+          "title": "Site",
+          "default": "https://write.as",
+          "description": "HTTPS API server. Publishing state is stored separately for each account and site."
+        },
+        "collection": {
+          "type": "string",
+          "title": "Blog alias",
+          "default": "",
+          "description": "Required: publish to this Write.as / WriteFreely collection."
+        }
+      }
+    }
+  }
+}

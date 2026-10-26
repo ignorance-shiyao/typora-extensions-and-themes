@@ -16,7 +16,7 @@ not every line for escapes.
   `author`, `tags` and `keywords` help people find it. `tags` are the
   store's filters: `Language Pack`, `Markdown Extension`, `Diagram`,
   `Math`, `Theme`, `Writing`, `Template`, `AI`, `Media`, `Image Uploader`,
-  `Export / Share`, `Data Sync`, `Productivity`, `File Viewer`, `View`, `Developer`.
+  `Export`, `Publish`, `Data Sync`, `Productivity`, `File Viewer`, `View`, `Developer`.
   Give image uploaders (`contributes.imageUploaders`) the `Image Uploader`
   tag: Typora's *Settings ▸ Image* uploader menu links to that filter.
 - For an extension still in development, set `"unlisted": true` in
@@ -105,3 +105,11 @@ the app.
 
 See the [developer guide](https://docs.typora.io/extensions/) for the
 manifest, contribution points and the runtime API.
+
+## Publishing adapters
+
+A blog integration contributes `publishAdapters` and registers it with
+`typora.publish.registerAdapter` in main. Use the Publish tag, exact API
+origins and mocked API tests. See [the adapter contract](https://docs.typora.io/extensions/contributes/publish-adapters)
+and the repository `docs/publish.md`. Export and Publish are separate tags;
+use both only when both capabilities are implemented.

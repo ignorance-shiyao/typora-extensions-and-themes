@@ -1,0 +1,63 @@
+{
+  "id": "typora.mataroa",
+  "name": "Mataroa",
+  "version": "1.0.0",
+  "description": "Publish Markdown to Mataroa, update articles and query publication status.",
+  "author": "Typora Team",
+  "tags": [
+    "Publish"
+  ],
+  "permissions": {
+    "document": "read",
+    "network": [
+      "{config.siteUrl}",
+      "https://mataroa.blog"
+    ]
+  },
+  "main": "main.js",
+  "contributes": {
+    "publishAdapters": [
+      {
+        "id": "mataroa",
+        "title": "Mataroa",
+        "capabilities": [
+          "draft",
+          "comments"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "id": "signIn",
+        "title": "Sign In to Mataroa",
+        "category": "Mataroa"
+      },
+      {
+        "id": "signOut",
+        "title": "Sign Out of Mataroa",
+        "category": "Mataroa"
+      },
+      {
+        "id": "publish",
+        "title": "Publish to Mataroa\u2026",
+        "category": "Mataroa"
+      },
+      {
+        "id": "status",
+        "title": "Check Mataroa Publication",
+        "category": "Mataroa"
+      }
+    ],
+    "configuration": {
+      "title": "Mataroa",
+      "properties": {
+        "siteUrl": {
+          "type": "string",
+          "title": "Site",
+          "default": "",
+          "description": "Your blog HTTPS URL (including custom domain), used as the stable publication account identity."
+        }
+      }
+    }
+  }
+}
