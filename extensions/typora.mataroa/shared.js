@@ -10,9 +10,22 @@ export function baseUrl(value) {
   if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash) throw new Error("Enter an HTTPS site URL without credentials, query or fragment.");
   return url.href.replace(/\/+$/, "");
 }
+/** What `typora.secrets` holds, moved out of plain storage if an older version left it there. */
+export async function credential(key) {
+  const value = await typora.secrets.get(key);
+  if (value != null) return value;
+  const legacy = await typora.storage.get(key);
+  if (legacy === undefined) return null;
+  const text = typeof legacy === "string" ? legacy : JSON.stringify(legacy);
+  try {
+    await typora.secrets.set(key, text);
+    await typora.storage.remove(key);
+  } catch { /* No keyring yet: it keeps working from where it is. */ }
+  return text;
+}
 export async function token(account, label) {
-  const value = await typora.storage.get(`publish-auth:${account}`);
-  if (!value) throw new Error(`Sign in to ${label} using its extension command first.`);
+  const value = await credential(`publish-auth:${account}`);
+  if (!value) throw new Error(`Enter your ${label} key in the extension options first.`);
   return value;
 }
 export async function request(url, authorization, method = "GET", body, headers = {}) {
@@ -54,14 +67,25 @@ export async function prepare(source, account, media = false, settings = {}) {
 }
 export async function signIn(account, label) {
   const value = (await typora.ui.input({ prompt: `${label} API token (stored in extension private storage)` }))?.trim();
-  if (value) await typora.storage.set(`publish-auth:${account}`, value);
+  if (value) await typora.secrets.set(`publish-auth:${account}`, value);
+}
+/** The options form's `apiKey` field: kept only once the service has accepted it. */
+async function saveApiKey(account, label, key, check) {
+  try { await check(key); }
+  catch (error) {
+    if (error.status === 401 || error.status === 403) throw new Error(`${label} didn't accept this key.`);
+    throw error;
+  }
+  await typora.secrets.set(`publish-auth:${account}`, key);
 }
 export async function signOut() {
+  for (const key of await typora.secrets.keys()) await typora.secrets.delete(key);
   for (const key of await typora.storage.keys()) if (key.startsWith("publish-auth:")) await typora.storage.remove(key);
 }
-export function register(ctx, id, handler, account, label) {
+export function register(ctx, id, handler, account, label, check) {
   ctx.subscriptions.push(typora.publish.registerAdapter(id, handler),
     typora.commands.register("signIn", () => signIn(account(), label)),
+    typora.commands.register("saveApiKey", ({ apiKey }) => saveApiKey(account(), label, apiKey.trim(), check)),
     typora.commands.register("signOut", signOut),
     typora.commands.register("publish", async () => {
       if (!await typora.ui.confirm(`Publish this document to ${label}?`)) return;

@@ -1,7 +1,7 @@
 {
   "id": "typora.mataroa",
   "name": "Mataroa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Publish Markdown to Mataroa, update articles and query publication status.",
   "author": "Typora Team",
   "tags": [
@@ -50,12 +50,20 @@
     ],
     "configuration": {
       "title": "Mataroa",
+      "secretsCommand": "saveApiKey",
       "properties": {
         "siteUrl": {
           "type": "string",
           "title": "Site",
           "default": "",
           "description": "Your blog HTTPS URL (including custom domain), used as the stable publication account identity."
+        },
+        "apiKey": {
+          "type": "string",
+          "format": "secret",
+          "title": "API Key",
+          "default": "",
+          "description": "Shown on mataroa.blog/api/docs while you're logged in. Checked with Mataroa when you save, then kept as described below, never in your documents or settings, and sent only to mataroa.blog. Sign Out of Mataroa deletes it, and you can reset it on that page. Leave empty to keep the saved key."
         }
       }
     }

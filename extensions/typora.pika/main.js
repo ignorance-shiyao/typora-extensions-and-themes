@@ -59,4 +59,5 @@ export async function adapter(request) {
   if (!result) throw new Error("Saved Pika article could not be read back.");
   return result;
 }
-export function activate(ctx) { register(ctx, "pika", adapter, account, "Pika"); }
+export const checkKey = key => fetchApi(`${endpoint}?q=config`, `Bearer ${key}`);
+export function activate(ctx) { register(ctx, "pika", adapter, account, "Pika", checkKey); }

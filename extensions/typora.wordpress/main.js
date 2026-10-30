@@ -2,6 +2,7 @@
 // HTML, and publish it as a post through the WordPress REST API.
 import { adapter } from "./adapter.js";
 import { leadingTitle, parseFrontMatter, toBlocks, toClassicHtml } from "./convert.js";
+import { credential } from "./shared.js";
 
 const STATUS_WORDS = { draft: "Draft saved", pending: "Submitted for review", private: "Saved as private", publish: "Published", future: "Scheduled" };
 
@@ -21,6 +22,7 @@ export function activate(ctx) {
       } catch (error) { report(error); }
     }),
     typora.commands.register("signOut", signOut),
+    typora.commands.register("signInWithPassword", signInWithPassword),
   );
 }
 
@@ -64,8 +66,13 @@ function siteBase() {
 
 const authKey = (base) => `auth:${base}`;
 
+async function savedAuth(base) {
+  const text = await credential(authKey(base));
+  return text ? JSON.parse(text) : null;
+}
+
 async function signIn(base, host) {
-  const saved = await typora.storage.get(authKey(base));
+  const saved = await savedAuth(base);
   const wanted = String(typora.settings.get("username") ?? "").trim();
   if (saved && (!wanted || saved.username === wanted)) return saved;
   const username =
@@ -80,14 +87,27 @@ async function signIn(base, host) {
   )?.trim();
   if (!password) return null;
   const auth = { username, password };
-  await typora.storage.set(authKey(base), auth);
+  await typora.secrets.set(authKey(base), JSON.stringify(auth));
   return auth;
 }
 
+/** The options form: the password is kept only once the site has accepted it. */
+export async function signInWithPassword({ password }) {
+  const base = siteBase();
+  if (!base?.startsWith("https://")) throw new Error("Set an HTTPS WordPress site first.");
+  const username = String(typora.settings.get("username") ?? "").trim();
+  if (!username) throw new Error("Enter your user name.");
+  const auth = { username, password: password.trim() };
+  await createClient(base, auth).request("GET", "/users/me");
+  await typora.secrets.set(authKey(base), JSON.stringify(auth));
+}
+
 async function signOut() {
-  const keys = (await typora.storage.keys()).filter((key) => key.startsWith("auth:"));
-  for (const key of keys) await typora.storage.remove(key);
-  await typora.ui.toast(keys.length ? "Signed out. The Application Password was removed." : "You weren't signed in.");
+  const secrets = await typora.secrets.keys();
+  const legacy = (await typora.storage.keys()).filter((key) => key.startsWith("auth:"));
+  for (const key of secrets) await typora.secrets.delete(key);
+  for (const key of legacy) await typora.storage.remove(key);
+  await typora.ui.toast(secrets.length + legacy.length ? "Signed out. The Application Password was removed." : "You weren't signed in.");
 }
 
 // ── REST API ───────────────────────────────────────────────────────────
@@ -259,4 +279,4 @@ async function uploadImages(client, base, sources, notes) {
 const featuredSource = (meta) => [meta.featured_image, meta.cover, meta.image].find((v) => typeof v === "string" && v.trim())?.trim() ?? null;
 
 
-export { siteBase, createClient, termIds, list, postDate, uploadImages, featuredSource, authKey };
+export { siteBase, createClient, termIds, list, postDate, uploadImages, featuredSource, authKey, savedAuth };

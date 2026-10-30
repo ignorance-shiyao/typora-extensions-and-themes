@@ -23,9 +23,19 @@ than the first line of the post (*Leave the title heading out*).
    Application Password**. Copy the password it shows.
 2. In Typora, open **Settings ▸ Extensions ▸ WordPress ▸ Options** and enter
    your site's address (`https://example.com`, or the folder WordPress is
-   installed in) and, optionally, your user name.
-3. Run **Publish to WordPress…**. The first time, it asks for your user name
-   and the Application Password.
+   installed in), your user name and the Application Password. Saving checks
+   them with your site, so a mistake shows up in the form.
+3. Run **Publish to WordPress…**. If you left the password out, it asks for
+   it the first time.
+
+An Application Password isn't your login password: you can revoke it in
+WordPress without touching anything else. Because every publish needs it,
+Typora keeps it in your system's credential store: the Keychain on macOS,
+encrypted for your account on Windows, the desktop keyring on Linux. It never
+goes into your documents or Typora's settings, and it is sent only to your
+site. **Sign Out of WordPress** deletes it from this computer. On Linux without
+a keyring, saving warns you first: see
+[Publishing](https://docs.typora.io/guide/publish).
 
 Application Passwords need HTTPS (or a site in local development) and a
 WordPress with the REST API turned on, which is the default since 5.6.

@@ -1,12 +1,12 @@
 import { prepare, hash } from "./shared.js";
 import { toBlocks, isLocalImage, leadingTitle } from "./convert.js";
-import { siteBase, createClient, termIds, list, postDate, uploadImages, featuredSource, authKey } from "./main.js";
+import { siteBase, createClient, termIds, list, postDate, uploadImages, featuredSource, savedAuth } from "./main.js";
 async function client() {
   const base = siteBase();
   if (!base || !base.startsWith("https://")) throw new Error("Set an HTTPS WordPress site first.");
-  const auth = await typora.storage.get(authKey(base));
+  const auth = await savedAuth(base);
   const username = String(typora.settings.get("username") || "");
-  if (!auth || (username && username !== auth.username)) throw new Error("Sign in using Publish to WordPress first.");
+  if (!auth || (username && username !== auth.username)) throw new Error("Enter your Application Password in the extension options first.");
   return createClient(base, auth);
 }
 async function remote(post) {
@@ -24,7 +24,7 @@ export async function adapter(request) {
   if (operation === "prepare") {
     const base = siteBase();
     const settings = typora.settings.get();
-    const auth = await typora.storage.get(authKey(base));
+    const auth = await savedAuth(base);
     const account = `${base}/user/${encodeURIComponent(auth?.username || settings.username || "")}`;
     const prepared = await prepare(request.source, account, true, settings);
     prepared.sourceMarkdown = request.source.markdown;
@@ -38,7 +38,7 @@ export async function adapter(request) {
     }
     return prepared;
   }
-  const currentAuth = await typora.storage.get(authKey(siteBase()));
+  const currentAuth = await savedAuth(siteBase());
   if (document.account !== `${siteBase()}/user/${encodeURIComponent(currentAuth?.username || typora.settings.get("username") || "")}`) throw new Error("WordPress account changed during publication.");
   if (operation === "get") return get(ref);
   const api = await client();

@@ -1,9 +1,16 @@
 # Mataroa
 
-Install this independent extension and configure **Site** in its options. Run
-**Sign In to Mataroa** to store an API token, then **Publish to Mataroa…**.
-The API token is stored as plaintext in this extension's private storage,
-never in Markdown. Sign Out removes it; revoke it at the service when needed.
+Install this independent extension and enter **Site** and **API Key** in its
+options, then run **Publish to Mataroa…**. It is shown on [mataroa.blog/api/docs](https://mataroa.blog/api/docs/) while you are logged in, where you can also reset it.
+
+Saving the options checks the key with Mataroa, so a wrong one shows up in the
+form. Because every publish needs it, it is then kept in your system's
+credential store: the Keychain on macOS, encrypted for your account on Windows,
+the desktop keyring on Linux. It never goes into your documents or Typora's
+settings, and it is sent only to mataroa.blog. **Sign Out of Mataroa** deletes it from
+this computer; revoke it at the service as well if the computer is no longer
+yours. On Linux without a keyring, saving warns you first: see
+[Publishing](https://docs.typora.io/guide/publish).
 
 Adapter key: `typora.mataroa:mataroa`. The shared publish protocol handles
 incremental updates and remote conflict checks. Publication records are local

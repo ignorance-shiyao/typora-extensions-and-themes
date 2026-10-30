@@ -1,7 +1,7 @@
 {
   "id": "typora.pika",
   "name": "Pika",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Publish Markdown to Pika, update articles and query publication status.",
   "author": "Typora Team",
   "tags": [
@@ -50,12 +50,20 @@
     ],
     "configuration": {
       "title": "Pika",
+      "secretsCommand": "saveApiKey",
       "properties": {
         "siteUrl": {
           "type": "string",
           "title": "Site",
           "default": "",
           "description": "Your blog HTTPS URL (including custom domain), used as the stable publication account identity."
+        },
+        "apiKey": {
+          "type": "string",
+          "format": "secret",
+          "title": "App token",
+          "default": "",
+          "description": "In Pika, open Settings ▸ App tokens and create one with create, update and media access. Checked with Pika when you save, then kept as described below, never in your documents or settings, and sent only to pika.page. Sign Out of Pika deletes it, and you can revoke it in Pika. Leave empty to keep the saved token."
         }
       }
     }

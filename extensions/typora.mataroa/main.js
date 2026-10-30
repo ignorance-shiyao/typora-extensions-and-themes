@@ -1,4 +1,4 @@
-import { baseUrl, token, json, prepare, hash, register } from "./shared.js";
+import { baseUrl, token, json, request as fetchApi, prepare, hash, register } from "./shared.js";
 const account = () => baseUrl(typora.settings.get("siteUrl"));
 const auth = async () => `Bearer ${await token(account(), "Mataroa")}`;
 async function remote(post) {
@@ -26,4 +26,5 @@ export async function adapter(request) {
   if (!result) throw new Error("Saved Mataroa article could not be read back.");
   return result;
 }
-export function activate(ctx) { register(ctx, "mataroa", adapter, account, "Mataroa"); }
+export const checkKey = key => fetchApi("https://mataroa.blog/api/comments/pending/", `Bearer ${key}`);
+export function activate(ctx) { register(ctx, "mataroa", adapter, account, "Mataroa", checkKey); }
