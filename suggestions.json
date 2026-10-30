@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "suggestions": [
+    {
+      "extension": "typora.wordpress",
+      "surface": "palette",
+      "title": "Publish to WordPress",
+      "l10n": { "zh-Hans": "发布到 WordPress", "zh-Hant": "發佈到 WordPress" },
+      "terms": ["wordpress"]
+    },
+    {
+      "extension": "typora.mataroa",
+      "surface": "palette",
+      "title": "Publish to Mataroa",
+      "l10n": { "zh-Hans": "发布到 Mataroa", "zh-Hant": "發佈到 Mataroa" },
+      "terms": ["mataroa"]
+    },
+    {
+      "extension": "typora.writeas",
+      "surface": "palette",
+      "title": "Publish to Write.as",
+      "l10n": { "zh-Hans": "发布到 Write.as", "zh-Hant": "發佈到 Write.as" },
+      "terms": ["write.as", "writeas"]
+    },
+    {
+      "extension": "typora.pika",
+      "surface": "palette",
+      "title": "Publish to Pika",
+      "l10n": { "zh-Hans": "发布到 Pika", "zh-Hant": "發佈到 Pika" },
+      "terms": ["pika"]
+    },
+    {
+      "extension": "typora.terminal",
+      "surface": "palette",
+      "title": "Terminal",
+      "l10n": { "zh-Hans": "终端", "zh-Hant": "終端機" },
+      "terms": ["terminal", "shell", "终端", "終端機"],
+      "runsPrograms": true
+    },
+    {
+      "extension": "typora.writing-stats",
+      "surface": "palette",
+      "title": "Writing Stats",
+      "l10n": { "zh-Hans": "写作统计", "zh-Hant": "寫作統計" },
+      "terms": ["writing stats", "写作统计", "寫作統計"]
+    },
+    {
+      "extension": "typora.d2",
+      "surface": "slash",
+      "title": "D2",
+      "terms": ["d2"],
+      "fence": "d2",
+      "runsPrograms": true
+    },
+    {
+      "extension": "typora.plantuml",
+      "surface": "slash",
+      "title": "PlantUML",
+      "terms": ["plantuml", "puml"],
+      "fence": "plantuml",
+      "runsPrograms": true
+    },
+    {
+      "extension": "typora.diagrams",
+      "surface": "slash",
+      "title": "Graphviz",
+      "terms": ["graphviz", "dot"],
+      "fence": "graphviz"
+    },
+    {
+      "extension": "typora.kanban",
+      "surface": "slash",
+      "title": "Kanban",
+      "l10n": { "zh-Hans": "看板", "zh-Hant": "看板" },
+      "terms": ["kanban", "看板"],
+      "fence": "kanban"
+    },
+    {
+      "extension": "typora.chart",
+      "surface": "slash",
+      "title": "Chart",
+      "l10n": { "zh-Hans": "图表", "zh-Hant": "圖表" },
+      "terms": ["chart", "图表", "圖表"],
+      "fence": "chart"
+    }
+  ]
+}

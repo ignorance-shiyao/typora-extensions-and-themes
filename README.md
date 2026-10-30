@@ -29,6 +29,7 @@ scripts/
   site.mjs                  HTML templates for the website
   serve.mjs                 local server that mimics the Worker
 site/                       CSS, JS and icon for the website
+suggestions.json            editor's picks the app suggests in its command palette and / menu
 worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
 .github/workflows/          ci.yml (every push / PR), deploy.yml (main)
 ```
@@ -38,10 +39,19 @@ worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
 | Path | What |
 | --- | --- |
 | `dist/index.json` | The catalog the app reads (`schemaVersion: 1`) |
+| `dist/suggestions.json` | `suggestions.json` as is: the extensions the app offers while the user types |
 | `dist/download/<id>-<version>.typora-extension` | The package: a zip with `typora-extension.json` at the archive root. Deterministic: the same source always gives the same SHA-256 |
 | `dist/index.html`, `dist/<id>/index.html` | The store website |
 | `dist/assets/{covers,screenshots}/<id>.<hash>.<ext>` | Store images, linked from `index.json` as `cover` / `screenshot` |
 | `dist/404.html`, `robots.txt`, `sitemap.xml` | |
+
+`suggestions.json` is Typora's own short list, not a manifest field, so an
+extension can't nominate itself. Each entry names the extension, the surface
+(`palette` or `slash`), the row's `title` (`l10n` for its translations), the
+`terms` that bring it up and, for `slash`, the `fence` language to insert.
+The app ships a copy (`packages/workbench/resources/extension-suggestions.json`)
+and matches it on the device; keep the two the same. `npm run validate` checks
+every entry against its manifest.
 
 Each catalog entry has a tier: **L0** (data only), **L1** (ships HTML
 pages), **L2** (has `main` / `background` code). An entry with `os`

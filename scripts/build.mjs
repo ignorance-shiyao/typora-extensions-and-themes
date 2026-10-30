@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Build the store into dist/:
 //   dist/index.json                     catalog (schemaVersion 1)
+//   dist/suggestions.json               the app's curated install suggestions
 //   dist/download/<id>-<version>.typora-extension
 //                                       one deterministic package (a zip) per extension
 //   dist/index.html, dist/<id>/index.html, 404.html, robots.txt, sitemap.xml
@@ -152,6 +153,7 @@ if (failed) {
 
 const catalog = { schemaVersion: 1, generatedAt: isoSeconds(now), extensions: entries };
 write("index.json", `${JSON.stringify(catalog, null, 2)}\n`);
+write("suggestions.json", readFileSync(join(ROOT, "suggestions.json")));
 
 // ── Site ───────────────────────────────────────────────────────────────
 // Language packs after the rest, so they do not crowd out the other extensions.

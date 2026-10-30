@@ -216,6 +216,49 @@ export function compareBytes(a, b) {
   return Buffer.compare(x, y);
 }
 
+/**
+ * The curated extensions the app offers while the user types (suggestions.json,
+ * served as /suggestions.json; the app ships a copy). Errors for entries that
+ * could not work: an id or fence the store doesn't have, or a `runsPrograms`
+ * that disagrees with the manifest, which the app checks without the catalog.
+ */
+export function checkSuggestions(raw) {
+  const errors = [];
+  if (!isObject(raw) || raw.schemaVersion !== 1 || !Array.isArray(raw.suggestions)) {
+    return ["suggestions.json must be { schemaVersion: 1, suggestions: [...] }."];
+  }
+  const seen = new Set();
+  const ids = new Set(extensionIds());
+  for (const [index, item] of raw.suggestions.entries()) {
+    const at = `suggestions[${index}]`;
+    if (!isObject(item) || typeof item.extension !== "string") {
+      errors.push(`${at}: extension is required.`);
+      continue;
+    }
+    const where = `${at} (${item.extension})`;
+    if (!ids.has(item.extension)) {
+      errors.push(`${where}: not in the store.`);
+      continue;
+    }
+    const manifest = readManifest(item.extension);
+    if (manifest.unlisted === true) errors.push(`${where}: unlisted extensions can't be suggested.`);
+    if (item.surface !== "palette" && item.surface !== "slash") errors.push(`${where}: surface must be palette or slash.`);
+    const key = `${item.surface}\u0000${item.extension}`;
+    if (seen.has(key)) errors.push(`${where}: listed twice for ${item.surface}.`);
+    seen.add(key);
+    if (typeof item.title !== "string" || !item.title) errors.push(`${where}: title is required.`);
+    if (!Array.isArray(item.terms) || !item.terms.length || !item.terms.every((t) => typeof t === "string" && t && t === t.toLowerCase())) {
+      errors.push(`${where}: terms must be non-empty lowercase strings.`);
+    }
+    const runsPrograms = manifest.permissions?.process !== undefined;
+    if ((item.runsPrograms === true) !== runsPrograms) errors.push(`${where}: runsPrograms must be ${runsPrograms}, as in the manifest.`);
+    const fences = (manifest.contributes?.fenceRenderers ?? []).flatMap((renderer) => renderer.lang ?? []);
+    if (item.surface === "slash" && !fences.includes(item.fence)) errors.push(`${where}: fence must be a language the extension draws.`);
+    if (item.surface === "palette" && item.fence !== undefined) errors.push(`${where}: only slash suggestions have a fence.`);
+  }
+  return errors;
+}
+
 export function readManifest(id) {
   const text = readFileSync(join(EXTENSIONS_DIR, id, MANIFEST), "utf8");
   return JSON.parse(text);

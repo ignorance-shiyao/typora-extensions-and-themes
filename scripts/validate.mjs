@@ -17,7 +17,9 @@ import {
   STORE_IMAGE_PATTERN,
   STORE_IMAGE_RATIOS,
   STORE_IMAGE_WARN_BYTES,
+  ROOT,
   checkManifest,
+  checkSuggestions,
   dictionaryFiles,
   mathFontFolders,
   extensionIds,
@@ -164,6 +166,12 @@ for (const id of ids) {
   }
   if (errors.length) failed++;
   if (warnings.length) warned++;
+}
+
+for (const error of checkSuggestions(JSON.parse(readFileSync(join(ROOT, "suggestions.json"), "utf8")))) {
+  console.log(`✗ suggestions.json: ${error}`);
+  annotate("error", "suggestions.json", error);
+  failed++;
 }
 
 console.log(
