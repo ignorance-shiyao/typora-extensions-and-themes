@@ -15,6 +15,12 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # A failure on one site does not stop the other.
+      matrix:
+        include:
+          - { site: extensions, app: typora-extensions, domain: extensions.typoraio.cn }
+          - { site: themes, app: typora-themes, domain: theme2.typoraio.cn }
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,12 +36,14 @@ jobs:
         run: npm run validate
 
       - name: Build
-        run: node scripts/build.mjs --origin https://extensions.typoraio.cn
+        run: node scripts/build.mjs --origin https://extensions.typoraio.cn --themes-origin https://theme2.typoraio.cn --docs-origin https://docs.typoraio.cn --home-origin https://v2.typoraio.cn
 
-      - name: Deploy to extensions.typoraio.cn
+      - name: Deploy to ${{ matrix.domain }}
         env:
           SSH_KEY: ${{ secrets.ALIYUN_PEM }}
           KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+          SITE: ${{ matrix.site }}
+          APP: ${{ matrix.app }}
         run: |
           set -euo pipefail
           if [ -z "$SSH_KEY" ] || [ -z "$KNOWN_HOSTS" ]; then
@@ -52,13 +60,14 @@ jobs:
           # each time: the host only ever needs the latest build.
           site="$RUNNER_TEMP/dokku-site"
           rm -rf "$site"
-          mkdir -p "$site/scripts"
-          cp -R dist headers.js "$site"
+          mkdir -p "$site/scripts" "$site/dist"
+          cp -R "dist/$SITE" "$site/dist"
+          cp headers.js "$site"
           cp scripts/serve.mjs scripts/lib.mjs "$site/scripts"
-          echo 'web: node scripts/serve.mjs' > "$site/Procfile"
+          echo "web: node scripts/serve.mjs --site $SITE" > "$site/Procfile"
           cat > "$site/package.json" <<'JSON'
           {
-            "name": "typora-extensions-site",
+            "name": "typora-store-site",
             "private": true,
             "type": "module",
             "engines": { "node": "22.x" }
@@ -70,4 +79,4 @@ jobs:
           git add -A
           git -c user.email=hi@typora.io -c user.name=Typora commit -q -m "Deploy $GITHUB_SHA"
           GIT_SSH_COMMAND='ssh -i ~/.ssh/dokku -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ServerAliveInterval=30' \
-            git push --force dokku@dokku.typoraio.cn:typora-extensions master
+            git push --force "dokku@dokku.typoraio.cn:$APP" master

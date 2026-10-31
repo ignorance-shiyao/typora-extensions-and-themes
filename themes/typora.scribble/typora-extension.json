@@ -1,0 +1,20 @@
+{
+  "id": "typora.scribble",
+  "name": "Scribble",
+  "version": "1.0.0",
+  "description": "A white sheet of paper on the desk: dashed quote boxes and dotted rules, forked from Scribble.",
+  "author": "Typora",
+  "keywords": [
+    "paper",
+    "clean",
+    "sans-serif"
+  ],
+  "tags": [
+    "Theme"
+  ],
+  "contributes": {
+    "themes": [
+      "themes/scribble"
+    ]
+  }
+}

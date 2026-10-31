@@ -10,7 +10,7 @@ routes = [
 # Built by `npm run build`. run_worker_first sends every request through
 # worker.js so CORS and cache headers apply to assets too.
 [assets]
-directory = "./dist"
+directory = "./dist/extensions"
 binding = "ASSETS"
 not_found_handling = "404-page"
 run_worker_first = true

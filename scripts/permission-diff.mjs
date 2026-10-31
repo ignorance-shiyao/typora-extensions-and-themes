@@ -9,16 +9,16 @@
 // Writes Markdown to $GITHUB_STEP_SUMMARY when set, and always to stdout.
 
 import { appendFileSync } from "node:fs";
-import { join } from "node:path";
 import {
-  EXTENSIONS_DIR,
   MANIFEST,
   STORE_IMAGE_PATTERN,
-  extensionIds,
   git,
   normalizePermissions,
   platformLabel,
+  packageDir,
   packageFiles,
+  packageIds,
+  packagePath,
   readManifest,
   tierOf,
 } from "./lib.mjs";
@@ -42,18 +42,23 @@ const show = (path) => {
     return null;
   }
 };
-const baseIds = git(["ls-tree", "--name-only", `${base}`, "extensions/"])
-  .split("\n")
-  .filter(Boolean)
-  .map((p) => p.replace(/^extensions\//, ""));
-const baseFiles = (id) =>
-  git(["ls-tree", "-r", "--name-only", base, `extensions/${id}/`])
+// `id` → its folder in the base ref, across extensions/ and themes/.
+const basePaths = new Map(
+  git(["ls-tree", "--name-only", base, "extensions/", "themes/"])
     .split("\n")
     .filter(Boolean)
-    .map((p) => p.slice(`extensions/${id}/`.length));
+    .filter((path) => path !== "themes/built-in")
+    .map((path) => [path.replace(/^[^/]+\//, ""), path]),
+);
+const baseIds = [...basePaths.keys()];
+const baseFiles = (id) =>
+  git(["ls-tree", "-r", "--name-only", base, `${basePaths.get(id)}/`])
+    .split("\n")
+    .filter(Boolean)
+    .map((p) => p.slice(`${basePaths.get(id)}/`.length));
 /** Whether a packaged file changed; store images alone need no bump. */
 const changed = (id) => {
-  const prefix = `extensions/${id}/`;
+  const prefix = `${packagePath(id)}/`;
   const paths = [
     ...git(["diff", "--name-only", base, "--", prefix]).split("\n"),
     // Untracked files are not seen by git diff; count them too.
@@ -84,11 +89,11 @@ const compareVersions = (a, b) => {
 
 const rows = [];
 const problems = [];
-const ids = [...new Set([...extensionIds(), ...baseIds])].sort();
+const ids = [...new Set([...packageIds(), ...baseIds])].sort();
 
 for (const id of ids) {
-  const headExists = extensionIds().includes(id);
-  const baseText = show(`extensions/${id}/${MANIFEST}`);
+  const headExists = packageIds().includes(id);
+  const baseText = basePaths.has(id) ? show(`${basePaths.get(id)}/${MANIFEST}`) : null;
   if (!headExists) {
     rows.push({ id, status: "removed", version: "", platforms: "", perms: "", change: "", tier: "", review: "Confirm the removal" });
     continue;
@@ -103,7 +108,7 @@ for (const id of ids) {
     continue;
   }
   const headPerms = normalizePermissions(head.permissions);
-  const headTier = tierOf(head, packageFiles(join(EXTENSIONS_DIR, id)));
+  const headTier = tierOf(head, packageFiles(packageDir(id)));
 
   let old = null;
   try {

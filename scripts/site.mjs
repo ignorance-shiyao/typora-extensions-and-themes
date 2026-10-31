@@ -1,7 +1,7 @@
 // HTML for extensions.typora.io. Plain strings; everything user-supplied goes
 // through esc().
 
-import { CONFIG_ORIGIN, DOCS_URL, OS_NAMES, REPO_URL, TAGS, platformLabel } from "./lib.mjs";
+import { CONFIG_ORIGIN, DOCS_ORIGIN, DOCS_URL, HOME_ORIGIN, OS_NAMES, REPO_URL, SITE_ORIGIN, TAGS, THEMES_SITE_ORIGIN, platformLabel } from "./lib.mjs";
 
 export const esc = (value) =>
   String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -53,7 +53,63 @@ export function permissionSentences(p, settings = {}) {
   return out;
 }
 
-function layout({ title, description, canonical, assets, body, origin: siteOrigin, noindex = false }) {
+/** Sets the page's appearance before it paints: the visitor's choice, else the
+ *  system's, which it then follows. The header's switch saves a choice. */
+export const APPEARANCE_SCRIPT = `<script>
+(() => {
+  const root = document.documentElement;
+  const system = matchMedia("(prefers-color-scheme: dark)");
+  const saved = () => {
+    try {
+      return localStorage.getItem("appearance");
+    } catch {
+      return null;
+    }
+  };
+  const apply = (mode) => {
+    root.dataset.theme = mode;
+    root.style.colorScheme = mode;
+  };
+  const fromSystem = () => (system.matches ? "dark" : "light");
+  apply(saved() ?? fromSystem());
+  system.addEventListener("change", () => saved() ?? apply(fromSystem()));
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".appearance")) return;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    apply(next);
+    try {
+      localStorage.setItem("appearance", next);
+    } catch {}
+  });
+})();
+</script>`;
+
+const DEFAULT_SITES = { docs: DOCS_ORIGIN, extensions: SITE_ORIGIN, themes: THEMES_SITE_ORIGIN, home: HOME_ORIGIN };
+const SUN = '<svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON = '<svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>';
+
+/** The header of docs, extensions and theme2 (docs draws its own in
+ *  apps/docs/.vitepress), with `active` the site it is on. */
+export function siteHeader(active, sites = DEFAULT_SITES) {
+  const item = (key, label) =>
+    `<li${active === key ? ' class="active"' : ""}><a href="${esc(sites[key])}/"${active === key ? ' aria-current="page"' : ""}>${label}</a></li>`;
+  return `<header class="nav">
+  <div class="nav-inner">
+    <a class="product-name" href="/">Typora <span class="v2">2.0</span></a>
+    <div class="nav-links">
+      <ul>
+        ${item("docs", "Docs")}
+        ${item("extensions", "Extensions")}
+        ${item("themes", "Themes")}
+        ${item("home", "Homepage")}
+      </ul>
+      <button type="button" class="appearance" aria-label="Switch between light and dark">${SUN}${MOON}</button>
+    </div>
+  </div>
+</header>`;
+}
+
+function layout({ title, description, canonical, assets, body, origin: siteOrigin, sites, noindex = false }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -65,26 +121,18 @@ ${canonical ? `<link rel="canonical" href="${esc(canonical)}">` : ""}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 ${noindex ? '<meta name="robots" content="noindex">' : ""}
-<meta name="color-scheme" content="light dark">
+${APPEARANCE_SCRIPT}
 <link rel="icon" href="${assets.favicon}" type="image/png">
 <link rel="stylesheet" href="${assets.css}">
 </head>
 <body>
-<header class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="/"><img class="mark" src="${assets.icon}" width="28" height="28" alt=""><span>Typora <span class="v2">2.0</span> <b>Extensions</b></span></a>
-    <nav>
-      <a href="${DOCS_URL}">Docs</a>
-      <a href="${REPO_URL}">GitHub</a>
-    </nav>
-  </div>
-</header>
+${siteHeader("extensions", sites)}
 <main class="page">
 ${body}
 </main>
 <footer class="footer">
   <p>Every extension here is open source, reviewed, and built from <a href="${REPO_URL}">typora/typora-extensions</a> by Typora's CI. Extensions run sandboxed with the permissions shown on their page.</p>
-  <p><a href="${DOCS_URL}">Developer docs</a> · <a href="${siteOrigin}/index.json">index.json</a> · <a href="${REPO_URL}/blob/main/CONTRIBUTING.md">Submit an extension</a></p>
+  <p><a href="${DOCS_URL}">Developer docs</a> · <a href="${siteOrigin}/index.json">index.json</a> · <a href="${REPO_URL}/blob/main/CONTRIBUTING.md">Submit an extension</a> · <a href="${REPO_URL}">GitHub</a></p>
 </footer>
 ${assets.js ? `<script src="${assets.js}" defer></script>` : ""}
 </body>
@@ -117,7 +165,7 @@ function cardMedia(entry) {
   return `<div class="card-media placeholder" aria-hidden="true"><span>${esc(entry.name)}</span></div>`;
 }
 
-export function homePage({ entries, assets, origin: siteOrigin }) {
+export function homePage({ entries, assets, origin: siteOrigin, sites }) {
   entries = entries.filter((e) => e.unlisted !== true);
   const cards = entries
     .map((e) => {
@@ -155,6 +203,7 @@ ${cards}
     assets,
     body,
     origin: siteOrigin,
+    sites,
   });
 }
 
@@ -332,11 +381,12 @@ export function renderMarkdown(text, baseUrl) {
   return out.join("\n");
 }
 
-const formatSize = (bytes) => (bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`);
+export const formatSize = (bytes) =>
+  bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 const formatDate = (iso) =>
   new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
 
-export function extensionPage({ entry, manifest, files, readme, assets, origin: siteOrigin }) {
+export function extensionPage({ entry, manifest, files, readme, assets, origin: siteOrigin, sites }) {
   const perms = permissionSentences(entry.permissions, manifest.contributes?.configuration?.properties);
   const tier = TIERS[entry.tier];
   const body = `<nav class="crumbs"><a href="/">Extensions</a> <span>/</span> ${esc(entry.name)}</nav>
@@ -405,10 +455,11 @@ export function extensionPage({ entry, manifest, files, readme, assets, origin: 
     assets,
     body,
     origin: siteOrigin,
+    sites,
   });
 }
 
-export function notFoundPage({ assets, origin: siteOrigin }) {
+export function notFoundPage({ assets, origin: siteOrigin, sites }) {
   return layout({
     title: "Not found · Typora Extensions",
     description: "This page does not exist.",
@@ -416,5 +467,6 @@ export function notFoundPage({ assets, origin: siteOrigin }) {
     assets: { ...assets, js: null },
     body: `<section class="hero notfound"><h1>Not found</h1><p class="lead">There is no extension or page here. It may have been renamed or removed.</p><p><a class="button" href="/">Browse extensions</a></p></section>`,
     origin: siteOrigin,
+    sites,
   });
 }

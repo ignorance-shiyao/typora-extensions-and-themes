@@ -1,7 +1,7 @@
 {
   "name": "typora-extensions",
   "private": true,
-  "description": "Source of every extension in the Typora extension store, and the tooling that builds extensions.typora.io",
+  "description": "Source of every extension in the Typora extension store, and the tooling that builds extensions.typora.io and theme2.typora.io",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -11,6 +11,8 @@
     "permission-diff": "node scripts/permission-diff.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --dev && node scripts/serve.mjs",
-    "serve": "node scripts/serve.mjs"
+    "dev:themes": "node scripts/build.mjs --dev && node scripts/serve.mjs --site themes",
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
   }
 }

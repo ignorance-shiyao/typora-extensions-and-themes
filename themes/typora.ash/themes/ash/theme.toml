@@ -1,0 +1,120 @@
+#:schema https://docs.typora.io/schema/theme-1.json
+# Rebuilt from Typora 1's Ash theme.
+name = "Ash"
+color-scheme = "dark"
+author = "Typora"
+version = "1.0.0"
+description = "A soft dark theme: Questrial and Montserrat on ash grey, with round task boxes."
+css = "theme.css"
+
+[vars]
+body-font = 'Questrial, "Helvetica Neue", Helvetica, Arial, sans-serif'
+heading-font = 'Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif'
+font-size = "18px"
+line-height = 1.5
+letter-spacing = "0"
+content-width = "680px"
+bg = "#666666"
+text = "#ffffff"
+heading = "#ffffff"
+muted = "#d4d4d4"
+accent = "#d8edff"
+link = "#ffffff"
+syntax-marker = "#bdbdbd"
+surface = "#4d4d4d"
+surface-hover = "#5a5a5a"
+code-bg = "#4d4d4d"
+inline-code-bg = "transparent"
+border = "#858585"
+selection = "rgba(216, 237, 255, 0.3)"
+block-selection = "rgba(216, 237, 255, 0.2)"
+caret = "#ffffff"
+
+[[fonts]]
+family = "Montserrat"
+src = "fonts/Montserrat.woff2"
+weight = 400
+unicode-range = "U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215"
+
+[[fonts]]
+family = "Montserrat"
+src = "fonts/Montserrat-ext.woff2"
+weight = 400
+unicode-range = "U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF"
+
+[[fonts]]
+family = "Montserrat"
+src = "fonts/Montserrat-v.woff2"
+weight = 400
+unicode-range = "U+0102-0103, U+1EA0-1EF9, U+20AB"
+
+[[fonts]]
+family = "Questrial"
+src = "fonts/Questrial.woff2"
+weight = 400
+unicode-range = "U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215"
+
+[elements.headings]
+weight = 400
+letter-spacing = "0"
+
+[elements.h1]
+size = "2.4em"
+
+[elements.h2]
+size = "1.8em"
+weight = 600
+
+[elements.h3]
+size = "1.4em"
+transform = "uppercase"
+
+[elements.h5]
+weight = 700
+
+[elements.h6]
+weight = 700
+
+[elements.strong]
+color = "$text"
+
+[elements.link]
+underline = "none"
+
+[elements.inline-code]
+color = "$accent"
+border = "transparent"
+
+[elements.blockquote]
+style = "plain"
+color = "$muted"
+indent = "10px"
+
+[elements.code-block]
+style = "flat"
+
+[elements.table]
+style = "grid"
+border = "#666666"
+header-bg = "transparent"
+
+[elements.hr]
+color = "#d4d4d4"
+
+[chrome]
+sidebar-bg = "#4d4d4d"
+page-bg = "#666666"
+text = "#d5d5d5"
+text-muted = "#b3b3b3"
+divider = "#4d4d4d"
+border = "#4d4d4d"
+hover-bg = "#5a5a5a"
+panel-bg = "#4d4d4d"
+panel-border = "#666666"
+tree-fg = "#d5d5d5"
+tree-dir-fg = "#e4e4e4"
+tree-selected-bg = "#666666"
+tree-selected-fg = "#ffffff"
+
+[syntax]
+dark = "ash-code.json"

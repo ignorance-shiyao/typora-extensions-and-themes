@@ -21,7 +21,7 @@ test("unlisted must be a boolean and Data Sync is a valid tag", () => {
 
 test("built store hides development extensions while preserving direct pages and packages", () => {
   execFileSync(process.execPath, ["scripts/build.mjs"], { cwd: ROOT, stdio: "pipe" });
-  const read = (path) => readFileSync(join(ROOT, "dist", path), "utf8");
+  const read = (path) => readFileSync(join(ROOT, "dist", "extensions", path), "utf8");
   const home = read("index.html");
   const sitemap = read("sitemap.xml");
   const catalog = JSON.parse(read("index.json"));
@@ -39,7 +39,7 @@ test("built store hides development extensions while preserving direct pages and
     const entry = catalog.extensions.find((entry) => entry.id === id);
     assert.equal(entry.unlisted, true);
     assert.deepEqual(entry.tags, ["Data Sync"]);
-    assert.ok(existsSync(join(ROOT, "dist", new URL(entry.download.url).pathname)));
+    assert.ok(existsSync(join(ROOT, "dist", "extensions", new URL(entry.download.url).pathname)));
     // Publishing again (false or omitted) restores the card and search data.
     for (const unlisted of [false, undefined]) {
       const html = homePage({ entries: [{ ...entry, unlisted }], assets: {}, origin: "https://extensions.typora.io" });

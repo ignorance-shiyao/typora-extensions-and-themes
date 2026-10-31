@@ -8,10 +8,18 @@ import { deflateRawSync } from "node:zlib";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const EXTENSIONS_DIR = join(ROOT, "extensions");
+export const THEMES_DIR = join(ROOT, "themes");
+/** Themes that ship with Typora: listed on theme2.typora.io, not packaged. */
+export const BUILT_IN_THEMES_DIR = join(THEMES_DIR, "built-in");
 export const MANIFEST = "typora-extension.json";
 export const REPO_URL = "https://github.com/typora/typora-extensions";
-export const DOCS_URL = "https://docs.typora.io/extensions/";
+export const DOCS_ORIGIN = "https://docs.typora.io";
+export const DOCS_URL = `${DOCS_ORIGIN}/extensions/`;
+export const HOME_ORIGIN = "https://v2.typora.io";
 export const SITE_ORIGIN = "https://extensions.typora.io";
+export const THEMES_SITE_ORIGIN = "https://theme2.typora.io";
+export const EXTENSION_PACKAGE = ".typora-extension";
+export const THEME_PACKAGE = ".typora-theme";
 
 /** Per-file and per-package limits (docs/extensions.md §8.6, "bundle size"). */
 export const MAX_FILE_BYTES = 1024 * 1024;
@@ -130,6 +138,24 @@ export function extensionIds() {
     .sort();
 }
 
+/** Theme folders under themes/, sorted. An id is unique across both folders. */
+export function themeIds() {
+  if (!existsSync(THEMES_DIR)) return [];
+  return readdirSync(THEMES_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith(".") && join(THEMES_DIR, d.name) !== BUILT_IN_THEMES_DIR)
+    .map((d) => d.name)
+    .sort();
+}
+
+/** Every package in the catalog: extensions/ and themes/. */
+export const packageIds = () => [...extensionIds(), ...themeIds()].sort();
+
+/** The folder of a package: themes/<id> or extensions/<id>. */
+export const packageDir = (id) => (themeIds().includes(id) ? join(THEMES_DIR, id) : join(EXTENSIONS_DIR, id));
+
+/** Its path in the repository, for `git log` and links. */
+export const packagePath = (id) => `${themeIds().includes(id) ? "themes" : "extensions"}/${id}`;
+
 /** Store tags, in the order the website lists them. */
 export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export", "Publish", "Data Sync", "Productivity", "File Viewer", "View", "Developer"];
 
@@ -155,6 +181,8 @@ export function platformLabel(os) {
 export const STORE_IMAGE_PATTERN = /^(cover|screenshot)\.(png|jpe?g|webp)$/i;
 /** Width / height each store image should have. */
 export const STORE_IMAGE_RATIOS = { cover: 2, screenshot: 1.6 };
+/** The theme gallery's tiles are 5:4, like theme.typora.io's. */
+export const THEME_IMAGE_RATIOS = { cover: 1.25, screenshot: 1.6 };
 
 export function storeImage(dir, kind) {
   return readdirSync(dir).find((name) => STORE_IMAGE_PATTERN.test(name) && name.split(".")[0].toLowerCase() === kind) ?? null;
@@ -260,8 +288,50 @@ export function checkSuggestions(raw) {
 }
 
 export function readManifest(id) {
-  const text = readFileSync(join(EXTENSIONS_DIR, id, MANIFEST), "utf8");
+  const text = readFileSync(join(packageDir(id), MANIFEST), "utf8");
   return JSON.parse(text);
+}
+
+/** `name`, `color-scheme` and `css` at the top of a theme.toml (no [tables]). */
+export function themeHead(file) {
+  const head = readFileSync(file, "utf8").split(/^\s*\[/m)[0];
+  const value = (key) => new RegExp(`^${key}\\s*=\\s*(["'])(.*?)\\1`, "m").exec(head)?.[2];
+  return { name: value("name"), colorScheme: value("color-scheme") ?? "light", css: value("css") };
+}
+
+const COLOR_SCHEMES = ["auto", "light", "dark"];
+
+/**
+ * A package in themes/ holds themes and nothing else, which is what lets it
+ * use the `.typora-theme` extension: opening one installs without the
+ * permission prompt. Same rule as the hosts' `themes.install`
+ * (docs/extensions-host.md). Returns errors.
+ */
+export function checkThemePackage(raw, dir) {
+  const errors = [];
+  const contributes = isObject(raw?.contributes) ? raw.contributes : {};
+  const themes = Array.isArray(contributes.themes) ? contributes.themes : [];
+  if (!themes.length) errors.push("A package in themes/ must contribute at least one theme.");
+  const other = Object.keys(contributes).filter((key) => key !== "themes");
+  if (other.length) errors.push(`A package in themes/ contributes only themes, not ${other.join(", ")}.`);
+  for (const key of ["main", "background", "binaries", "activationEvents"])
+    if (raw?.[key] !== undefined) errors.push(`A package in themes/ has no ${key}.`);
+  if (Object.keys(normalizePermissions(raw?.permissions)).length) errors.push("Themes need no permissions.");
+  if (!Array.isArray(raw?.tags) || !raw.tags.includes("Theme")) errors.push('tags must include "Theme".');
+  for (const path of themes) {
+    if (typeof path !== "string") continue;
+    const toml = join(dir, path, "theme.toml");
+    if (!existsSync(toml)) {
+      errors.push(`${path}/theme.toml is missing.`);
+      continue;
+    }
+    const head = themeHead(toml);
+    if (!nonEmpty(head.name)) errors.push(`${path}/theme.toml has no name.`);
+    if (!COLOR_SCHEMES.includes(head.colorScheme)) errors.push(`${path}/theme.toml: color-scheme must be ${COLOR_SCHEMES.join(", ")}.`);
+    if (head.css !== undefined && !(isRelativeAssetPath(head.css) && existsSync(join(dir, path, head.css))))
+      errors.push(`${path}/theme.toml names ${head.css}, which is not in the theme folder.`);
+  }
+  return errors;
 }
 
 /**
@@ -402,7 +472,7 @@ export function checkManifest(raw, dir, folderId) {
     };
     arr("themes").forEach((t, i) => {
       const path = typeof t === "string" ? t : isObject(t) ? t.path : undefined;
-      needFile(path, `contributes.themes[${i}]`);
+      needDir(path, `contributes.themes[${i}]`);
     });
     arr("grammars").forEach((g, i) => {
       if (isObject(g) && g.path !== undefined) needFile(g.path, `contributes.grammars[${i}]`);

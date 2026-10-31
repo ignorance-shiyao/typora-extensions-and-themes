@@ -1,0 +1,104 @@
+#:schema https://docs.typora.io/schema/theme-1.json
+# Rebuilt from Typora 1's Han theme, itself based on typo.css.
+name = "Han"
+color-scheme = "light"
+author = "Typora"
+version = "1.0.0"
+description = "A theme for Chinese writing, based on typo.css: light PingFang text, Song emphasis and green links."
+css = "theme.css"
+
+[vars]
+body-font = '"PingFang SC", "Lantinghei SC", "Microsoft Yahei", "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif'
+heading-font = '"TimesNewRomanPS-ItalicMT", "PingFang SC", "Lantinghei SC", "Microsoft Yahei", "Hiragino Sans GB", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif'
+mono-font = 'Courier, "Courier New", monospace'
+font-size = "16px"
+font-weight = 300
+line-height = 1.8
+letter-spacing = "0"
+content-width = "880px"
+paragraph-spacing = "1.2em"
+bg = "#ffffff"
+text = "#333333"
+heading = "#000000"
+muted = "#999999"
+accent = "#1abc9c"
+link = "#1abc9c"
+border = "#dddddd"
+code-bg = "#ffffff"
+inline-code-bg = "rgba(135, 131, 120, 0.15)"
+highlight = "#fffdd1"
+selection = "rgba(32, 43, 51, 0.25)"
+block-selection = "rgba(32, 43, 51, 0.12)"
+
+[elements.headings]
+weight = 100
+letter-spacing = "0"
+line-height = 1.35
+
+[elements.h1]
+size = "2.4em"
+margin = ["1.2em", "0.6em"]
+rule = "below"
+rule-color = "#eeeeee"
+
+[elements.h2]
+size = "1.8em"
+margin = ["1.2em", "0.6em"]
+
+[elements.h3]
+size = "1.6em"
+margin = ["1.2em", "0.6em"]
+
+[elements.h4]
+size = "1.4em"
+margin = ["1.2em", "0.6em"]
+
+[elements.h5]
+size = "1.2em"
+margin = ["1.2em", "0.6em"]
+
+[elements.h6]
+size = "1.2em"
+margin = ["1.2em", "0.6em"]
+
+[elements.strong]
+color = "#000000"
+weight = 600
+
+[elements.link]
+underline = "none"
+
+[elements.inline-code]
+color = "#eb5757"
+border = "transparent"
+radius = "4px"
+
+[elements.blockquote]
+style = "bar"
+bar-width = "1px"
+bar-color = "#1abc9c"
+color = "#999999"
+indent = "2em"
+
+[elements.code-block]
+style = "outline"
+border = "#dddddd"
+radius = "0"
+
+[elements.table]
+style = "grid"
+header-bg = "#f1f1f1"
+
+[elements.hr]
+color = "#cfcfcf"
+
+[chrome]
+sidebar-bg = "#f5f5f5"
+page-bg = "#ffffff"
+text = "#666666"
+text-muted = "#999999"
+hover-bg = "#ebebeb"
+tree-fg = "#666666"
+tree-dir-fg = "#555555"
+tree-selected-bg = "rgba(32, 43, 51, 0.63)"
+tree-selected-fg = "#ffffff"

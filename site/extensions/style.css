@@ -26,32 +26,28 @@
     "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
   --max: 1120px;
-  --nav-height: 56px;
-  color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1a1a;
-    --fg: oklch(97% 0 0);
-    --card: #1f1f1f;
-    --muted: #151515;
-    --muted-fg: oklch(62% 0 0);
-    --nav-link: oklch(72% 0 0);
-    --primary: oklch(90% 0 0);
-    --primary-fg: #1a1a1a;
-    --primary-hover: oklch(70% 0 0);
-    --border: oklch(26.9% 0 0);
-    --border-strong: oklch(37.1% 0 0);
-    --hover: oklch(25% 0 0);
-    --ring: oklch(90% 0 0 / 0.35);
-    --info: oklch(75% 0.12 255);
-    --info-muted: oklch(17% 0.03 260);
-    --success: oklch(72% 0.12 150);
-    --success-muted: oklch(17% 0.025 153);
-    --warning: oklch(78% 0.11 80);
-    --warning-muted: oklch(19% 0.03 70);
-  }
+:root[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --fg: oklch(97% 0 0);
+  --card: #1f1f1f;
+  --muted: #151515;
+  --muted-fg: oklch(62% 0 0);
+  --nav-link: oklch(72% 0 0);
+  --primary: oklch(90% 0 0);
+  --primary-fg: #1a1a1a;
+  --primary-hover: oklch(70% 0 0);
+  --border: oklch(26.9% 0 0);
+  --border-strong: oklch(37.1% 0 0);
+  --hover: oklch(25% 0 0);
+  --ring: oklch(90% 0 0 / 0.35);
+  --info: oklch(75% 0.12 255);
+  --info-muted: oklch(17% 0.03 260);
+  --success: oklch(72% 0.12 150);
+  --success-muted: oklch(17% 0.025 153);
+  --warning: oklch(78% 0.11 80);
+  --warning-muted: oklch(19% 0.03 70);
 }
 
 * { box-sizing: border-box; }
@@ -74,26 +70,49 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 /* ---- Nav ---- */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: var(--nav-height);
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+/* The header of theme2.typora.io (site/themes/style.css). */
+@font-face {
+  font-family: "TeXGyreAdventor";
+  font-display: swap;
+  src: url("/fonts/texgyreadventor-regular.otf") format("opentype");
 }
+.nav { background: var(--card); border-bottom: 1px solid var(--border); font-size: 16px; line-height: 1.6; }
 .nav-inner {
-  max-width: var(--max);
-  height: 100%;
-  margin: 0 auto;
-  padding: 0 24px;
+  max-width: 1180px;
+  height: 80px;
+  margin: auto;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 500; white-space: nowrap; }
-.brand b { font-weight: 650; }
+.product-name {
+  color: var(--fg);
+  font-family: "Century Gothic", "TeXGyreAdventor", var(--font);
+  font-size: 2em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
+.nav ul { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.nav li a { display: block; padding: 8px 16px; color: var(--nav-link); text-decoration: none; white-space: nowrap; }
+.nav li a:hover, .nav li a:focus, .nav li.active a { background: var(--border); color: var(--fg); }
+.appearance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--nav-link);
+  cursor: pointer;
+}
+.appearance:hover, .appearance:focus { background: var(--border); color: var(--fg); }
+.appearance .moon, [data-theme="dark"] .appearance .sun { display: none; }
+[data-theme="dark"] .appearance .moon { display: block; }
 /* "2.0" after Typora; sized in em so one rule fits the nav and the h1. */
 .v2 {
   display: inline-block;
@@ -107,10 +126,7 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
   vertical-align: 0.25em;
   color: var(--nav-link);
 }
-.brand .v2 { font-size: 11px; vertical-align: 0.1em; margin-right: 4px; }
-.nav nav { display: flex; gap: 20px; font-size: 14px; }
-.nav nav a { color: var(--nav-link); text-decoration: none; white-space: nowrap; }
-.nav nav a:hover { color: var(--fg); }
+.product-name .v2 { font: 600 11px/1.2 var(--font); vertical-align: 0.5em; }
 
 /* ---- Page ---- */
 .page { flex: 1; width: 100%; max-width: var(--max); margin: 0 auto; padding: 48px 24px 64px; }
@@ -244,7 +260,7 @@ a.badge.tag:hover { background: var(--primary-hover); }
 .readme tr:last-child td { border-bottom: 0; }
 .readme blockquote { margin: 0; padding-left: 14px; border-left: 3px solid var(--border-strong); color: var(--muted-fg); }
 
-.detail-side { position: sticky; top: calc(var(--nav-height) + 24px); display: flex; flex-direction: column; gap: 20px; }
+.detail-side { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 20px; }
 .install { border: 1px solid var(--border); border-radius: 12px; background: var(--card); padding: 18px 20px; }
 .install h2 { font-size: 1rem; margin-bottom: 12px; }
 .install .platform-note { margin: 12px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--info-muted); color: var(--info); }
@@ -299,6 +315,12 @@ a.badge.tag:hover { background: var(--primary-hover); }
 .footer p { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
 .footer p:first-child { padding-top: 24px; }
 .footer p:last-child { padding: 6px 24px 32px; }
+
+@media (max-width: 630px) {
+  .nav-inner { position: relative; height: auto; padding: 16px; flex-direction: column; gap: 8px; }
+  .nav li a { padding: 8px; }
+  .appearance { position: absolute; top: 16px; right: 16px; }
+}
 
 @media (max-width: 820px) {
   .detail { grid-template-columns: 1fr; gap: 32px; }

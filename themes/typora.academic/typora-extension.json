@@ -1,0 +1,21 @@
+{
+  "id": "typora.academic",
+  "name": "Academic",
+  "version": "1.0.0",
+  "description": "A paper compiled with LaTeX: STIX Two Text, justified paragraphs and Latin Modern Mono.",
+  "author": "Typora",
+  "keywords": [
+    "latex",
+    "paper",
+    "serif",
+    "math"
+  ],
+  "tags": [
+    "Theme"
+  ],
+  "contributes": {
+    "themes": [
+      "themes/academic"
+    ]
+  }
+}

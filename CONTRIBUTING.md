@@ -113,3 +113,25 @@ A blog integration contributes `publishAdapters` and registers it with
 origins and mocked API tests. See [the adapter contract](https://docs.typora.io/extensions/contributes/publish-adapters)
 and the repository `docs/publish.md`. Export and Publish are separate tags;
 use both only when both capabilities are implemented.
+
+## Contributing a theme
+
+Themes live in `themes/<id>/`, not `extensions/`, and appear on
+[theme2.typora.io](https://theme2.typora.io). Write the theme first:
+<https://docs.typora.io/extensions/themes>. Then:
+
+- Add a `typora-extension.json` as above, with the tag `Theme`, that
+  contributes only `themes`. No `main`, `background`, `binaries` or
+  `permissions`, and no other contributions: `npm run validate` refuses them.
+- Keep each theme in `themes/<id>/themes/<name>/`. Set `name`, `color-scheme`
+  and `author` in `theme.toml`.
+- Prefer one theme with `color-scheme = "auto"` over separate light and dark
+  themes.
+- Bundle fonts, with their licenses, rather than naming ones people may not
+  have. Credit the fonts and any theme you forked in `README.md`.
+- Store images: `cover.webp` is 500 × 400 (5:4), `screenshot.webp` is
+  1760 × 1100 (16:10). `node scripts/theme-images.mjs <id>` takes both from
+  the real app, or provide your own.
+
+Reviewers check the look on the sample document, that `theme.css` only
+decorates (sizes and margins belong in `theme.toml`), and font licenses.

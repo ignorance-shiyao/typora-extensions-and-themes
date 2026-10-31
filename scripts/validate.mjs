@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Validate every extensions/<id>/ folder. Exit code 1 on any error.
+// Validate every extensions/<id>/ and themes/<id>/ folder. Exit code 1 on any
+// error.
 //
-//   node scripts/validate.mjs            all extensions
+//   node scripts/validate.mjs            all of them
 //   node scripts/validate.mjs typora.foo only these
 
-import { lstatSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   EXTENSIONS_DIR,
@@ -18,18 +19,24 @@ import {
   STORE_IMAGE_RATIOS,
   STORE_IMAGE_WARN_BYTES,
   ROOT,
+  THEME_IMAGE_RATIOS,
+  THEMES_DIR,
   checkManifest,
   checkSuggestions,
+  checkThemePackage,
   dictionaryFiles,
   mathFontFolders,
-  extensionIds,
   hiddenFiles,
   imageSize,
+  packageDir,
+  packageIds,
+  packagePath,
+  themeIds,
 } from "./lib.mjs";
 
 const CI = !!process.env.GITHUB_ACTIONS;
 const annotate = (level, file, message) =>
-  CI ? console.log(`::${level} file=extensions/${file}::${message.replace(/\n/g, " ")}`) : null;
+  CI ? console.log(`::${level} file=${file}::${message.replace(/\n/g, " ")}`) : null;
 
 /** Source checks (§8.6): no eval of fetched content, no remote code, no minified sources. */
 const CODE_RULES = [
@@ -55,12 +62,14 @@ function walkAll(dir, rel = "", out = []) {
 }
 
 function validate(id) {
-  const dir = join(EXTENSIONS_DIR, id);
+  const dir = packageDir(id);
+  const isTheme = themeIds().includes(id);
+  const ratios = isTheme ? THEME_IMAGE_RATIOS : STORE_IMAGE_RATIOS;
   const errors = [];
   const warnings = [];
   const where = new Map(); // message → file for annotations
 
-  if (!lstatSync(dir).isDirectory()) return { errors: [`extensions/${id} is not a folder.`], warnings, where };
+  if (!lstatSync(dir).isDirectory()) return { errors: [`${packagePath(id)} is not a folder.`], warnings, where };
 
   let manifestJson = null;
   try {
@@ -84,8 +93,8 @@ function validate(id) {
     if (STORE_IMAGE_PATTERN.test(path)) {
       const kind = path.split(".")[0].toLowerCase();
       const size = imageSize(readFileSync(join(dir, path)));
-      if (size && Math.abs(size.width / size.height - STORE_IMAGE_RATIOS[kind]) > 0.02)
-        warnings.push(`${path} is ${size.width}×${size.height}; ${kind === "cover" ? "a cover is 2:1 (800×400)" : "a screenshot is 16:10 (1760×1100)"}.`);
+      if (size && Math.abs(size.width / size.height - ratios[kind]) > 0.02)
+        warnings.push(`${path} is ${size.width}×${size.height}; ${kind === "screenshot" ? "a screenshot is 16:10 (1760×1100)" : isTheme ? "a theme's cover is 5:4 (500×400)" : "a cover is 2:1 (800×400)"}.`);
       if (stat.size > STORE_IMAGE_WARN_BYTES)
         warnings.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB; compress it (lossless WebP for screenshots) to stay under ${STORE_IMAGE_WARN_BYTES / 1024} KB.`);
     } else total += stat.size;
@@ -110,7 +119,7 @@ function validate(id) {
         if (rule.re.test(line)) {
           const message = `${path}:${i + 1} ${rule.message}`;
           warnings.push(message);
-          where.set(message, `${id}/${path},line=${i + 1}`);
+          where.set(message, `${packagePath(id)}/${path},line=${i + 1}`);
         }
       }
     });
@@ -136,18 +145,29 @@ function validate(id) {
   const result = checkManifest(raw, dir, id);
   errors.push(...result.errors);
   warnings.push(...result.warnings);
+  if (isTheme) errors.push(...checkThemePackage(raw, dir));
   return { errors, warnings, where };
 }
 
 const wanted = process.argv.slice(2);
-const ids = wanted.length ? wanted : extensionIds();
+const ids = wanted.length ? wanted : packageIds();
 let failed = 0;
 let warned = 0;
 
-for (const entry of readdirSync(EXTENSIONS_DIR, { withFileTypes: true })) {
-  if (!entry.isDirectory() && !entry.name.startsWith(".")) {
-    console.log(`✗ extensions/${entry.name}: only extension folders belong in extensions/.`);
-    annotate("error", entry.name, "Only extension folders belong in extensions/.");
+for (const [root, folder] of [[EXTENSIONS_DIR, "extensions"], [THEMES_DIR, "themes"]]) {
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    if (!entry.isDirectory() && !entry.name.startsWith(".")) {
+      console.log(`✗ ${folder}/${entry.name}: only package folders belong in ${folder}/.`);
+      annotate("error", `${folder}/${entry.name}`, `Only package folders belong in ${folder}/.`);
+      failed++;
+    }
+  }
+}
+
+for (const id of themeIds()) {
+  if (existsSync(join(EXTENSIONS_DIR, id))) {
+    console.log(`✗ ${id}: in both extensions/ and themes/; an id is unique across the store.`);
+    annotate("error", `themes/${id}`, "This id is also in extensions/.");
     failed++;
   }
 }
@@ -158,11 +178,11 @@ for (const id of ids) {
   console.log(`${mark} ${id}`);
   for (const e of errors) {
     console.log(`    error: ${e}`);
-    annotate("error", `${id}/${MANIFEST}`, `${id}: ${e}`);
+    annotate("error", `${packagePath(id)}/${MANIFEST}`, `${id}: ${e}`);
   }
   for (const w of warnings) {
     console.log(`    warning: ${w}`);
-    annotate("warning", where.get(w) ?? `${id}/${MANIFEST}`, `${id}: ${w}`);
+    annotate("warning", where.get(w) ?? `${packagePath(id)}/${MANIFEST}`, `${id}: ${w}`);
   }
   if (errors.length) failed++;
   if (warnings.length) warned++;
@@ -175,6 +195,6 @@ for (const error of checkSuggestions(JSON.parse(readFileSync(join(ROOT, "suggest
 }
 
 console.log(
-  `\n${ids.length} extension(s): ${failed} with errors, ${warned} with warnings.`,
+  `\n${ids.length} package(s): ${failed} with errors, ${warned} with warnings.`,
 );
 process.exit(failed ? 1 : 0);

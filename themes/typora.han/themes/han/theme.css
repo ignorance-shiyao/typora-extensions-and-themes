@@ -1,0 +1,36 @@
+/* Emphasis in Chinese is a change of face, not a slant. */
+.ty-document em {
+  font-family: Georgia-Italic, STSongti-SC-Light, "Songti SC", STSong, SimSun, serif;
+  font-style: normal;
+}
+.ty-document strong em,
+.ty-document em strong {
+  font-family: Georgia-BoldItalic, STSongti-SC-Regular, "Songti SC", STSong, SimSun, serif;
+}
+
+.ty-document .md-h1 {
+  /* A double rule. */
+  background-image: linear-gradient(#eeeeee 1px, transparent 1px 2px, #eeeeee 2px);
+  background-size: 100% 3px;
+}
+
+.ty-document a {
+  border-bottom: 1px solid #1abc9c;
+}
+.ty-document a:hover {
+  border-bottom-color: #555555;
+  color: #555555;
+  text-decoration: none;
+}
+.ty-document a.md-toc-inner {
+  border-bottom: 0;
+}
+
+.ty-document mark {
+  border-bottom: 1px solid #ffedce;
+}
+
+.ty-document .md-table th,
+.ty-document .md-table td {
+  color: #666666;
+}

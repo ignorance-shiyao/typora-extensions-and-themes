@@ -1,0 +1,20 @@
+{
+  "id": "typora.ash",
+  "name": "Ash",
+  "version": "1.0.0",
+  "description": "A soft dark theme: Questrial and Montserrat on ash grey, with round task boxes.",
+  "author": "Typora",
+  "keywords": [
+    "dark",
+    "grey",
+    "sans-serif"
+  ],
+  "tags": [
+    "Theme"
+  ],
+  "contributes": {
+    "themes": [
+      "themes/ash"
+    ]
+  }
+}

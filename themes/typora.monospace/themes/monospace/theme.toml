@@ -1,0 +1,153 @@
+#:schema https://docs.typora.io/schema/theme-1.json
+# Rebuilt from Typora 1's Monospace and Monospace Dark themes, now one theme
+# that follows the appearance.
+name = "Monospace"
+color-scheme = "auto"
+author = "Typora"
+version = "1.0.0"
+description = "A coder's page that keeps its Markdown marks: # headings, * bullets and [x] tasks in Inconsolata, in light and dark."
+css = "theme.css"
+
+[vars]
+body-font = 'Inconsolata, Menlo, Consolas, monospace'
+heading-font = '"PT Mono", Inconsolata, Menlo, Consolas, monospace'
+mono-font = 'Inconsolata, Menlo, Consolas, monospace'
+font-size = "16px"
+line-height = 1.6
+letter-spacing = "0"
+content-width = "668px"
+paragraph-spacing = "1em"
+code-bg = "#263238"
+inline-code-bg = "transparent"
+
+[vars.light]
+highlight = "bisque"
+bg = "#ffffff"
+text = "#333333"
+heading = "#6363ac"
+minor-heading = "#0e5796"
+muted = "#808080"
+accent = "#0791fd"
+link = "#005dad"
+border = "#cbcbcb"
+mark-color = "#438600"
+bold = "#b5302e"
+italic = "#400469"
+code-ink = "#949415"
+table-head = "#e0e0e0"
+
+[vars.dark]
+highlight = "rgba(255, 228, 196, 0.28)"
+bg = "#222222"
+text = "#ebebeb"
+heading = "#dbdbfd"
+minor-heading = "#549ad8"
+muted = "#cccccc"
+accent = "#8ac9ff"
+link = "#8ac9ff"
+border = "#606060"
+mark-color = "#4fac4f"
+bold = "#ffffc5"
+italic = "#c885f5"
+code-ink = "#caca16"
+table-head = "#263238"
+
+[[fonts]]
+family = "Inconsolata"
+src = "fonts/Inconsolata-Regular.ttf"
+weight = 400
+
+[[fonts]]
+family = "Inconsolata"
+src = "fonts/Inconsolata-Bold.ttf"
+weight = 700
+
+[elements.headings]
+weight = 700
+letter-spacing = "0"
+
+[elements.h1]
+size = "2em"
+margin = ["0.83em", "0.83em"]
+
+[elements.h2]
+size = "1.6em"
+margin = ["0.83em", "0.83em"]
+
+[elements.h3]
+size = "1.3em"
+margin = ["0.83em", "0.83em"]
+
+[elements.h4]
+size = "1.2em"
+color = "$minor-heading"
+margin = ["0.83em", "0.83em"]
+
+[elements.h5]
+size = "1.1em"
+color = "$minor-heading"
+margin = ["0.83em", "0.83em"]
+
+[elements.h6]
+size = "1em"
+color = "$minor-heading"
+margin = ["0.83em", "0.83em"]
+
+[elements.strong]
+color = "$bold"
+
+[elements.link]
+underline = "none"
+
+[elements.list]
+marker-color = "$mark-color"
+
+[elements.inline-code]
+color = "$code-ink"
+border = "transparent"
+radius = "0"
+
+[elements.code-block]
+style = "flat"
+color = "#e9eded"
+radius = "3px"
+font-size = "1em"
+
+[elements.blockquote]
+style = "bar"
+bar-width = "8px"
+bar-color = "#979797"
+bg = "rgba(128, 128, 128, 0.05)"
+color = "$text"
+
+[elements.table]
+style = "grid"
+header-bg = "$table-head"
+
+[chrome.light]
+sidebar-bg = "#263238"
+text = "#dddddd"
+text-muted = "#9fb0b8"
+divider = "#263238"
+border = "#263238"
+hover-bg = "rgba(255, 255, 255, 0.08)"
+tree-fg = "#dddddd"
+tree-dir-fg = "#eeeeee"
+tree-selected-bg = "rgba(7, 145, 253, 0.57)"
+tree-selected-fg = "#ffffff"
+
+[chrome.dark]
+sidebar-bg = "#2e2e2e"
+text = "#cccccc"
+text-muted = "#9a9a9a"
+divider = "#3a3a3a"
+border = "#3a3a3a"
+hover-bg = "rgba(255, 255, 255, 0.08)"
+tree-fg = "#cccccc"
+tree-dir-fg = "#dddddd"
+tree-selected-bg = "rgba(219, 219, 253, 0.4)"
+tree-selected-fg = "#ffffff"
+
+[syntax]
+light = "monospace-code.json"
+dark = "monospace-code.json"

@@ -1,0 +1,23 @@
+/* A dashed box around the quote. Shadow and outline sit outside the block,
+   so they take no room from the layout. */
+.ty-document .md-blockquote {
+  border-radius: 5px;
+  box-shadow: 0 0 0 0.6em #f9f9f9;
+  outline: 2px dashed #d0dfda;
+  outline-offset: 0.6em;
+}
+
+.ty-document a {
+  transition: color 0.3s;
+}
+.ty-document a:hover {
+  background: url("line.png") repeat-x left bottom;
+  color: #1d5884;
+}
+
+/* A rule is a row of dots. */
+.ty-document .md-hr > hr {
+  background: none;
+  border-bottom: 1px dotted #cccccc;
+  height: 0;
+}

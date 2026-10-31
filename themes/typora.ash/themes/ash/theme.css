@@ -1,0 +1,55 @@
+/* Links read as small chips. */
+.ty-document a {
+  padding: 4px;
+  border-radius: 4px;
+  background: #4d4d4d;
+  font-size: 0.9em;
+}
+
+/* A round quote mark on the quote's corner. */
+.ty-document .md-blockquote {
+  font-family: Arial, sans-serif;
+}
+.ty-document .md-blockquote::before {
+  content: "\201C";
+  display: block;
+  left: -13px;
+  top: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #555555;
+  color: #ffffff;
+  font-size: 24pt;
+  font-style: normal;
+  line-height: 42px;
+  text-align: center;
+  mask: none;
+}
+
+/* Tables: ash cells under a quiet header. */
+.ty-document .md-table td {
+  background: #858585;
+}
+.ty-document .md-table th {
+  color: #b3b3b3;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* Task boxes are round; a finished one fills in. */
+.ty-document .md-task-list-control {
+  border-color: #d4d4d4;
+  border-radius: 50%;
+}
+.ty-document .md-task-list-control:checked {
+  border-color: #d4d4d4;
+  background: #d4d4d4;
+}
+.ty-document .md-task-list-control:checked::after {
+  border-color: #666666;
+}
+
+.ty-document .md-toc-inner::before {
+  content: "- ";
+}

@@ -1,0 +1,78 @@
+/* The page keeps its Markdown marks. They hang in the margin and take no
+   room, so they change nothing about the text's layout. */
+.ty-document .md-heading {
+  position: relative;
+}
+.ty-document .md-heading::before {
+  position: absolute;
+  right: 100%;
+  white-space: pre;
+}
+.ty-document .md-h1::before { content: "# "; }
+.ty-document .md-h2::before { content: "## "; }
+.ty-document .md-h3::before { content: "### "; }
+.ty-document .md-h4::before { content: "#### "; }
+.ty-document .md-h5::before { content: "##### "; }
+.ty-document .md-h6::before { content: "###### "; }
+/* Editing shows the real marks. */
+.ty-document .md-heading:has(> .ty-inlines[contenteditable="true"])::before {
+  content: none;
+}
+
+/* Bullets are asterisks at every level. */
+.ty-document .md-list-ul > .md-list-item::after {
+  content: "*";
+  top: 0.21em;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ty-list-marker-color);
+}
+.ty-document .md-list-task > .md-list-item::after {
+  content: none;
+}
+
+/* Task boxes are [ ] and [x]. */
+.ty-document .md-task-list-control {
+  top: 0.21em;
+  left: -4ch;
+  width: 3ch;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ty-list-marker-color);
+  font: inherit;
+  place-content: start;
+}
+.ty-document .md-task-list-control::before {
+  content: "[ ]";
+}
+.ty-document .md-task-list-control:checked {
+  background: none;
+}
+.ty-document .md-task-list-control:checked::before {
+  content: "[x]";
+}
+.ty-document .md-task-list-control:checked::after {
+  content: none;
+}
+
+/* A rule is a line of dashes. */
+.ty-document .md-hr > hr {
+  background: repeating-linear-gradient(90deg, var(--color-text) 0 0.6ch, transparent 0.6ch 1ch);
+}
+
+.ty-document em {
+  color: var(--theme-italic);
+}
+.ty-document .md-blockquote {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.ty-document a:hover {
+  background: #2a6496;
+  color: #ffffff;
+}

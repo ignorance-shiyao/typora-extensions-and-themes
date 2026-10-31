@@ -1,0 +1,26 @@
+.ty-document .md-table th {
+  color: #f3f3f3;
+}
+
+/* Task boxes are the ballot characters, like a typeset checklist. */
+.ty-document .md-task-list-control {
+  top: 0.26em;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: #bbbbbb;
+  font-size: 1.3em;
+}
+.ty-document .md-task-list-control::before {
+  content: "\2610";
+}
+.ty-document .md-task-list-control:checked {
+  background: none;
+  color: inherit;
+}
+.ty-document .md-task-list-control:checked::before {
+  content: "\2611";
+}
+.ty-document .md-task-list-control:checked::after {
+  content: none;
+}

@@ -13,8 +13,13 @@ export const CORS_HEADERS = {
 };
 
 /** A package in /download/: a zip the app installs (it stays a download in browsers). */
-export const PACKAGE_EXTENSION = ".typora-extension";
-export const PACKAGE_CONTENT_TYPE = "application/x-typora-extension";
+export const PACKAGE_TYPES = {
+  ".typora-extension": "application/x-typora-extension",
+  ".typora-theme": "application/x-typora-theme",
+};
+
+export const packageContentType = (pathname) =>
+  Object.entries(PACKAGE_TYPES).find(([extension]) => pathname.endsWith(extension))?.[1];
 
 export const SECURITY_HEADERS = {
   "x-content-type-options": "nosniff",
@@ -24,7 +29,7 @@ export const SECURITY_HEADERS = {
 /**
  * Cache policy:
  * - /index.json changes on every publish: short cache.
- * - /download/<id>-<version>.typora-extension is never rewritten (a change needs a new
+ * - /download/<id>-<version>.<package> is never rewritten (a change needs a new
  *   version, enforced by scripts/permission-diff.mjs): immutable.
  * - /assets/* names carry a content hash: immutable.
  * - HTML revalidates every time.

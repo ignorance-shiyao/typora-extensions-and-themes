@@ -1,0 +1,95 @@
+#:schema https://docs.typora.io/schema/theme-1.json
+# Rebuilt from Typora 1's Scribble theme, forked from chloerei/scribble.
+name = "Scribble"
+color-scheme = "light"
+author = "Typora"
+version = "1.0.0"
+description = "A white sheet of paper on the desk: dashed quote boxes and dotted rules, forked from Scribble."
+css = "theme.css"
+
+[vars]
+body-font = '"Helvetica Neue", Arial, sans-serif'
+mono-font = 'Courier, monospace'
+font-size = "15px"
+line-height = 1.6
+letter-spacing = "0"
+content-width = "648px"
+paragraph-spacing = "1em"
+bg = "#ffffff"
+text = "#303030"
+heading = "#303030"
+muted = "#606060"
+accent = "#226699"
+link = "#226699"
+border = "#cccccc"
+surface = "#f9f9f9"
+code-bg = "#f8f8f8"
+inline-code-bg = "#f8f8f8"
+caret = "#223c61"
+
+[elements.headings]
+letter-spacing = "0"
+
+[elements.h1]
+align = "center"
+line-height = 1.5
+margin = ["0", "60px"]
+
+[elements.h2]
+margin = ["2em", "1em"]
+
+[elements.h3]
+margin = ["2em", "1em"]
+
+[elements.h4]
+margin = ["2em", "1em"]
+
+[elements.h5]
+margin = ["2em", "1em"]
+
+[elements.strong]
+color = "$text"
+
+[elements.link]
+underline = "none"
+
+[elements.inline-code]
+color = "#8a0004"
+border = "transparent"
+radius = "3px"
+
+[elements.blockquote]
+style = "plain"
+bg = "#f9f9f9"
+color = "$muted"
+
+[elements.code-block]
+style = "card"
+radius = "5px"
+font-size = "1em"
+
+[elements.table]
+style = "grid"
+border = "#cccacc"
+header-bg = "#e9e7e9"
+
+[chrome]
+window-bg = "#f9f9f9"
+sidebar-bg = "transparent"
+page-bg = "#ffffff"
+detail-bg = "#ffffff"
+surface-radius = "7px"
+surface-border = "#eeeeee"
+surface-inset = "12px"
+surface-gap = "12px"
+text = "#303030"
+text-muted = "#808080"
+accent = "#223c61"
+border = "transparent"
+divider = "#eeeeee"
+hover-bg = "#e6e8ea"
+tree-fg = "#303030"
+tree-dir-fg = "#223c61"
+tree-selected-bg = "#e6e8ea"
+tree-selected-fg = "#223c61"
+tree-selected-radius = "5px"
