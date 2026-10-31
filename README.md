@@ -31,7 +31,7 @@ scripts/
 site/                       CSS, JS and icon for the website
 suggestions.json            editor's picks the app suggests in its command palette and / menu
 worker.js, headers.js       Cloudflare Worker serving dist/ (wrangler.toml)
-.github/workflows/          ci.yml (every push / PR), deploy.yml (main)
+.github/workflows/          ci.yml (every push / PR), deploy.yml and deploy-aliyun.yml (main)
 ```
 
 `npm run build` writes:

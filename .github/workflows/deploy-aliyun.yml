@@ -1,0 +1,73 @@
+name: Deploy to Aliyun
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Not cancelled midway: the next run waits for Dokku to finish this deploy.
+concurrency:
+  group: deploy-aliyun
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # updatedAt in index.json comes from git log
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Validate
+        run: npm run validate
+
+      - name: Build
+        run: node scripts/build.mjs --origin https://extensions.typoraio.cn
+
+      - name: Deploy to extensions.typoraio.cn
+        env:
+          SSH_KEY: ${{ secrets.ALIYUN_PEM }}
+          KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SSH_KEY" ] || [ -z "$KNOWN_HOSTS" ]; then
+            echo "::error::ALIYUN_PEM and KNOWN_HOSTS must be set."
+            exit 1
+          fi
+
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/dokku
+          chmod 600 ~/.ssh/dokku
+
+          # scripts/serve.mjs already answers like worker.js. A fresh repository
+          # each time: the host only ever needs the latest build.
+          site="$RUNNER_TEMP/dokku-site"
+          rm -rf "$site"
+          mkdir -p "$site/scripts"
+          cp -R dist headers.js "$site"
+          cp scripts/serve.mjs scripts/lib.mjs "$site/scripts"
+          echo 'web: node scripts/serve.mjs' > "$site/Procfile"
+          cat > "$site/package.json" <<'JSON'
+          {
+            "name": "typora-extensions-site",
+            "private": true,
+            "type": "module",
+            "engines": { "node": "22.x" }
+          }
+          JSON
+
+          cd "$site"
+          git init -q -b master
+          git add -A
+          git -c user.email=hi@typora.io -c user.name=Typora commit -q -m "Deploy $GITHUB_SHA"
+          GIT_SSH_COMMAND='ssh -i ~/.ssh/dokku -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ServerAliveInterval=30' \
+            git push --force dokku@dokku.typoraio.cn:typora-extensions master
