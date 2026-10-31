@@ -2,10 +2,11 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
+import vm from "node:vm";
 import { CORS_HEADERS, cacheControlFor, packageContentType } from "../headers.js";
 import { MANIFEST, THEMES_DIR, checkManifest, checkThemePackage, packageIds, readManifest, themeHead, themeIds } from "../scripts/lib.mjs";
 import { docPage, galleryPage, themePage } from "../scripts/themes-site.mjs";
-import { homePage } from "../scripts/site.mjs";
+import { APPEARANCE_SCRIPT, homePage } from "../scripts/site.mjs";
 
 const OFFICIAL = ["typora.academic", "typora.ash", "typora.han", "typora.monospace", "typora.scribble"];
 const manifest = (extra = {}) => ({
@@ -104,6 +105,33 @@ test("every site has the same header, with its own link selected", () => {
   assert.match(themes, /<li class="active"><a href="https:\/\/theme2\.typora\.io\/"/);
   assert.deepEqual([...themes.matchAll(/<li[^>]*><a [^>]*>([^<]+)</g)].map((m) => m[1]), ["Docs", "Extensions", "Themes", "Homepage"]);
   assert.match(themes, /class="appearance"/);
+});
+
+/** Runs the head script on a stub page and returns it with the switch's click. */
+function appearancePage(hostname, cookie = "") {
+  let click;
+  const root = { dataset: {}, style: {} };
+  const document = { cookie, documentElement: root, addEventListener: (_, listener) => (click = listener) };
+  const matchMedia = () => ({ matches: false, addEventListener() {} });
+  vm.runInNewContext(APPEARANCE_SCRIPT.replace(/<\/?script>/g, ""), { document, matchMedia, location: { hostname } });
+  return { root, document, toggle: () => click({ target: { closest: () => true } }) };
+}
+
+test("the appearance cookie covers every site on the domain", () => {
+  for (const [hostname, domain] of [["theme2.typora.io", "typora.io"], ["docs.typoraio.cn", "typoraio.cn"]]) {
+    const page = appearancePage(hostname);
+    assert.equal(page.root.dataset.theme, "light");
+    page.toggle();
+    assert.equal(page.root.dataset.theme, "dark");
+    assert.match(page.document.cookie, new RegExp(`^typora-appearance=dark; .*domain=${domain.replace(".", "\\.")}; secure$`));
+  }
+});
+
+test("the appearance cookie needs no domain locally and applies on load", () => {
+  const local = appearancePage("localhost");
+  local.toggle();
+  assert.doesNotMatch(local.document.cookie, /domain=|secure/);
+  assert.equal(appearancePage("extensions.typora.io", "a=b; typora-appearance=dark").root.dataset.theme, "dark");
 });
 
 test("theme packages are served with their own type and cached forever", () => {

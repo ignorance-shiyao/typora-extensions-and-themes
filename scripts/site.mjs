@@ -54,18 +54,13 @@ export function permissionSentences(p, settings = {}) {
 }
 
 /** Sets the page's appearance before it paints: the visitor's choice, else the
- *  system's, which it then follows. The header's switch saves a choice. */
+ *  system's, which it then follows. The header's switch saves a choice in a
+ *  cookie for the whole domain, which docs reads too (apps/docs/.vitepress). */
 export const APPEARANCE_SCRIPT = `<script>
 (() => {
   const root = document.documentElement;
   const system = matchMedia("(prefers-color-scheme: dark)");
-  const saved = () => {
-    try {
-      return localStorage.getItem("appearance");
-    } catch {
-      return null;
-    }
-  };
+  const saved = () => /(?:^|; )typora-appearance=(light|dark)/.exec(document.cookie)?.[1];
   const apply = (mode) => {
     root.dataset.theme = mode;
     root.style.colorScheme = mode;
@@ -77,9 +72,8 @@ export const APPEARANCE_SCRIPT = `<script>
     if (!event.target.closest(".appearance")) return;
     const next = root.dataset.theme === "dark" ? "light" : "dark";
     apply(next);
-    try {
-      localStorage.setItem("appearance", next);
-    } catch {}
+    const domain = /(?:^|\\.)(typora\\.io|typoraio\\.cn)$/.exec(location.hostname)?.[1];
+    document.cookie = \`typora-appearance=\${next}; path=/; max-age=31536000; samesite=lax\${domain ? \`; domain=\${domain}; secure\` : ""}\`;
   });
 })();
 </script>`;
