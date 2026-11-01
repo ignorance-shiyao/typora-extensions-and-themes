@@ -89,7 +89,7 @@ const MOON = '<svg class="moon" viewBox="0 0 24 24" width="12" height="12" fill=
  *  `active` the site it is on. */
 export function siteHeader(active, sites = DEFAULT_SITES) {
   const item = (key, label) =>
-    `<li${active === key ? ' class="active"' : ""}><a href="${esc(sites[key])}/"${active === key ? ' aria-current="page"' : ""}>${label}</a></li>`;
+    `<li${active === key ? ' class="active"' : ""}><a href="${esc(sites[key])}/"${active === key ? ' aria-current="page"' : ' target="_blank" rel="noreferrer"'}>${label}</a></li>`;
   return `<header class="nav">
   <div class="nav-inner">
     <a class="product-name" href="/">Typora <span class="v2">2.0</span></a>

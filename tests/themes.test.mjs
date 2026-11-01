@@ -99,12 +99,14 @@ test("the extensions site links the themes site", () => {
 test("every site has the same header, with its own link selected", () => {
   const extensions = homePage({ entries: [], assets: site.assets, origin: site.sites.extensions, sites: site.sites });
   const themes = galleryPage({ ...site, themes: [] });
-  const header = (page) => page.slice(page.indexOf("<header"), page.indexOf("</header>")).replace(' class="active"', "").replace(' aria-current="page"', "");
+  const header = (page) => page.slice(page.indexOf("<header"), page.indexOf("</header>")).replace(' class="active"', "").replace(' aria-current="page"', "").replaceAll(' target="_blank" rel="noreferrer"', "");
   assert.equal(header(extensions), header(themes));
   assert.match(extensions, /<li class="active"><a href="https:\/\/extensions\.typora\.io\/"/);
   assert.match(themes, /<li class="active"><a href="https:\/\/theme2\.typora\.io\/"/);
   assert.deepEqual([...themes.matchAll(/<li[^>]*><a [^>]*>([^<]+)</g)].map((m) => m[1]), ["Docs", "Extensions", "Themes", "Homepage"]);
   assert.match(themes, /class="appearance"/);
+  assert.match(themes, /<a href="https:\/\/theme2\.typora\.io\/" aria-current="page">/);
+  assert.match(themes, /<a href="https:\/\/extensions\.typora\.io\/" target="_blank" rel="noreferrer">/);
 });
 
 /** Runs the head script on a stub page and returns it with the switch's click. */

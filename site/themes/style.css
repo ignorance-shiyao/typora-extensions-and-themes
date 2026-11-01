@@ -100,7 +100,7 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--code); bor
 }
 .nav-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
 .nav ul { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
-.nav li a { display: block; padding: 8px 16px; border-radius: 8px; color: var(--muted); white-space: nowrap; }
+.nav li a { display: block; padding: 4px 16px; border-radius: 6px; line-height: 24px; color: var(--muted); white-space: nowrap; }
 .nav li a:hover, .nav li a:focus { background: var(--line); color: var(--text); text-decoration: none; }
 .nav li.active a { background: var(--line); color: var(--text); }
 .appearance {
@@ -270,7 +270,7 @@ th, td { padding: 4px 12px; border: 1px solid var(--line); text-align: left; }
   .summary { display: block; }
   .summary .item-image { margin-bottom: 24px; }
   .nav-inner { position: relative; height: auto; padding: 16px; flex-direction: column; gap: 8px; }
-  .nav li a { padding: 8px; }
+  .nav li a { padding: 4px 8px; }
   .appearance { position: absolute; top: 25px; right: 16px; }
   #content { padding-top: 32px; }
 }
