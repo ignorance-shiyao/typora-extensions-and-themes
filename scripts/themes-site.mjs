@@ -83,7 +83,7 @@ function themeActions(theme) {
           <summary class="split-button" aria-label="More ways to install"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="menu">
             <a href="/download/${esc(file)}" download><span class="menu-label">Download</span><span class="menu-size">${esc(formatSize(theme.download.size))}</span>
-              <span class="menu-note">Open the file with Typora, or use Settings ▸ View ▸ Install Theme…</span></a>
+              <span class="menu-note">Open the file with Typora, or use Settings ▸ View ▸ Install from Local File…</span></a>
             <a href="${esc(theme.repository)}"><span class="menu-label">Homepage</span></a>
           </div>
         </details>
