@@ -109,12 +109,13 @@ test("every site has the same header, with its own link selected", () => {
 
 /** Runs the head script on a stub page and returns it with the switch's click. */
 function appearancePage(hostname, cookie = "") {
-  let click;
+  const listeners = {};
+  const button = { setAttribute(name, value) { this[name] = String(value); } };
   const root = { dataset: {}, style: {} };
-  const document = { cookie, documentElement: root, addEventListener: (_, listener) => (click = listener) };
+  const document = { cookie, documentElement: root, querySelector: () => button, addEventListener: (type, listener) => (listeners[type] = listener) };
   const matchMedia = () => ({ matches: false, addEventListener() {} });
   vm.runInNewContext(APPEARANCE_SCRIPT.replace(/<\/?script>/g, ""), { document, matchMedia, location: { hostname } });
-  return { root, document, toggle: () => click({ target: { closest: () => true } }) };
+  return { root, document, button, load: listeners.DOMContentLoaded, toggle: () => listeners.click({ target: { closest: () => true } }) };
 }
 
 test("the appearance cookie covers every site on the domain", () => {
@@ -132,6 +133,15 @@ test("the appearance cookie needs no domain locally and applies on load", () => 
   local.toggle();
   assert.doesNotMatch(local.document.cookie, /domain=|secure/);
   assert.equal(appearancePage("extensions.typora.io", "a=b; typora-appearance=dark").root.dataset.theme, "dark");
+});
+
+test("the switch reports the appearance once the header exists", () => {
+  const page = appearancePage("theme2.typora.io", "typora-appearance=dark");
+  page.button["aria-checked"] = "false";
+  page.load();
+  assert.equal(page.button["aria-checked"], "true");
+  page.toggle();
+  assert.equal(page.button["aria-checked"], "false");
 });
 
 test("theme packages are served with their own type and cached forever", () => {
