@@ -1,7 +1,7 @@
 {
   "id": "typora.han",
   "name": "Han",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A theme for Chinese writing, based on typo.css: light PingFang text, Song emphasis and green links. 为中文写作设计的主题。",
   "author": "Typora",
   "keywords": [

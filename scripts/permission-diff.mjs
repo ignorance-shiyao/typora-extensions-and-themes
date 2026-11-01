@@ -11,8 +11,8 @@
 import { appendFileSync } from "node:fs";
 import {
   MANIFEST,
-  STORE_IMAGE_PATTERN,
   git,
+  isStoreOnlyImage,
   normalizePermissions,
   platformLabel,
   packageDir,
@@ -64,7 +64,7 @@ const changed = (id) => {
     // Untracked files are not seen by git diff; count them too.
     ...git(["ls-files", "--others", "--exclude-standard", "--", prefix]).split("\n"),
   ];
-  return paths.some((p) => p && !STORE_IMAGE_PATTERN.test(p.slice(prefix.length)));
+  return paths.some((p) => p && !isStoreOnlyImage(packageDir(id), p.slice(prefix.length)));
 };
 
 const DOC_LEVEL = { "": 0, read: 1, write: 2 };

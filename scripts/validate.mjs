@@ -89,7 +89,7 @@ function validate(id) {
     }
     if (!stat.isFile()) continue;
     if (path.split("/").some((part) => part.startsWith("."))) continue;
-    // Store images are not packaged but have the same per-file limit.
+    // Store images don't count towards the total but have the same per-file limit.
     if (STORE_IMAGE_PATTERN.test(path)) {
       const kind = path.split(".")[0].toLowerCase();
       const size = imageSize(readFileSync(join(dir, path)));

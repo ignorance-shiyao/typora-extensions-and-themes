@@ -174,15 +174,22 @@ export function platformLabel(os) {
 }
 
 /**
- * Store images in the extension folder, shown on the website only and not
- * packaged: `cover.webp` (2:1) on the card, `screenshot.webp` (16:10) on the
- * extension's page. PNG and JPEG work too.
+ * Store images in the extension folder, shown on the website: `cover.webp`
+ * (2:1) on the card, `screenshot.webp` (16:10) on the extension's page. PNG
+ * and JPEG work too. Only a theme's cover is packaged, as the app previews the
+ * theme with it.
  */
 export const STORE_IMAGE_PATTERN = /^(cover|screenshot)\.(png|jpe?g|webp)$/i;
 /** Width / height each store image should have. */
 export const STORE_IMAGE_RATIOS = { cover: 2, screenshot: 1.6 };
 /** The theme gallery's tiles are 5:4, like theme.typora.io's. */
 export const THEME_IMAGE_RATIOS = { cover: 1.25, screenshot: 1.6 };
+
+/** Whether `name`, at the root of the package in `dir`, stays out of the package. */
+export function isStoreOnlyImage(dir, name) {
+  if (!STORE_IMAGE_PATTERN.test(name)) return false;
+  return !(name.toLowerCase().startsWith("cover.") && dirname(dir) === THEMES_DIR);
+}
 
 export function storeImage(dir, kind) {
   return readdirSync(dir).find((name) => STORE_IMAGE_PATTERN.test(name) && name.split(".")[0].toLowerCase() === kind) ?? null;
@@ -208,13 +215,13 @@ export function imageSize(buf) {
 
 /**
  * Files that go into the package: relative `/` paths, sorted, dotfiles and
- * store images skipped.
+ * store-only images skipped.
  */
 export function packageFiles(dir) {
   const out = [];
   const walk = (rel) => {
     for (const entry of readdirSync(join(dir, rel), { withFileTypes: true })) {
-      if (entry.name.startsWith(".") || (!rel && STORE_IMAGE_PATTERN.test(entry.name))) continue;
+      if (entry.name.startsWith(".") || (!rel && isStoreOnlyImage(dir, entry.name))) continue;
       const path = rel ? `${rel}/${entry.name}` : entry.name;
       if (entry.isDirectory()) walk(path);
       else out.push(path);

@@ -40,7 +40,7 @@ not every line for escapes.
   Language packs get both from `scripts/language-pack-images.mjs`.
 - Bump `version` with every change to the folder. Published downloads are
   immutable; CI fails a PR that changes files without a bump. Store images
-  alone are exempt.
+  alone are exempt, except a theme's cover, which is packaged.
 - A `README.md` in the folder is shown on the extension's store page. An
   image uploader that drives a companion app (iPic, uPic, …) names the app,
   links where to get it and says what the extension sends it.
@@ -131,7 +131,8 @@ Themes live in `themes/<id>/`, not `extensions/`, and appear on
   have. Credit the fonts and any theme you forked in `README.md`.
 - Store images: `cover.webp` is 500 × 400 (5:4), `screenshot.webp` is
   1760 × 1100 (16:10). `node scripts/theme-images.mjs <id>` takes both from
-  the real app, or provide your own.
+  the real app, or provide your own. The cover goes into the package too:
+  Typora shows it as the theme's preview in Settings.
 
 Reviewers check the look on the sample document, that `theme.css` only
 decorates (sizes and margins belong in `theme.toml`), and font licenses.

@@ -1,7 +1,7 @@
 {
   "id": "typora.monospace",
   "name": "Monospace",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A coder's page that keeps its Markdown marks: # headings, * bullets and [x] tasks in Inconsolata, in light and dark.",
   "author": "Typora",
   "keywords": [
