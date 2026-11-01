@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-ar",
   "name": "العربية Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Arabic, and checks Arabic spelling when the system spellchecker has no Arabic dictionary.",
   "author": "Typora Team",
   "keywords": [

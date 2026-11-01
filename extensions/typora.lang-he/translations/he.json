@@ -2088,5 +2088,9 @@
   "Allow extensions to run programs": "לאפשר להרחבות להריץ תוכנות",
   "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "הרחבות כמו מסוף מריצות תוכנות במחשב שלך בשמך, מחוץ לארגז החול. כל אחת מהן עדיין מבקשת את רשותך.",
   "Needs “Allow extensions to run programs”": "נדרש „לאפשר להרחבות להריץ תוכנות”",
-  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} הותקנה. היא מריצה תוכנות: יש להפעיל את „לאפשר להרחבות להריץ תוכנות” כדי להשתמש בה."
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} הותקנה. היא מריצה תוכנות: יש להפעיל את „לאפשר להרחבות להריץ תוכנות” כדי להשתמש בה.",
+  "Text Direction": "כיוון טקסט",
+  "Text Direction: {0}": "כיוון טקסט: {0}",
+  "Default Text Direction": "כיוון טקסט ברירת מחדל",
+  "Auto goes by the first letter of each block. Code and math always run left to right.": "מצב אוטומטי נקבע לפי האות הראשונה של כל בלוק. קוד ונוסחאות תמיד משמאל לימין."
 }

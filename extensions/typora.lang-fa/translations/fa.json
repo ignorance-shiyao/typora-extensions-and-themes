@@ -2092,5 +2092,9 @@
   "Allow extensions to run programs": "اجازه به افزونه‌ها برای اجرای برنامه",
   "Extensions such as a terminal run programs on your computer as you, outside the sandbox. Each one still asks for your permission.": "افزونه‌هایی مانند ترمینال برنامه‌ها را به‌جای شما و بیرون از محیط ایزوله روی رایانه اجرا می‌کنند. هر کدام همچنان از شما اجازه می‌گیرد.",
   "Needs “Allow extensions to run programs”": "نیازمند «اجازه به افزونه‌ها برای اجرای برنامه»",
-  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} نصب شد. این افزونه برنامه اجرا می‌کند: برای استفاده، «اجازه به افزونه‌ها برای اجرای برنامه» را روشن کنید."
+  "Installed {0}. It runs programs: turn on “Allow extensions to run programs” to use it.": "{0} نصب شد. این افزونه برنامه اجرا می‌کند: برای استفاده، «اجازه به افزونه‌ها برای اجرای برنامه» را روشن کنید.",
+  "Text Direction": "جهت متن",
+  "Text Direction: {0}": "جهت متن: {0}",
+  "Default Text Direction": "جهت پیش‌فرض متن",
+  "Auto goes by the first letter of each block. Code and math always run left to right.": "حالت خودکار بر اساس نخستین حرف هر بلوک تعیین می‌شود. کد و ریاضی همیشه از چپ به راست هستند."
 }
