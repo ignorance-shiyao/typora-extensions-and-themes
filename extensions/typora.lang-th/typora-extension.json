@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-th",
   "name": "ไทย Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Thai, and checks Thai spelling when the system spellchecker has no Thai dictionary.",
   "author": "Typora Team",
   "keywords": [

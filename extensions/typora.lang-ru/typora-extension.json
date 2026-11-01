@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-ru",
   "name": "Русский Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Russian, and checks Russian spelling when the system spellchecker has no Russian dictionary.",
   "author": "Typora Team",
   "keywords": [

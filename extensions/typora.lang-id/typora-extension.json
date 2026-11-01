@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-id",
   "name": "Bahasa Indonesia Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Indonesian, and checks Indonesian spelling when the system spellchecker has no Indonesian dictionary.",
   "author": "Typora Team",
   "keywords": [

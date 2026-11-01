@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-ko",
   "name": "한국어 Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Korean, and checks Korean spelling when the system spellchecker has no Korean dictionary.",
   "author": "Typora Team",
   "keywords": [

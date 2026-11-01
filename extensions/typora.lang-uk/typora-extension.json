@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-uk",
   "name": "Українська Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Ukrainian, and checks Ukrainian spelling when the system spellchecker has no Ukrainian dictionary.",
   "author": "Typora Team",
   "keywords": [

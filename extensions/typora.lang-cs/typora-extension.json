@@ -1,7 +1,7 @@
 {
   "id": "typora.lang-cs",
   "name": "Čeština Language Pack",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Shows Typora in Czech, and checks Czech spelling when the system spellchecker has no Czech dictionary.",
   "author": "Typora Team",
   "keywords": [
