@@ -2,17 +2,17 @@
 // Store images for the themes, taken from the real app (Electron) showing
 // scripts/theme-sample.md:
 //   screenshot.webp  1760×1100, the theme's page on theme2.typora.io
-//   cover.webp       500×400, the gallery tile; half light, half dark for an
-//                    `auto` theme
+//   cover.webp       5:4 at full resolution, the gallery tile and the theme's
+//                    preview; half light, half dark for an `auto` theme
 //
 //   node scripts/theme-images.mjs                   every theme, built-in ones too
 //   node scripts/theme-images.mjs typora.ash github only these
 //   node scripts/theme-images.mjs --app ../Typora-V2
 //
-// Needs a Typora-V2 checkout with a built Electron app (`npx electron-vite
-// build` in apps/electron) and its Playwright. By default that is the parent
-// folder, where this repository is a submodule. Windows stay invisible and
-// take no clicks while the script runs.
+// Needs cwebp (`brew install webp`) and a Typora-V2 checkout with a built
+// Electron app (`npx electron-vite build` in apps/electron) and its Playwright.
+// By default that is the parent folder, where this repository is a submodule.
+// Windows stay invisible and take no clicks while the script runs.
 
 import { execFileSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -31,6 +31,12 @@ if (!existsSync(MAIN)) {
   console.error(`No Electron build at ${MAIN}. Run npx electron-vite build in apps/electron.`);
   process.exit(2);
 }
+try {
+  execFileSync("cwebp", ["-version"], { stdio: "ignore" });
+} catch {
+  console.error("No cwebp. Run brew install webp.");
+  process.exit(2);
+}
 const { _electron } = createRequire(join(APP, "packages/typemark/package.json"))("@playwright/test");
 const ELECTRON = join(
   APP,
@@ -41,7 +47,8 @@ const ELECTRON = join(
 
 // A 1100×688 window at 1.6x makes the 1760×1100 screenshot.
 const WINDOW = { width: 1100, height: 688, scale: 1.6 };
-const COVER = { width: 500, height: 400 };
+// The cover's framing in CSS pixels; browsers scale the picture to fit.
+const COVER = { width: 625, height: 500 };
 const NOTES = ["Reading list.md", "Sample.md", "Style guide.md"];
 
 const WRAPPER = `
@@ -142,11 +149,11 @@ async function shoot(target, mode) {
     const clip = await page.evaluate(({ width, height }) => {
       const heading = document.querySelector(".ty-document .md-h1").getBoundingClientRect();
       const top = document.querySelector(".wb-titlebar").getBoundingClientRect().bottom;
-      const scale = Math.max(1, Math.min(1.4, (heading.width + 80) / width));
+      const scale = Math.max(1, Math.min(1.4, (innerHeight - top) / height, (heading.width + 80) / width));
       const w = width * scale;
       const margin = Math.max(40, (w - heading.width) / 2);
       return { x: Math.max(0, heading.left - margin), y: top, width: w, height: height * scale };
-    }, { width: 625, height: 500 });
+    }, COVER);
     return { window, cover: await page.screenshot({ clip }) };
   } finally {
     try {
@@ -158,14 +165,14 @@ async function shoot(target, mode) {
   }
 }
 
-/** Encode to WebP with Chromium's canvas; `covers` are drawn side by side. */
+/** Draw with Chromium's canvas, several pictures side by side, and encode. */
 async function encoder() {
   const { chromium } = createRequire(join(APP, "packages/typemark/package.json"))("@playwright/test");
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  const webp = async (pngs, width, height, quality) => {
+  const draw = async (pngs, width, height, type, quality) => {
     const data = await page.evaluate(
-      async ({ pngs, width, height, quality }) => {
+      async ({ pngs, width, height, type, quality }) => {
         const images = await Promise.all(
           pngs.map(async (b64) => {
             const image = new Image();
@@ -182,22 +189,29 @@ async function encoder() {
           const scale = image.naturalWidth / width;
           context.drawImage(image, index * part * scale, 0, part * scale, image.naturalHeight, index * part, 0, part, height);
         });
-        return canvas.toDataURL("image/webp", quality).split(",")[1];
+        return canvas.toDataURL(type, quality).split(",")[1];
       },
-      { pngs: pngs.map((png) => png.toString("base64")), width, height, quality },
+      { pngs: pngs.map((png) => png.toString("base64")), width, height, type, quality },
     );
     return Buffer.from(data, "base64");
   };
-  return { webp, close: () => browser.close() };
+  const webp = (png, width, height, quality) => draw([png], width, height, "image/webp", quality);
+  // Keeps every pixel. On pages of text, lossless is also smaller than lossy at
+  // a quality that keeps them sharp.
+  const cover = async (pngs) => {
+    const png = pngs.length > 1 ? await draw(pngs, pngs[0].readUInt32BE(16), pngs[0].readUInt32BE(20), "image/png") : pngs[0];
+    return execFileSync("cwebp", ["-quiet", "-lossless", "-z", "9", "-o", "-", "--", "-"], { input: png, maxBuffer: Infinity });
+  };
+  return { webp, cover, close: () => browser.close() };
 }
 
-const { webp, close } = await encoder();
+const { webp, cover, close } = await encoder();
 for (const target of targets()) {
   const schemes = target.colorScheme === "auto" ? ["light", "dark"] : [target.colorScheme ?? builtInScheme(target)];
   const shots = [];
   for (const mode of schemes) shots.push(await shoot(target, mode));
-  writeFileSync(join(target.dir, "screenshot.webp"), await webp([shots[0].window], 1760, 1100, 0.92));
-  writeFileSync(join(target.dir, "cover.webp"), await webp(shots.map((shot) => shot.cover), COVER.width, COVER.height, 0.9));
+  writeFileSync(join(target.dir, "screenshot.webp"), await webp(shots[0].window, 1760, 1100, 0.92));
+  writeFileSync(join(target.dir, "cover.webp"), await cover(shots.map((shot) => shot.cover)));
   console.log(`✓ ${target.slug}`);
 }
 await close();

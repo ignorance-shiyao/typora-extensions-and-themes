@@ -160,7 +160,7 @@ ${section(
   [
     `Fork <a href="${REPO_URL}">typora/typora-extensions</a> on GitHub.`,
     "Add your theme as <code>themes/&lt;your.id&gt;/</code>: a <code>typora-extension.json</code> that contributes only themes, with the tag <code>Theme</code>, and the theme folders it names.",
-    "Add <code>cover.webp</code> (500 × 400) and <code>screenshot.webp</code> (1760 × 1100), Typora showing the theme.",
+    "Add <code>cover.webp</code> (5:4, at least 1000 pixels wide) and <code>screenshot.webp</code> (1760 × 1100), Typora showing the theme.",
     "Run <code>npm run validate</code>, then open a pull request. CI packages what was reviewed as <code>&lt;your.id&gt;-&lt;version&gt;.typora-theme</code>.",
   ],
   `${REPO_URL}/blob/main/CONTRIBUTING.md`,

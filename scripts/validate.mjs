@@ -94,7 +94,7 @@ function validate(id) {
       const kind = path.split(".")[0].toLowerCase();
       const size = imageSize(readFileSync(join(dir, path)));
       if (size && Math.abs(size.width / size.height - ratios[kind]) > 0.02)
-        warnings.push(`${path} is ${size.width}×${size.height}; ${kind === "screenshot" ? "a screenshot is 16:10 (1760×1100)" : isTheme ? "a theme's cover is 5:4 (500×400)" : "a cover is 2:1 (800×400)"}.`);
+        warnings.push(`${path} is ${size.width}×${size.height}; ${kind === "screenshot" ? "a screenshot is 16:10 (1760×1100)" : isTheme ? "a theme's cover is 5:4" : "a cover is 2:1 (800×400)"}.`);
       if (stat.size > STORE_IMAGE_WARN_BYTES)
         warnings.push(`${path} is ${(stat.size / 1024).toFixed(0)} KB; compress it (lossless WebP for screenshots) to stay under ${STORE_IMAGE_WARN_BYTES / 1024} KB.`);
     } else total += stat.size;

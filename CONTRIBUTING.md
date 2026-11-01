@@ -129,10 +129,11 @@ Themes live in `themes/<id>/`, not `extensions/`, and appear on
   themes.
 - Bundle fonts, with their licenses, rather than naming ones people may not
   have. Credit the fonts and any theme you forked in `README.md`.
-- Store images: `cover.webp` is 500 × 400 (5:4), `screenshot.webp` is
-  1760 × 1100 (16:10). `node scripts/theme-images.mjs <id>` takes both from
-  the real app, or provide your own. The cover goes into the package too:
-  Typora shows it as the theme's preview in Settings.
+- Store images: `cover.webp` is 5:4 and at least 1000 pixels wide, as browsers
+  scale it down; `screenshot.webp` is 1760 × 1100 (16:10).
+  `node scripts/theme-images.mjs <id>` takes both from the real app, or provide
+  your own. The cover goes into the package too: Typora shows it as the theme's
+  preview in Settings.
 
 Reviewers check the look on the sample document, that `theme.css` only
 decorates (sizes and margins belong in `theme.toml`), and font licenses.
