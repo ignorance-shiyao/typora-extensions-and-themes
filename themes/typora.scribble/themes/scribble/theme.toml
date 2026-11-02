@@ -73,6 +73,11 @@ style = "grid"
 border = "#cccacc"
 header-bg = "#e9e7e9"
 
+[layout]
+sidebar = "bare"
+editor = "card"
+detail = "card"
+
 [chrome]
 window-bg = "#f9f9f9"
 sidebar-bg = "transparent"
