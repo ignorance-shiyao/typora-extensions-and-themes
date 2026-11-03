@@ -1,4 +1,4 @@
-// extensions.typora.io and theme2.typora.io: static assets from dist/<site>
+// extensions.typora.io and themes.typora.io: static assets from dist/<site>
 // (built by scripts/build.mjs) plus the headers in headers.js. wrangler.toml
 // and wrangler.themes.toml set run_worker_first so every response, including
 // assets and the 404 page, passes through here.

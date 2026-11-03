@@ -10,7 +10,7 @@
 //     index.html, <id>/index.html, 404.html, robots.txt, sitemap.xml
 //     assets/*                          content-hashed CSS / JS / icon / images
 //
-//   dist/themes (theme2.typora.io)
+//   dist/themes (themes.typora.io)
 //     download/<id>-<version>.typora-theme
 //     index.html, doc/index.html, <id>/index.html, 404.html, robots.txt, sitemap.xml
 //     assets/*

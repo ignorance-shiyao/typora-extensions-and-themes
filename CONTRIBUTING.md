@@ -117,7 +117,7 @@ use both only when both capabilities are implemented.
 ## Contributing a theme
 
 Themes live in `themes/<id>/`, not `extensions/`, and appear on
-[theme2.typora.io](https://theme2.typora.io). Write the theme first:
+[themes.typora.io](https://themes.typora.io). Write the theme first:
 <https://docs.typora.io/extensions/themes>. Then:
 
 - Add a `typora-extension.json` as above, with the tag `Theme`, that

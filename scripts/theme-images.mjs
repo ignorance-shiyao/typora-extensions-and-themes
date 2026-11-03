@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Store images for the themes, taken from the real app (Electron) showing
 // scripts/theme-sample.md:
-//   screenshot.webp  1760×1100, the theme's page on theme2.typora.io
+//   screenshot.webp  1760×1100, the theme's page on themes.typora.io
 //   cover.webp       5:4 at full resolution, the gallery tile and the theme's
 //                    preview; half light, half dark for an `auto` theme
 //

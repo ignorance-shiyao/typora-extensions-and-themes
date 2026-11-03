@@ -1,4 +1,4 @@
-// theme2.typora.io: the Install ▾ menu closes on a click outside, Escape or a pick.
+// themes.typora.io: the Install ▾ menu closes on a click outside, Escape or a pick.
 
 (() => {
   const menu = document.querySelector(".split-menu");

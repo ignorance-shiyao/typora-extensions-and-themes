@@ -1,7 +1,7 @@
 {
   "name": "typora-extensions",
   "private": true,
-  "description": "Source of every extension in the Typora extension store, and the tooling that builds extensions.typora.io and theme2.typora.io",
+  "description": "Source of every extension in the Typora extension store, and the tooling that builds extensions.typora.io and themes.typora.io",
   "type": "module",
   "engines": {
     "node": ">=22"

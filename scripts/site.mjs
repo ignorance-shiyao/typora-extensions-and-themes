@@ -84,7 +84,7 @@ const DEFAULT_SITES = { docs: DOCS_ORIGIN, extensions: SITE_ORIGIN, themes: THEM
 const SUN = '<svg class="sun" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
 const MOON = '<svg class="moon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
 
-/** The header of docs, extensions and theme2 (docs draws its own in
+/** The header of docs, extensions and themes (docs draws its own in
  *  apps/docs/.vitepress, with VitePress's switch, which this one copies), with
  *  `active` the site it is on. */
 export function siteHeader(active, sites = DEFAULT_SITES) {
@@ -98,7 +98,7 @@ export function siteHeader(active, sites = DEFAULT_SITES) {
         <summary class="v2" aria-label="Typora version"><span>2.0 beta</span><svg class="version-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="m2 3.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
         <div class="version-options" aria-label="Typora versions">
           <a href="/" aria-current="true">2.0 beta</a>
-          ${active === "extensions" ? '<button type="button" data-version-unsupported>1.0</button>' : '<a href="https://theme.typora.io/">1.0</a>'}
+          ${active === "extensions" ? '<button type="button" data-version-unsupported>1.0</button>' : '<a href="/v1/">1.0</a>'}
         </div>
       </details>
     </div>

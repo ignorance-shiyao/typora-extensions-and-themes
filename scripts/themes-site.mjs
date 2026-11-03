@@ -1,4 +1,4 @@
-// HTML for theme2.typora.io, modelled on theme.typora.io. Plain strings;
+// HTML for themes.typora.io, modelled on theme.typora.io. Plain strings;
 // everything user-supplied goes through esc().
 
 import { DOCS_URL, REPO_URL } from "./lib.mjs";
@@ -6,7 +6,7 @@ import { APPEARANCE_SCRIPT, esc, formatSize, siteHeader } from "./site.mjs";
 
 const WRITE_URL = `${DOCS_URL}themes`;
 const GUIDE_URL = DOCS_URL.replace("/extensions/", "/guide/themes");
-const V1_GALLERY = "https://theme.typora.io";
+const V1_GALLERY = "/v1/";
 
 const SCHEMES = { auto: "Light & dark", light: "Light", dark: "Dark" };
 const schemeLabel = (theme) => theme.colorSchemes.map((scheme) => SCHEMES[scheme]).join(", ");

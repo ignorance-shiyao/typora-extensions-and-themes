@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Refresh the independently maintained V1 gallery daily.
+    - cron: '23 3 * * *'
 
 permissions:
   contents: read
@@ -32,6 +35,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Build V1 theme gallery
+        uses: ./.github/actions/build-v1
+
       - name: Deploy to extensions.typora.io
         uses: cloudflare/wrangler-action@v4
         with:
@@ -39,7 +45,7 @@ jobs:
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
 
-      - name: Deploy to theme2.typora.io
+      - name: Deploy to themes.typora.io
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

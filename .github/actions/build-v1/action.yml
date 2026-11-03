@@ -1,0 +1,36 @@
+name: Build V1 theme gallery
+description: Build the upstream Jekyll gallery and mount it under dist/themes/v1.
+inputs:
+  origin:
+    description: Origin serving the combined theme gallery
+    default: https://themes.typora.io
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: typora/theme.typora.io
+        ref: gh-pages
+        path: .legacy-themes
+        persist-credentials: false
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+        working-directory: .legacy-themes
+
+    - name: Test V1 path adapter
+      shell: bash
+      working-directory: .legacy-themes
+      run: bundle exec ruby "$GITHUB_WORKSPACE/tests/legacy-themes.test.rb"
+
+    - name: Build and mount V1 gallery
+      shell: bash
+      working-directory: .legacy-themes
+      env:
+        THEMES_ORIGIN: ${{ inputs.origin }}
+        JEKYLL_ENV: production
+      run: |
+        git log -1 --format='V1 source: %H'
+        bundle exec ruby "$GITHUB_WORKSPACE/scripts/build-v1.rb" "$GITHUB_WORKSPACE/dist/themes" "$THEMES_ORIGIN"

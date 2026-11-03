@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '23 3 * * *'
 
 permissions:
   contents: read
@@ -37,6 +39,12 @@ jobs:
 
       - name: Build
         run: node scripts/build.mjs --origin https://extensions.typoraio.cn --themes-origin https://theme2.typoraio.cn --docs-origin https://docs.typoraio.cn --home-origin https://v2.typoraio.cn
+
+      - name: Build V1 theme gallery
+        if: matrix.site == 'themes'
+        uses: ./.github/actions/build-v1
+        with:
+          origin: https://theme2.typoraio.cn
 
       - name: Deploy to ${{ matrix.domain }}
         env:

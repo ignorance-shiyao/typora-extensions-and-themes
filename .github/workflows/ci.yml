@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Build V1 theme gallery
+        uses: ./.github/actions/build-v1
+
       - uses: actions/upload-artifact@v4
         with:
           name: dist

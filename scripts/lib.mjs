@@ -9,7 +9,7 @@ import { deflateRawSync } from "node:zlib";
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const EXTENSIONS_DIR = join(ROOT, "extensions");
 export const THEMES_DIR = join(ROOT, "themes");
-/** Themes that ship with Typora: listed on theme2.typora.io, not packaged. */
+/** Themes that ship with Typora: listed on themes.typora.io, not packaged. */
 export const BUILT_IN_THEMES_DIR = join(THEMES_DIR, "built-in");
 export const MANIFEST = "typora-extension.json";
 export const REPO_URL = "https://github.com/typora/typora-extensions";
@@ -17,7 +17,7 @@ export const DOCS_ORIGIN = "https://docs.typora.io";
 export const DOCS_URL = `${DOCS_ORIGIN}/extensions/`;
 export const HOME_ORIGIN = "https://v2.typora.io";
 export const SITE_ORIGIN = "https://extensions.typora.io";
-export const THEMES_SITE_ORIGIN = "https://theme2.typora.io";
+export const THEMES_SITE_ORIGIN = "https://themes.typora.io";
 export const EXTENSION_PACKAGE = ".typora-extension";
 export const THEME_PACKAGE = ".typora-theme";
 

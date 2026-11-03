@@ -18,7 +18,7 @@ const manifest = (extra = {}) => ({
   ...extra,
 });
 const ash = join(THEMES_DIR, "typora.ash");
-const site = { assets: { css: "/s.css", js: "/a.js", favicon: "/f.png" }, origin: "https://theme2.typora.io", sites: { docs: "https://docs.typora.io", extensions: "https://extensions.typora.io", themes: "https://theme2.typora.io", home: "https://v2.typora.io" } };
+const site = { assets: { css: "/s.css", js: "/a.js", favicon: "/f.png" }, origin: "https://themes.typora.io", sites: { docs: "https://docs.typora.io", extensions: "https://extensions.typora.io", themes: "https://themes.typora.io", home: "https://v2.typora.io" } };
 const theme = {
   id: "typora.ash",
   slug: "typora.ash",
@@ -29,7 +29,7 @@ const theme = {
   repository: "https://github.com/typora/typora-extensions/tree/main/themes/typora.ash",
   colorSchemes: ["dark"],
   updatedAt: "2026-10-31T00:00:00Z",
-  page: "https://theme2.typora.io/typora.ash/",
+  page: "https://themes.typora.io/typora.ash/",
   download: { url: "https://extensions.typora.io/download/typora.ash-1.0.0.typora-theme", size: 40949 },
 };
 
@@ -105,16 +105,16 @@ test("every site has the same header, with its own link selected", () => {
   assert.match(extensions, /<button type="button" data-version-unsupported>1\.0<\/button>/);
   assert.match(extensions, /<dialog class="version-dialog"/);
   assert.match(extensions, /Typora 1\.0 does not support extensions/);
-  assert.match(themes, /<a href="https:\/\/theme\.typora\.io\/">1\.0<\/a>/);
+  assert.match(themes, /<a href="\/v1\/">1\.0<\/a>/);
   for (const page of [extensions, themes]) {
     assert.match(page, /<details class="version-switcher">/);
     assert.match(page, /<a href="\/" aria-current="true">2\.0 beta<\/a>/);
   }
   assert.match(extensions, /<li class="active"><a href="https:\/\/extensions\.typora\.io\/"/);
-  assert.match(themes, /<li class="active"><a href="https:\/\/theme2\.typora\.io\/"/);
+  assert.match(themes, /<li class="active"><a href="https:\/\/themes\.typora\.io\/"/);
   assert.deepEqual([...themes.matchAll(/<li[^>]*><a [^>]*>([^<]+)</g)].map((m) => m[1]), ["Docs", "Extensions", "Themes", "Homepage"]);
   assert.match(themes, /class="appearance"/);
-  assert.match(themes, /<a href="https:\/\/theme2\.typora\.io\/" aria-current="page">/);
+  assert.match(themes, /<a href="https:\/\/themes\.typora\.io\/" aria-current="page">/);
   assert.match(themes, /<a href="https:\/\/extensions\.typora\.io\/" target="_blank" rel="noreferrer">/);
 });
 
@@ -130,7 +130,7 @@ function appearancePage(hostname, cookie = "") {
 }
 
 test("the appearance cookie covers every site on the domain", () => {
-  for (const [hostname, domain] of [["theme2.typora.io", "typora.io"], ["docs.typoraio.cn", "typoraio.cn"]]) {
+  for (const [hostname, domain] of [["themes.typora.io", "typora.io"], ["docs.typoraio.cn", "typoraio.cn"]]) {
     const page = appearancePage(hostname);
     assert.equal(page.root.dataset.theme, "light");
     page.toggle();
@@ -147,7 +147,7 @@ test("the appearance cookie needs no domain locally and applies on load", () => 
 });
 
 test("the switch reports the appearance once the header exists", () => {
-  const page = appearancePage("theme2.typora.io", "typora-appearance=dark");
+  const page = appearancePage("themes.typora.io", "typora-appearance=dark");
   page.button["aria-checked"] = "false";
   page.load();
   assert.equal(page.button["aria-checked"], "true");
