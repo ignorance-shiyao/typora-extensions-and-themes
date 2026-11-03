@@ -133,7 +133,7 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 .appearance .moon, [data-theme="dark"] .appearance .sun { opacity: 0; }
 [data-theme="dark"] .appearance .moon { opacity: 1; }
 [data-theme="dark"] .appearance .check { transform: translateX(18px); color: var(--fg); }
-/* "2.0" after Typora; sized in em so one rule fits the nav and the h1. */
+/* Version badge next to Typora. */
 .v2 {
   display: inline-block;
   padding: 0.1em 0.5em;
@@ -146,7 +146,7 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
   vertical-align: 0.25em;
   color: var(--nav-link);
 }
-.product-name .v2 { font: 600 11px/1.2 var(--font); vertical-align: 0.5em; }
+.version-switcher .v2 { font: 600 11px/1.2 var(--font); }
 
 /* ---- Page ---- */
 .page { flex: 1; width: 100%; max-width: var(--max); margin: 0 auto; padding: 48px 24px 64px; }
@@ -350,3 +350,5 @@ a.badge.tag:hover { background: var(--primary-hover); }
   .summary { grid-template-columns: 1fr; gap: 2px; }
   .summary dd { margin-bottom: 10px; }
 }
+
+:root { --version-bg: var(--card); --version-fg: var(--fg); --version-border: var(--border); --version-hover: var(--muted); }

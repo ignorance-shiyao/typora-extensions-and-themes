@@ -83,7 +83,9 @@ rmSync(DIST, { recursive: true, force: true });
 const siteAssets = (site, files) => {
   const assets = {};
   for (const [key, file] of files) {
-    const data = readFileSync(join(ROOT, "site", site, file));
+    const own = readFileSync(join(ROOT, "site", site, file));
+    const shared = key === "css" ? "version-switcher.css" : key === "js" ? "version-switcher.js" : null;
+    const data = shared ? Buffer.concat([own, Buffer.from("\n"), readFileSync(join(ROOT, "site", shared))]) : own;
     const [base, ext] = file.split(".");
     const name = `assets/${base}.${sha256(data).slice(0, 10)}.${ext}`;
     write(site, name, data);

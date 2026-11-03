@@ -274,3 +274,5 @@ th, td { padding: 4px 12px; border: 1px solid var(--line); text-align: left; }
   .appearance { position: absolute; top: 25px; right: 16px; }
   #content { padding-top: 32px; }
 }
+
+:root { --version-bg: var(--page); --version-fg: var(--text); --version-border: var(--line); --version-hover: var(--line); }

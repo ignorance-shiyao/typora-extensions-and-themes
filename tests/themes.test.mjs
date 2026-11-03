@@ -81,7 +81,7 @@ test("a packaged theme installs through the app; a built-in one offers nothing",
 test("a theme page has one Install button, with the rest in its menu", () => {
   const page = themePage({ ...site, theme });
   assert.equal(page.match(/class="split"/g).length, 1);
-  const menu = page.slice(page.indexOf('class="menu"'), page.indexOf("</details>"));
+  const menu = page.slice(page.indexOf('class="menu"'), page.indexOf("</details>", page.indexOf('class="menu"')));
   assert.match(menu, /Download<\/span><span class="menu-size">40\.0 KB/);
   assert.match(menu, /Homepage/);
   assert.doesNotMatch(page, /class="btn/);
@@ -100,7 +100,16 @@ test("every site has the same header, with its own link selected", () => {
   const extensions = homePage({ entries: [], assets: site.assets, origin: site.sites.extensions, sites: site.sites });
   const themes = galleryPage({ ...site, themes: [] });
   const header = (page) => page.slice(page.indexOf("<header"), page.indexOf("</header>")).replace(' class="active"', "").replace(' aria-current="page"', "").replaceAll(' target="_blank" rel="noreferrer"', "");
-  assert.equal(header(extensions), header(themes));
+  const versions = /<div class="version-options"[^>]*>[\s\S]*?<\/div>/;
+  assert.equal(header(extensions).replace(versions, ""), header(themes).replace(versions, ""));
+  assert.match(extensions, /<button type="button" data-version-unsupported>1\.0<\/button>/);
+  assert.match(extensions, /<dialog class="version-dialog"/);
+  assert.match(extensions, /Typora 1\.0 does not support extensions/);
+  assert.match(themes, /<a href="https:\/\/theme\.typora\.io\/">1\.0<\/a>/);
+  for (const page of [extensions, themes]) {
+    assert.match(page, /<details class="version-switcher">/);
+    assert.match(page, /<a href="\/" aria-current="true">2\.0 beta<\/a>/);
+  }
   assert.match(extensions, /<li class="active"><a href="https:\/\/extensions\.typora\.io\/"/);
   assert.match(themes, /<li class="active"><a href="https:\/\/theme2\.typora\.io\/"/);
   assert.deepEqual([...themes.matchAll(/<li[^>]*><a [^>]*>([^<]+)</g)].map((m) => m[1]), ["Docs", "Extensions", "Themes", "Homepage"]);

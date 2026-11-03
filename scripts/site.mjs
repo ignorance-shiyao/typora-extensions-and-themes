@@ -92,7 +92,16 @@ export function siteHeader(active, sites = DEFAULT_SITES) {
     `<li${active === key ? ' class="active"' : ""}><a href="${esc(sites[key])}/"${active === key ? ' aria-current="page"' : ' target="_blank" rel="noreferrer"'}>${label}</a></li>`;
   return `<header class="nav">
   <div class="nav-inner">
-    <a class="product-name" href="/">Typora <span class="v2">2.0</span></a>
+    <div class="product-brand">
+      <a class="product-name" href="/">Typora</a>
+      <details class="version-switcher">
+        <summary class="v2" aria-label="Typora version">2.0 beta <span aria-hidden="true">⌄</span></summary>
+        <div class="version-options" aria-label="Typora versions">
+          <a href="/" aria-current="true">2.0 beta</a>
+          ${active === "extensions" ? '<button type="button" data-version-unsupported>1.0</button>' : '<a href="https://theme.typora.io/">1.0</a>'}
+        </div>
+      </details>
+    </div>
     <div class="nav-links">
       <ul>
         ${item("docs", "Docs")}
@@ -103,7 +112,12 @@ export function siteHeader(active, sites = DEFAULT_SITES) {
       <button type="button" class="appearance" role="switch" aria-checked="false" aria-label="Dark mode"><span class="check">${SUN}${MOON}</span></button>
     </div>
   </div>
-</header>`;
+</header>${active === "extensions" ? `
+<dialog class="version-dialog" aria-labelledby="version-dialog-title" aria-describedby="version-dialog-description">
+  <h2 id="version-dialog-title">Extensions require Typora 2.0</h2>
+  <p id="version-dialog-description">Typora 1.0 does not support extensions. Use Typora 2.0 beta to install and use extensions.</p>
+  <form method="dialog"><button autofocus>OK</button></form>
+</dialog>` : ""}`;
 }
 
 function layout({ title, description, canonical, assets, body, origin: siteOrigin, sites, noindex = false }) {

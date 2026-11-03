@@ -1,0 +1,24 @@
+.product-brand { display: flex; align-items: center; gap: 8px; }
+.version-switcher { position: relative; flex: none; line-height: 1.6; }
+.version-switcher summary { display: flex; align-items: center; gap: 4px; margin: 0; vertical-align: baseline; cursor: pointer; list-style: none; }
+.version-switcher summary::-webkit-details-marker { display: none; }
+.version-options {
+  position: absolute; top: 100%; left: 0; z-index: 30;
+  min-width: 130px; padding: 6px; border: 1px solid var(--version-border);
+  border-radius: 8px; background: var(--version-bg); color: var(--version-fg);
+  box-shadow: 0 8px 24px #0002;
+}
+.version-options a, .version-options button {
+  display: block; width: 100%; padding: 6px 10px; border: 0; border-radius: 4px;
+  background: transparent; color: inherit; font: 14px/1.5 var(--font);
+  text-align: left; text-decoration: none; white-space: nowrap; cursor: pointer;
+}
+.version-options a:hover, .version-options button:hover,
+.version-options a:focus-visible, .version-options button:focus-visible { background: var(--version-hover); color: inherit; text-decoration: none; }
+.version-options [aria-current] { font-weight: 600; }
+.version-dialog { max-width: min(420px, calc(100vw - 40px)); padding: 24px; border: 1px solid var(--version-border); border-radius: 12px; background: var(--version-bg); color: var(--version-fg); font: 15px/1.6 var(--font); }
+.version-dialog::backdrop { background: #0006; }
+.version-dialog h2 { margin: 0 0 12px; font-size: 20px; }
+.version-dialog p { margin: 0 0 20px; }
+.version-dialog form { text-align: right; }
+.version-dialog button { padding: 6px 20px; border: 1px solid var(--version-border); border-radius: 6px; background: var(--version-hover); color: inherit; font: inherit; cursor: pointer; }
