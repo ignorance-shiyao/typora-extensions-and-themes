@@ -95,7 +95,7 @@ export function siteHeader(active, sites = DEFAULT_SITES) {
     <div class="product-brand">
       <a class="product-name" href="/">Typora</a>
       <details class="version-switcher">
-        <summary class="v2" aria-label="Typora version">2.0 beta <span aria-hidden="true">⌄</span></summary>
+        <summary class="v2" aria-label="Typora version"><span>2.0 beta</span><svg class="version-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="m2 3.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
         <div class="version-options" aria-label="Typora versions">
           <a href="/" aria-current="true">2.0 beta</a>
           ${active === "extensions" ? '<button type="button" data-version-unsupported>1.0</button>' : '<a href="https://theme.typora.io/">1.0</a>'}
