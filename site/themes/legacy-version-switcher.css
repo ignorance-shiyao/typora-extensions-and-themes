@@ -1,0 +1,19 @@
+/* Adapt the shared version pill to the V1 header without changing its nav. */
+.legacy-version-brand {
+  --font: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --version-bg: #fff;
+  --version-fg: #333;
+  --version-border: #ddd;
+  --version-hover: #eee;
+  position: relative;
+  z-index: 2;
+  float: left;
+  color: #333;
+}
+.legacy-version-brand .product-name { float: none; }
+.legacy-version-brand summary.v2 { border-radius: 999px; color: #777; }
+.legacy-version-only { min-height: 40px; margin-left: 8px; }
+@media screen and (max-width: 470px) {
+  .legacy-version-brand:not(.legacy-version-only) { float: none; justify-content: center; }
+  .legacy-version-brand .product-name { padding-left: 0; margin-left: 0; }
+}

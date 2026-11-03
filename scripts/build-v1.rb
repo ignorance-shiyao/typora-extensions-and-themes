@@ -30,6 +30,13 @@ Dir.mktmpdir("typora-v1-") do |staging|
     content = File.read(path, encoding: "UTF-8")
     File.write(path, path.end_with?(".html") ? LegacyThemes.html(content) : LegacyThemes.css(content))
   end
+  site = File.expand_path("../site", __dir__)
+  assets = File.join(staging, "assets")
+  FileUtils.mkdir_p(assets)
+  File.write(File.join(assets, "version-switcher.css"),
+    File.read(File.join(site, "version-switcher.css")) + "\n" +
+    File.read(File.join(site, "themes", "legacy-version-switcher.css")))
+  FileUtils.cp(File.join(site, "version-switcher.js"), assets)
   # Jekyll copies the upstream GitHub Pages CNAME; it isn't part of this site.
   FileUtils.rm_f(File.join(staging, "CNAME"))
   gallery = Nokogiri::HTML(File.read(File.join(staging, "index.html")))

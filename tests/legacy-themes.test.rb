@@ -50,4 +50,23 @@ class LegacyThemesTest < Minitest::Test
     assert_includes doc.at_css("script").content, 'includes(window.location.hostname)'
     assert_includes doc.at_css("script").content, 'window.location.protocol = "https";'
   end
+
+  def test_v1_header_shares_the_version_menu_and_keeps_v2_at_the_root
+    input = '<html><head></head><body><header id="header"><div class="gallery"><div class="product-name">Typora</div><ul class="pure-menu-list"><li><a href="/doc">Documents</a></li></ul></div></header></body></html>'
+    doc = Nokogiri::HTML(LegacyThemes.html(input))
+    assert_equal "Typora", doc.at_css(".legacy-version-brand .product-name").text
+    assert_equal "1.0", doc.at_css(".version-switcher summary span").text
+    assert_equal [["2.0 beta", "/"], ["1.0", "/v1/"]], doc.css(".version-options a").map { |a| [a.text, a["href"]] }
+    assert_equal "1.0", doc.at_css('.version-options [aria-current="true"]').text
+    assert_equal "/v1/doc", doc.at_css(".pure-menu-list a")["href"]
+    assert_equal "/v1/assets/version-switcher.css", doc.at_css("link")["href"]
+    assert_equal "/v1/assets/version-switcher.js", doc.at_css("script[src]")["src"]
+  end
+
+  def test_detail_header_keeps_back_link_and_has_a_version_menu
+    doc = Nokogiri::HTML(LegacyThemes.html('<html><head></head><body><header id="header"><div class="gallery"><ul class="pure-menu-list"><li><a href="/">Back</a></li></ul></div></header></body></html>'))
+    assert_equal "/v1/", doc.at_css(".pure-menu-list a")["href"]
+    assert doc.at_css(".legacy-version-only .version-switcher")
+    assert_equal "/", doc.at_css(".version-options a")["href"]
+  end
 end

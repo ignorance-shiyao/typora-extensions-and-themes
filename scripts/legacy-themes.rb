@@ -7,6 +7,35 @@ module LegacyThemes
   PREFIX = "/v1"
   HOSTS = %w[theme.typora.io themes.typora.io theme.typoraio.cn themes.typoraio.cn].freeze
 
+  def self.version_switcher(doc)
+    header = doc.at_css("#header .gallery")
+    return unless header
+    return if header.at_css(".version-switcher")
+
+    menu = Nokogiri::HTML.fragment(<<~HTML).at_css("details")
+      <details class="version-switcher">
+        <summary class="v2" aria-label="Typora version"><span>1.0</span><svg class="version-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="m2 3.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></summary>
+        <div class="version-options" aria-label="Typora versions">
+          <a href="/">2.0 beta</a>
+          <a href="/v1/" aria-current="true">1.0</a>
+        </div>
+      </details>
+    HTML
+    brand = Nokogiri::XML::Node.new("div", doc)
+    brand["class"] = "product-brand legacy-version-brand"
+    if (title = header.at_css(".product-name"))
+      title.replace(brand)
+      brand.add_child(title)
+    else
+      # Theme detail pages have a Back link instead of a Typora title.
+      brand["class"] += " legacy-version-only"
+      header.add_child(brand)
+    end
+    brand.add_child(menu)
+    doc.at_css("head").add_child('<link rel="stylesheet" href="/v1/assets/version-switcher.css">')
+    doc.at_css("body").add_child('<script src="/v1/assets/version-switcher.js" defer></script>')
+  end
+
   def self.url(value)
     return value if value.nil? || value.empty?
 
@@ -61,6 +90,8 @@ module LegacyThemes
 
       node.content = "if (![\"localhost\", \"127.0.0.1\", \"[::1]\"].includes(window.location.hostname)) {\n#{node.content}\n}"
     end
+    # Add after relocating upstream paths so the V2 link stays at the root.
+    version_switcher(doc)
     doc.to_html
   end
 end

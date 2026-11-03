@@ -157,6 +157,8 @@ including navigation, images, styles and legacy-host links. External theme
 downloads and the V1 layout are preserved; the upstream checkout isn't edited.
 The build checks that gallery entries have detail pages and that assets fit
 the deployment limits. The `1.0` version link opens the local `/v1/` gallery.
+V1 pages also get the shared version pill, showing `1.0` and linking back to
+V2 at `/`. This is added to the combined build only; `theme.typora.io` is unchanged.
 
 The deploy workflows run on pushes to `main`, manual dispatch and daily at
 03:23 UTC so upstream V1 updates are picked up without a V2 commit. The source
