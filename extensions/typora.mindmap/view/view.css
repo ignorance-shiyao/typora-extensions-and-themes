@@ -1,0 +1,36 @@
+:root {
+  font: 13px/1.5 var(--typora-font, system-ui, sans-serif);
+  color: var(--typora-foreground, #333);
+  background: transparent;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--typora-accent, #3578c8); outline-offset: 2px; }
+.toolbar {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  width: max-content; z-index: 1; display: flex; gap: 2px; padding: 3px 6px;
+  border: 1px solid var(--typora-border, #ddd); border-radius: 999px;
+  background: color-mix(in srgb, var(--typora-panel, #fff) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--typora-foreground, #333) 12%, transparent);
+}
+.toolbar button { display: grid; place-items: center; width: 24px; height: 24px; padding: 4px; border: 0; border-radius: 6px; background: transparent; }
+.toolbar button:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.toolbar svg { width: 16px; height: 16px; }
+#map { width: 100%; height: 100%; }
+#map [data-key^="node:"] { cursor: pointer; }
+#map [data-key^="node:"]:focus-visible { outline: 2px solid var(--typora-accent, #3578c8); }
+#message { position: absolute; inset: 0; display: grid; place-content: center; margin: 0; padding: 24px; text-align: center; }
+#options-menu {
+  position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%);
+  width: 224px; max-width: calc(100% - 24px); max-height: calc(100% - 80px);
+  overflow: auto; padding: 6px; border: 1px solid var(--typora-border, #ddd);
+  border-radius: 10px; background: var(--typora-panel, #fff); box-shadow: 0 6px 24px #0002;
+}
+#options-menu section + section { border-top: 1px solid var(--typora-border, #ddd); margin-top: 5px; padding-top: 5px; }
+#options-menu section > div { padding: 4px 9px; opacity: .65; font-size: 11px; }
+#options-menu button { position: relative; display: block; width: 100%; text-align: left; border: 0; border-radius: 4px; padding: 5px 28px 5px 9px; background: transparent; }
+#options-menu button[aria-checked=true]::after { content: '✓'; position: absolute; right: 9px; }
+#options-menu button:hover { background: color-mix(in srgb, var(--typora-accent, #3578c8) 12%, transparent); }

@@ -1,0 +1,15 @@
+{
+  "id": "typora.mindmap",
+  "name": "Mind Map",
+  "version": "1.0.3",
+  "description": "Explore your document outline as an interactive mind map, with folding, zooming and navigation to headings.",
+  "author": "Typora Team",
+  "tags": ["Detail View", "Diagram"],
+  "keywords": ["mindmap", "mind map", "outline", "headings", "markmap", "offline"],
+  "permissions": { "document": "read" },
+  "contributes": {
+    "detailViews": [
+      { "id": "mindmap", "title": "Mind Map", "icon": "network", "sfSymbol": "point.3.connected.trianglepath.dotted", "entry": "view/index.html" }
+    ]
+  }
+}
