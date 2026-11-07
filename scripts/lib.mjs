@@ -157,7 +157,7 @@ export const packageDir = (id) => (themeIds().includes(id) ? join(THEMES_DIR, id
 export const packagePath = (id) => `${themeIds().includes(id) ? "themes" : "extensions"}/${id}`;
 
 /** Store tags, in the order the website lists them. */
-export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export", "Publish", "Data Sync", "Productivity", "File Viewer", "View", "Developer"];
+export const TAGS = ["Language Pack", "Markdown Extension", "Diagram", "Math", "Theme", "Writing", "Template", "AI", "Media", "Image Uploader", "Export", "Publish", "Data Sync", "Productivity", "File Viewer", "Detail View", "Developer"];
 
 /** Values of the manifest's `os`, and how the store names them. */
 export const OS_NAMES = { darwin: "macOS", win32: "Windows", linux: "Linux" };

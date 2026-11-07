@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "description": "Counts the words you write each day across all windows, with a daily goal and a 14-day history in the detail panel.",
   "author": "Typora Team",
-  "tags": ["View", "Writing", "Productivity"],
+  "tags": ["Detail View", "Writing", "Productivity"],
   "permissions": { "document": "read" },
   "contributes": {
     "detailViews": [

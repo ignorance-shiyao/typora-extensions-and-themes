@@ -9,6 +9,7 @@
 
   const params = new URLSearchParams(location.search);
   let tag = params.get("tag") || "";
+  if (tag === "view") tag = "detail-view";
   if (!chips.some((chip) => chip.dataset.tag === tag)) tag = "";
   input.value = params.get("q") || "";
 

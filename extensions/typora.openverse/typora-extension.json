@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Search hundreds of millions of openly licensed photos in the detail panel and insert them with a credit line — no account or API key needed.",
   "author": "Typora Team",
-  "tags": ["Media", "View"],
+  "tags": ["Media", "Detail View"],
   "keywords": ["images", "photos", "stock", "creative commons", "cc0", "openverse", "free"],
   "permissions": {
     "document": "write",
