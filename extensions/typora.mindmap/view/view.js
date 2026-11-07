@@ -1,4 +1,4 @@
-import { Markmap, resolveViewOptions, restoreTransform } from "../vendor/markmap.js";
+import { Markmap, resolveViewOptions, restoreTransform, installTrackpadNavigation } from "../vendor/markmap.js";
 import { documentOutline, markmapTree } from "./model.js";
 
 const view = window.typora.view;
@@ -9,6 +9,7 @@ const localMenu = document.getElementById("options-menu");
 let settings = { layout: "tree", theme: "classic", level: "all" };
 let nativeToolbar = null, signature = "", tree = null, map = null, panelViewport = null;
 let accessibilityTimer = 0;
+let disposeNavigation = null;
 const choices = [
   ["layout", "Layout", [["tree", "Tree"], ["two-sided", "Two-sided"], ["org-chart", "Org chart"]]],
   ["theme", "Style", [["classic", "Classic"], ["cards", "Cards"], ["minimal", "Minimal"]]],
@@ -40,7 +41,9 @@ function decorate() {
   }
 }
 function createMap(folded, transform) {
+  disposeNavigation?.();
   map?.destroy(); map = new Markmap(svg, options());
+  disposeNavigation = installTrackpadNavigation(map);
   map.on("render", () => {
     requestAnimationFrame(decorate); clearTimeout(accessibilityTimer);
     accessibilityTimer = setTimeout(decorate, map.options.duration + 30);
@@ -144,4 +147,4 @@ view.onFullsize?.(async ({ fullsize }) => {
   if (!fullsize) panelViewport = null;
 });
 view.onTheme(() => map?.setOptions(options()));
-window.addEventListener("pagehide", () => { clearTimeout(accessibilityTimer); map?.destroy(); });
+window.addEventListener("pagehide", () => { clearTimeout(accessibilityTimer); disposeNavigation?.(); map?.destroy(); });

@@ -6795,8 +6795,67 @@ function restoreTransform(map, transform2) {
   select(map.element).call(zoom2().transform, transform2);
   map.backend.setTransform(transform2);
 }
+function installTrackpadNavigation(map) {
+  const element = map.element;
+  const selection2 = select(element);
+  const originalWheel = selection2.on("wheel.zoom");
+  const behavior = map.zoomBehavior;
+  if (!behavior?.transform || !originalWheel) throw new Error("Unsupported Markmap gesture adapter version.");
+  let gesture = null;
+  const apply = (transform2, event) => selection2.call(behavior.transform, transform2, null, event);
+  const prevent = (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  };
+  selection2.on("wheel.zoom", function(event) {
+    if (event.defaultPrevented) return;
+    if (event.ctrlKey) {
+      if (gesture) prevent(event);
+      else originalWheel.call(this, event);
+      return;
+    }
+    if (!map.options.pan) return;
+    prevent(event);
+    const xUnit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? element.clientWidth : 1;
+    const yUnit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? element.clientHeight : 1;
+    const current = map.transform;
+    apply(current.translate(-event.deltaX * xUnit / current.k, -event.deltaY * yUnit / current.k), event);
+  }, { passive: false });
+  const point = (event) => {
+    const rect = element.getBoundingClientRect();
+    return [event.clientX - rect.left, event.clientY - rect.top];
+  };
+  const start2 = (event) => {
+    if (!map.options.zoom) return;
+    prevent(event);
+    gesture = { transform: map.transform, anchor: map.transform.invert(point(event)) };
+    apply(map.transform, event);
+  };
+  const change = (event) => {
+    if (!gesture || !Number.isFinite(event.scale) || event.scale <= 0) return;
+    prevent(event);
+    const [min, max] = map.scaleLimits;
+    const scale = Math.max(min, Math.min(max, gesture.transform.k * event.scale));
+    const [x, y] = point(event), [ax, ay] = gesture.anchor;
+    apply(identity2.translate(x, y).scale(scale).translate(-ax, -ay), event);
+  };
+  const end = (event) => {
+    if (gesture) prevent(event);
+    gesture = null;
+  };
+  element.addEventListener("gesturestart", start2, { passive: false });
+  element.addEventListener("gesturechange", change, { passive: false });
+  element.addEventListener("gestureend", end, { passive: false });
+  return () => {
+    selection2.on("wheel.zoom", originalWheel, { passive: false });
+    element.removeEventListener("gesturestart", start2);
+    element.removeEventListener("gesturechange", change);
+    element.removeEventListener("gestureend", end);
+  };
+}
 export {
   Markmap,
+  installTrackpadNavigation,
   resolveViewOptions,
   restoreTransform
 };

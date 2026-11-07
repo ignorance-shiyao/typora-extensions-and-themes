@@ -4,7 +4,8 @@ Explore the current document's outline in the **Mind Map** detail tab.
 
 - Click a branch label or its fold circle to collapse or expand it, with
   Markmap's native animation. Leaf labels navigate to the editor.
-- Drag to pan, wheel or pinch to zoom, or use the zoom buttons.
+- Drag or scroll with two fingers to pan. Pinch to zoom, or use the zoom
+  buttons. WebKit gesture events and ctrl-wheel pinch events are both supported.
 - The **…** menu selects **Tree**, **Two-sided** or **Org chart** layout;
   **Classic**, **Cards** or **Minimal** style; and an expanded **Level 1–6**
   or **All levels**. The root is level 1. Choices are saved locally.
