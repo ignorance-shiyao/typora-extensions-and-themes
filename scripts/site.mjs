@@ -192,12 +192,16 @@ export function homePage({ entries, assets, origin: siteOrigin, sites }) {
     })
     .join("\n");
   const used = TAGS.filter((t) => t === "Data Sync" || entries.some((e) => e.tags.includes(t)));
-  const body = `<section class="hero">
-  <h1>Extensions for Typora <span class="v2">2.0</span></h1>
-  <p class="lead">Diagrams, views, templates, file viewers and more. Install them in Typora from <strong>Settings ▸ Extensions</strong>.</p>
-</section>
-<section class="toolbar" aria-label="Search and filter">
-  <input id="search" type="search" placeholder="Search extensions" autocomplete="off" spellcheck="false" aria-label="Search extensions">
+  // The header already names Typora and its version, so the page opens on a
+  // compact title row with the search beside it.
+  const body = `<section class="toolbar" aria-label="Search and filter">
+  <div class="toolbar-head">
+    <div class="intro">
+      <h1>Extensions <span class="count">${entries.length}</span></h1>
+      <p class="lead">Diagrams, views, templates, file viewers and more. Install them from <strong>Settings ▸ Extensions</strong>.</p>
+    </div>
+    <input id="search" type="search" placeholder="Search extensions" autocomplete="off" spellcheck="false" aria-label="Search extensions">
+  </div>
   <div class="filters" role="group" aria-label="Tags">
     <button type="button" class="chip" data-tag="" aria-pressed="true">All</button>
 ${used.map((t) => `    <button type="button" class="chip" data-tag="${esc(tagSlug(t))}" aria-pressed="false">${esc(t)}</button>`).join("\n")}
