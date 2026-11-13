@@ -34,6 +34,12 @@ function themeFor(theme) {
   };
 }
 
+/** The setting, or else the size of the document's text. */
+function fontSizeFor(settings, theme) {
+  if (Number(settings.fontSize) > 0) return Number(settings.fontSize);
+  return parseFloat(theme?.vars?.["--typora-editor-font-size"]) || 14;
+}
+
 function cssVar(name, fallback) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
@@ -114,7 +120,7 @@ async function main() {
   const settings = await view.settings();
   term = new Terminal({
     fontFamily: cssVar("--typora-mono-font", "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"),
-    fontSize: Number(settings.fontSize) > 0 ? Number(settings.fontSize) : 12,
+    fontSize: fontSizeFor(settings, view.theme),
     scrollback: Number(settings.scrollback) > 0 ? Number(settings.scrollback) : 5000,
     cursorBlink: true,
     allowTransparency: false,
@@ -139,7 +145,14 @@ async function main() {
     if (proc && !ended) void proc.resize(cols, rows);
   });
   new ResizeObserver(fitNow).observe(holder);
-  view.onTheme((theme) => (term.options.theme = themeFor(theme)));
+  view.onTheme((theme) => {
+    term.options.theme = themeFor(theme);
+    const size = fontSizeFor(settings, theme);
+    if (size !== term.options.fontSize) {
+      term.options.fontSize = size;
+      fitNow();
+    }
+  });
 
   document.getElementById("clear").addEventListener("click", () => {
     term.clear();

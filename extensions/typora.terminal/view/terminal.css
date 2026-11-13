@@ -1,9 +1,10 @@
+/* See-through: the bar reads as part of the panel's header above it. */
 html,
 body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: var(--typora-background);
+  background: transparent;
   color: var(--typora-foreground);
   font: 12px var(--typora-font, system-ui, sans-serif);
 }
@@ -47,6 +48,7 @@ body {
   flex: 1;
   min-height: 0;
   padding: 4px 0 0 6px;
+  background: var(--typora-background);
 }
 
 /* xterm.css paints the viewport black; the theme paints only the rows. */

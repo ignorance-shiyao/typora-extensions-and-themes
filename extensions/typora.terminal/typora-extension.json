@@ -19,7 +19,13 @@
           "title": "Shell",
           "description": "Full path of the program to run. Empty: your login shell."
         },
-        "fontSize": { "type": "number", "default": 12, "title": "Font size" },
+        "fontSize": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "title": "Font size",
+          "description": "0: the size of the document's text."
+        },
         "scrollback": { "type": "number", "default": 5000, "title": "Scrollback lines" }
       }
     }
