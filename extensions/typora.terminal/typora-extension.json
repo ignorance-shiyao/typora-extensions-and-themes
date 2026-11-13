@@ -1,14 +1,21 @@
 {
   "id": "typora.terminal",
   "name": "Terminal",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A terminal in the detail panel, opened in the current folder. It keeps running while you switch tabs and documents.",
   "author": "Typora Team",
   "tags": ["Detail View", "Developer"],
   "permissions": { "process": "*" },
   "contributes": {
     "detailViews": [
-      { "id": "terminal", "title": "Terminal", "icon": "terminal", "sfSymbol": "terminal", "entry": "view/terminal.html" }
+      {
+        "id": "terminal",
+        "title": "Terminal",
+        "icon": "terminal",
+        "sfSymbol": "terminal",
+        "entry": "view/terminal.html",
+        "retainWhenHidden": true
+      }
     ],
     "configuration": {
       "title": "Terminal",
