@@ -99,7 +99,7 @@ view.onDocument(async (document) => {
   showToolbar(!!tree);
   if (tree) {
     if (!map) createMap();
-    else { map.setTree(tree, options()); if (!signature || signature === "[]") map.fit(); }
+    else { map.setTree(tree, options()); if (!signature || signature === "[]" || document.switched) map.fit(); }
   }
   signature = next;
 });
