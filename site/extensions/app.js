@@ -63,7 +63,13 @@
       update();
     });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "/" && document.activeElement !== input) {
+    const find = (event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "f";
+    if (find) {
+      // ⌘F / Ctrl+F searches the extensions, not the page.
+      event.preventDefault();
+      input.focus();
+      input.select();
+    } else if (event.key === "/" && document.activeElement !== input) {
       event.preventDefault();
       input.focus();
     } else if (event.key === "Escape" && document.activeElement === input) {
