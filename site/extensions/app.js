@@ -35,7 +35,7 @@
     history.replaceState(null, "", query ? `?${query}` : location.pathname);
   }
 
-  // Card footers: one row; pills that do not fit go into the » pill.
+  // Card footers: one row; pills that do not fit are counted in the +N pill.
   function fitPills(row) {
     const more = row.querySelector(".more");
     const pills = [...row.children].filter((el) => el !== more);
@@ -48,6 +48,7 @@
       pills[i].hidden = true;
       hidden.unshift(pills[i].textContent);
     }
+    more.textContent = `+${hidden.length}`;
     more.title = hidden.join(", ");
   }
   const rows = new ResizeObserver((items) => {

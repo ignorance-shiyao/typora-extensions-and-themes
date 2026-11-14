@@ -166,6 +166,9 @@ function platformBadge(os) {
 /** `?tag=` value of a tag: "Markdown Extension" → "markdown-extension". */
 export const tagSlug = (tag) => tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+const PERSON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+const CHEVRONS = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg>';
+
 // A picture that fails to load (say, WebP in an old Safari) leaves its gray panel.
 const ON_ERROR = `onerror="this.hidden=true"`;
 
@@ -186,7 +189,7 @@ export function homePage({ entries, assets, origin: siteOrigin, sites }) {
   <div class="card-body">
     <div class="card-head"><h2>${esc(e.name)}</h2><span class="version">v${esc(e.version)}</span></div>
     <p class="card-desc">${esc(e.description)}</p>
-    <div class="card-foot">${e.author ? `<span class="author">${esc(e.author)}</span>` : ""}<span class="pills">${platformBadge(e.os)}${e.tags.map((t) => `<span class="badge tag">${esc(t)}</span>`).join("")}${permissionBadges(e.permissions)}<span class="badge more" hidden>»</span></span></div>
+    <div class="card-foot">${e.author ? `<span class="author">${PERSON}${esc(e.author)}</span>` : ""}<span class="pills">${platformBadge(e.os)}${e.tags.map((t) => `<span class="badge tag">${esc(t)}</span>`).join("")}${permissionBadges(e.permissions)}<span class="badge more" hidden></span></span><span class="go" aria-hidden="true">${CHEVRONS}</span></div>
   </div>
 </a>`;
     })
