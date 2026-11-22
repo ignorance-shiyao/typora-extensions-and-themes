@@ -16,6 +16,14 @@ main { flex: 1; min-height: 0; display: flex; }
 .c-kw { color: var(--accent); font-weight: 500; }
 .c-tag { color: var(--accent); }
 .c-attr { color: color-mix(in srgb, var(--accent) 50%, #b45309); }
-@media (prefers-color-scheme: dark) { .c-str { color: #86efac; } }
+.c-fn { color: color-mix(in srgb, var(--accent) 55%, #7c3aed); }
+.c-type { color: color-mix(in srgb, var(--accent) 45%, #0e7490); }
+.c-var { color: color-mix(in srgb, var(--fg) 55%, #b45309); }
+@media (prefers-color-scheme: dark) {
+  .c-str { color: #86efac; }
+  .c-fn { color: color-mix(in srgb, var(--accent) 50%, #d8b4fe); }
+  .c-type { color: color-mix(in srgb, var(--accent) 45%, #67e8f9); }
+  .c-var { color: color-mix(in srgb, var(--fg) 50%, #fdba74); }
+}
 
 #dirty { display: inline-flex; }

@@ -7,13 +7,13 @@
 | 类型 | 扩展名 | 预览方式 |
 |---|---|---|
 | 结构化数据 | json、yaml、yml、toml、xml | 可折叠的树，可切到源码；解析出错时显示错误并回到源码；大于 3MB 只显示源码 |
-| 代码与网页 | html、htm、css、js、mjs、cjs、ts、tsx、jsx、py、java、go、rs、c、cpp、h、sh、zsh、sql、ini | 带行号和简易着色的源码，可编辑并保存（Tab 缩进、⌘S）；HTML 另有预览模式 |
+| 代码与网页 | html、htm、css、js、mjs、cjs、ts、tsx、jsx、py、java、go、rs、c、cpp、h、sh、zsh、sql、ini | 带行号和语法着色的源码（关键字、函数、类型、字符串、注释、数字、装饰器；HTML 内嵌的 style 和 script 按 CSS 和 JavaScript 着色），可编辑并保存（Tab 缩进、⌘S）；HTML 另有预览模式 |
 | Office 文档 | docx、xlsx、pptx | 只读：docx 转为文档，xlsx 按工作表显示，pptx 按页显示文字 |
 
 ## 限制
 
 - HTML 预览在沙箱 iframe 中渲染当前编辑内容，页面脚本不执行，相对路径的样式和图片不加载。
-- 代码着色是简易正则，不处理 HTML 内嵌的 script 与 style。
+- 代码着色是按语言的正则规则，不做语法解析：JavaScript 的正则字面量、模板字符串里的表达式、Python 的 f-string 内部不单独着色；Rust 的生命周期、C 的宏参数按普通文本处理。
 - Office 只支持 docx、xlsx、pptx。xlsx 日期显示为序列号、公式只显示缓存值、不合并单元格；pptx 看不到图片与图表；docx 的页眉页脚、文本框会丢失。
 
 ## 第三方库
