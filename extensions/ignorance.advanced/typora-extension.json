@@ -1,7 +1,7 @@
 {
   "id": "ignorance.advanced",
   "name": "Ignorance Advanced",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "演示模式（内置图表与流程图）、行内徽章与彩色高亮、图表索引侧栏、中英文空格格式化。",
   "author": "ignorance-shiyao",
   "repository": "https://github.com/ignorance-shiyao/ignorance-for-typora",
