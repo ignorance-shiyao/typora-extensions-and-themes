@@ -1,7 +1,7 @@
 {
   "id": "ignorance.advanced",
   "name": "Ignorance Advanced",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "演示模式（内置图表与流程图）、行内徽章与彩色高亮、图表索引侧栏、中英文空格格式化。",
   "author": "ignorance-shiyao",
   "repository": "https://github.com/ignorance-shiyao/ignorance-for-typora",
@@ -29,7 +29,7 @@
     "inlineRules": [
       {
         "id": "badge-open",
-        "pattern": "\\(\\((?:blue|green|orange|red|purple):(?=[^()|\\n]+\\|[^()\\n]+\\)\\))",
+        "pattern": "\\(\\((?:blue|green|orange|red|purple|amber|gray):(?=[^()\\n]+\\)\\))",
         "class": "ib-syn"
       },
       {
@@ -63,8 +63,55 @@
         "title": "$1 · $2"
       },
       {
+        "id": "badge-amber",
+        "pattern": "(?<=\\(\\(amber:)([^()|\\n]+?)\\s*\\|\\s*([^()\\n]*[^()\\s])(?=\\)\\))",
+        "class": "ib-badge ib-badge-amber",
+        "title": "$1 · $2"
+      },
+      {
+        "id": "badge-gray",
+        "pattern": "(?<=\\(\\(gray:)([^()|\\n]+?)\\s*\\|\\s*([^()\\n]*[^()\\s])(?=\\)\\))",
+        "class": "ib-badge ib-badge-gray",
+        "title": "$1 · $2"
+      },
+      {
+        "id": "badge1-blue",
+        "pattern": "(?<=\\(\\(blue:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-blue"
+      },
+      {
+        "id": "badge1-green",
+        "pattern": "(?<=\\(\\(green:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-green"
+      },
+      {
+        "id": "badge1-orange",
+        "pattern": "(?<=\\(\\(orange:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-orange"
+      },
+      {
+        "id": "badge1-red",
+        "pattern": "(?<=\\(\\(red:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-red"
+      },
+      {
+        "id": "badge1-purple",
+        "pattern": "(?<=\\(\\(purple:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-purple"
+      },
+      {
+        "id": "badge1-amber",
+        "pattern": "(?<=\\(\\(amber:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-amber"
+      },
+      {
+        "id": "badge1-gray",
+        "pattern": "(?<=\\(\\(gray:)[^()|\\n]*[^()|\\s](?=\\)\\))",
+        "class": "ib-badge ib-badge-gray"
+      },
+      {
         "id": "badge-close",
-        "pattern": "(?<=\\(\\((?:blue|green|orange|red|purple):[^()|\\n]+\\|[^()\\n]+)\\)\\)",
+        "pattern": "(?<=\\(\\((?:blue|green|orange|red|purple|amber|gray):[^()\\n]+)\\)\\)",
         "class": "ib-syn"
       },
       {
@@ -139,6 +186,231 @@
         "id": "hl-purple",
         "pattern": "🟣[^=\\s，。、；：！？,.;:!?]+",
         "class": "ib-hl-purple"
+      },
+      {
+        "id": "vl-1-Rd",
+        "pattern": "(?<= {2})Rd(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Rd"
+      },
+      {
+        "id": "vl-2-Rd",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Rd(?=!?(?: {2}|$))",
+        "class": "vl2-Rd"
+      },
+      {
+        "id": "vl-1-Ro",
+        "pattern": "(?<= {2})Ro(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Ro"
+      },
+      {
+        "id": "vl-2-Ro",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Ro(?=!?(?: {2}|$))",
+        "class": "vl2-Ro"
+      },
+      {
+        "id": "vl-1-Og",
+        "pattern": "(?<= {2})Og(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Og"
+      },
+      {
+        "id": "vl-2-Og",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Og(?=!?(?: {2}|$))",
+        "class": "vl2-Og"
+      },
+      {
+        "id": "vl-1-Ye",
+        "pattern": "(?<= {2})Ye(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Ye"
+      },
+      {
+        "id": "vl-2-Ye",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Ye(?=!?(?: {2}|$))",
+        "class": "vl2-Ye"
+      },
+      {
+        "id": "vl-1-Gd",
+        "pattern": "(?<= {2})Gd(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Gd"
+      },
+      {
+        "id": "vl-2-Gd",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Gd(?=!?(?: {2}|$))",
+        "class": "vl2-Gd"
+      },
+      {
+        "id": "vl-1-Lm",
+        "pattern": "(?<= {2})Lm(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Lm"
+      },
+      {
+        "id": "vl-2-Lm",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Lm(?=!?(?: {2}|$))",
+        "class": "vl2-Lm"
+      },
+      {
+        "id": "vl-1-Gn",
+        "pattern": "(?<= {2})Gn(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Gn"
+      },
+      {
+        "id": "vl-2-Gn",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Gn(?=!?(?: {2}|$))",
+        "class": "vl2-Gn"
+      },
+      {
+        "id": "vl-1-Mn",
+        "pattern": "(?<= {2})Mn(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Mn"
+      },
+      {
+        "id": "vl-2-Mn",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Mn(?=!?(?: {2}|$))",
+        "class": "vl2-Mn"
+      },
+      {
+        "id": "vl-1-Ol",
+        "pattern": "(?<= {2})Ol(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Ol"
+      },
+      {
+        "id": "vl-2-Ol",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Ol(?=!?(?: {2}|$))",
+        "class": "vl2-Ol"
+      },
+      {
+        "id": "vl-1-Aq",
+        "pattern": "(?<= {2})Aq(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Aq"
+      },
+      {
+        "id": "vl-2-Aq",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Aq(?=!?(?: {2}|$))",
+        "class": "vl2-Aq"
+      },
+      {
+        "id": "vl-1-Cy",
+        "pattern": "(?<= {2})Cy(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Cy"
+      },
+      {
+        "id": "vl-2-Cy",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Cy(?=!?(?: {2}|$))",
+        "class": "vl2-Cy"
+      },
+      {
+        "id": "vl-1-Bu",
+        "pattern": "(?<= {2})Bu(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Bu"
+      },
+      {
+        "id": "vl-2-Bu",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Bu(?=!?(?: {2}|$))",
+        "class": "vl2-Bu"
+      },
+      {
+        "id": "vl-1-Pu",
+        "pattern": "(?<= {2})Pu(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Pu"
+      },
+      {
+        "id": "vl-2-Pu",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Pu(?=!?(?: {2}|$))",
+        "class": "vl2-Pu"
+      },
+      {
+        "id": "vl-1-Se",
+        "pattern": "(?<= {2})Se(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Se"
+      },
+      {
+        "id": "vl-2-Se",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Se(?=!?(?: {2}|$))",
+        "class": "vl2-Se"
+      },
+      {
+        "id": "vl-1-Au",
+        "pattern": "(?<= {2})Au(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Au"
+      },
+      {
+        "id": "vl-2-Au",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Au(?=!?(?: {2}|$))",
+        "class": "vl2-Au"
+      },
+      {
+        "id": "vl-1-Pk",
+        "pattern": "(?<= {2})Pk(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Pk"
+      },
+      {
+        "id": "vl-2-Pk",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Pk(?=!?(?: {2}|$))",
+        "class": "vl2-Pk"
+      },
+      {
+        "id": "vl-1-Bn",
+        "pattern": "(?<= {2})Bn(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Bn"
+      },
+      {
+        "id": "vl-2-Bn",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Bn(?=!?(?: {2}|$))",
+        "class": "vl2-Bn"
+      },
+      {
+        "id": "vl-1-Gy",
+        "pattern": "(?<= {2})Gy(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Gy"
+      },
+      {
+        "id": "vl-2-Gy",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Gy(?=!?(?: {2}|$))",
+        "class": "vl2-Gy"
+      },
+      {
+        "id": "vl-1-Wt",
+        "pattern": "(?<= {2})Wt(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Wt"
+      },
+      {
+        "id": "vl-2-Wt",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Wt(?=!?(?: {2}|$))",
+        "class": "vl2-Wt"
+      },
+      {
+        "id": "vl-1-Bk",
+        "pattern": "(?<= {2})Bk(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-Bk"
+      },
+      {
+        "id": "vl-2-Bk",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))Bk(?=!?(?: {2}|$))",
+        "class": "vl2-Bk"
+      },
+      {
+        "id": "vl-1-T1",
+        "pattern": "(?<= {2})T1(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-T1"
+      },
+      {
+        "id": "vl-2-T1",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))T1(?=!?(?: {2}|$))",
+        "class": "vl2-T1"
+      },
+      {
+        "id": "vl-1-T2",
+        "pattern": "(?<= {2})T2(?=(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2)?!?(?: {2}|$))",
+        "class": "vl1-T2"
+      },
+      {
+        "id": "vl-2-T2",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2))T2(?=!?(?: {2}|$))",
+        "class": "vl2-T2"
+      },
+      {
+        "id": "vl-bang",
+        "pattern": "(?<= {2}(?:Rd|Ro|Og|Ye|Gd|Lm|Gn|Mn|Ol|Aq|Cy|Bu|Pu|Se|Au|Pk|Bn|Gy|Wt|Bk|T1|T2){1,2})!(?= {2}|$)",
+        "class": "vlb"
       }
     ],
     "detailViews": [

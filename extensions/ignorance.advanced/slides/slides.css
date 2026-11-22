@@ -183,11 +183,15 @@ body.is-fullsize .slide { transform-origin: center center; position: relative; f
 .slide .badge-orange, .slide .hl-orange { --c: #b26b12; }
 .slide .badge-purple, .slide .hl-purple { --c: #7867c9; }
 .slide .badge-blue, .slide .hl-blue { --c: #2867c9; }
+.slide .badge-amber { --c: #9a6410; }
+.slide .badge-gray { --c: #5f6b7a; }
 [data-theme="dark"] .slide :is(.badge-green, .hl-green) { --c: #34d399; }
 [data-theme="dark"] .slide :is(.badge-red, .hl-red) { --c: #f87171; }
 [data-theme="dark"] .slide :is(.badge-orange, .hl-orange) { --c: #fbbf24; }
 [data-theme="dark"] .slide :is(.badge-purple, .hl-purple) { --c: #a79be6; }
 [data-theme="dark"] .slide :is(.badge-blue, .hl-blue) { --c: #60a5fa; }
+[data-theme="dark"] .slide .badge-amber { --c: #f5c04a; }
+[data-theme="dark"] .slide .badge-gray { --c: #a3adba; }
 .slide mark[class^="hl-"] { background: color-mix(in srgb, var(--c) 20%, var(--bg)); }
 .slide .spoiler {
   padding: 0 0.2em; border-radius: 4px; cursor: pointer;

@@ -59,7 +59,7 @@ function slideTitle(nodes) {
 
 export function plainText(markdown) {
   const one = (n) => {
-    if (n.type === "badge") return `${n.label} ${n.value}`;
+    if (n.type === "badge") return `${n.label} ${n.value}`.trim();
     if (n.type === "crumb") return n.parts.join(" › ");
     if (n.type === "image") return n.alt || "";
     return n.value !== undefined ? n.value : flat(n.children || []);
@@ -72,7 +72,7 @@ export function plainText(markdown) {
 // Types: text, strong, em, del, mark, code, link, image, kbd, br, math.
 const HL = { "🔴": "red", "🟠": "orange", "🟢": "green", "🔵": "blue", "🟣": "purple" };
 const RULES = [
-  { type: "badge", re: /^\(\((blue|green|orange|red|purple):([^()|\n]+)\|([^()\n]+)\)\)/, make: (m) => ({ color: m[1], label: m[2].trim(), value: m[3].trim() }) },
+  { type: "badge", re: /^\(\((blue|green|orange|red|purple|amber|gray):([^()|\n]+?)(?:\|([^()\n]+))?\)\)/, make: (m) => ({ color: m[1], label: m[2].trim(), value: (m[3] ?? "").trim() }) },
   { type: "spoiler", re: /^\(\(spoiler:([^()\n]+)\)\)/, make: (m) => ({ value: m[1].trim() }) },
   { type: "ruby", re: /^\(\(ruby:([^()|\n]+)\|([^()\n]+)\)\)/, make: (m) => ({ value: m[1].trim(), reading: m[2].trim() }) },
   { type: "crumb", re: /^\(\(crumb:([^()\n]+)\)\)/, make: (m) => ({ parts: m[1].split(">").map((p) => p.trim()).filter(Boolean) }) },
