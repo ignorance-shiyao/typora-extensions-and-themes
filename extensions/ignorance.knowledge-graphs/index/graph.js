@@ -60,6 +60,23 @@ function hash(text) {
 const GAP = 14;
 const MARGIN_Y = 24;
 const MAX_STRETCH = 2;
+const GROUP_MIN_NODES = 30;
+const GROUP_PULL = 0.012;
+
+// Folders get anchor points on an ellipse, bigger folders first, so notes of one folder settle
+// near each other even when most of their links cross folders.
+function groupAnchors(nodes, width, height) {
+  const sizes = new Map();
+  for (const { group, broken } of nodes) if (!broken) sizes.set(group, (sizes.get(group) ?? 0) + 1);
+  const groups = [...sizes].filter(([, size]) => size >= 3).sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])));
+  if (groups.length < 2) return undefined;
+  const anchors = new Map();
+  groups.forEach(([name], position) => {
+    const angle = (position / groups.length) * Math.PI * 2 - Math.PI / 2;
+    anchors.set(name, { x: width / 2 + Math.cos(angle) * width * 0.34, y: height / 2 + Math.sin(angle) * height * 0.34 });
+  });
+  return anchors;
+}
 
 function marginX(width) {
   return Math.min(90, width / 4);
@@ -71,14 +88,19 @@ function forceLayout(graph, width, height) {
   const index = new Map(graph.nodes.map(({ id }, position) => [id, position]));
   const px = new Float64Array(count);
   const py = new Float64Array(count);
+  const anchors = count >= GROUP_MIN_NODES ? groupAnchors(graph.nodes, width, height) : undefined;
+  const anchorOf = graph.nodes.map(({ group, broken }) => (broken ? undefined : anchors?.get(group)));
   graph.nodes.forEach(({ id }, position) => {
     const angle = hash(`a${id}`) * Math.PI * 2;
     const radius = (0.15 + hash(`r${id}`) * 0.35) * Math.min(width, height);
-    px[position] = width / 2 + Math.cos(angle) * radius;
-    py[position] = height / 2 + Math.sin(angle) * radius;
+    const anchor = anchorOf[position];
+    const spread = anchor ? 0.35 : 1;
+    px[position] = (anchor?.x ?? width / 2) + Math.cos(angle) * radius * spread;
+    py[position] = (anchor?.y ?? height / 2) + Math.sin(angle) * radius * spread;
   });
   const links = graph.edges.map(({ source, target }) => [index.get(source), index.get(target)]);
-  const ideal = Math.sqrt((width * height) / count);
+  const idealSquared = (width * height) / count;
+  const ideal = Math.sqrt(idealSquared);
   const cell = ideal * 2;
   const rounds = count > 800 ? 80 : 200;
   const fx = new Float64Array(count);
@@ -102,13 +124,13 @@ function forceLayout(graph, width, height) {
             if (j <= i) continue;
             let dx = px[i] - px[j];
             let dy = py[i] - py[j];
-            let distance = Math.hypot(dx, dy);
-            if (distance < 0.01) {
+            let distanceSquared = dx * dx + dy * dy;
+            if (distanceSquared < 0.0001) {
               dx = hash(`x${i}`) - 0.5;
               dy = hash(`y${j}`) - 0.5;
-              distance = 0.01;
+              distanceSquared = 0.0001;
             }
-            const push = (ideal * ideal) / distance / distance;
+            const push = idealSquared / distanceSquared;
             fx[i] += dx * push;
             fy[i] += dy * push;
             fx[j] -= dx * push;
@@ -129,8 +151,9 @@ function forceLayout(graph, width, height) {
     }
     const limit = ideal * 0.5 * cooling + 0.5;
     for (let i = 0; i < count; i++) {
-      fx[i] += (width / 2 - px[i]) * 0.01;
-      fy[i] += (height / 2 - py[i]) * 0.01;
+      const anchor = anchorOf[i];
+      fx[i] += ((anchor?.x ?? width / 2) - px[i]) * (anchor ? GROUP_PULL : 0.01);
+      fy[i] += ((anchor?.y ?? height / 2) - py[i]) * (anchor ? GROUP_PULL : 0.01);
       const size = Math.hypot(fx[i], fy[i]) || 1;
       const move = Math.min(size, limit);
       px[i] += (fx[i] / size) * move;

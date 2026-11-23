@@ -100,7 +100,7 @@ export function createIndex(api) {
     const existing = await readSnapshot(key).catch(() => undefined);
     if (!existing || JSON.stringify(existing.excluded) !== JSON.stringify(exclusions())) {
       if (failed.has(key)) return { status: "error", records: [], message: "工作区索引失败，请执行「重建索引」" };
-      void rebuild().catch((error) => api.ui.toast(`无法建立索引：${error.message}`));
+      void rebuild({ announce: !existing }).catch((error) => api.ui.toast(`无法建立索引：${error.message}`));
       return { status: "indexing", records: [] };
     }
     let records = recordLists.get(existing);

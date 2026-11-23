@@ -18,7 +18,7 @@
 .graph-canvas { display: block; width: 100%; height: auto; max-height: 72vh; background: var(--typora-panel); border-radius: 10px; touch-action: none; cursor: grab; user-select: none; }
 .graph-canvas.dragging { cursor: grabbing; }
 .graph-edge { stroke: var(--typora-foreground); stroke-opacity: .22; stroke-linecap: round; }
-.graph-edge.parent { stroke: var(--typora-accent); stroke-opacity: .55; }
+.graph-edge.parent { stroke: var(--typora-accent); stroke-opacity: .9; }
 .graph-edge.active { stroke: var(--typora-accent); stroke-opacity: .9; }
 .graph-node { fill: var(--typora-foreground); fill-opacity: .9; stroke: var(--typora-background); cursor: pointer; }
 .graph-node:hover { fill-opacity: 1; }
@@ -158,3 +158,9 @@
 #output.graph-full { position: fixed; inset: 0; z-index: 20; overflow: auto; background: var(--typora-background); padding: 16px; box-sizing: border-box; }
 #output.graph-full .graph-body.side .graph-canvas { max-height: calc(100vh - 190px); }
 #output.graph-full .graph-body.side .graph-side, #output.graph-full .graph-body.side .graph-detail { max-height: calc(100vh - 150px); }
+.graph-region { fill: var(--g0); stroke: var(--typora-panel); stroke-linejoin: round; paint-order: stroke; font-weight: 600; pointer-events: none; user-select: none; filter: brightness(.8); opacity: .55; }
+.graph-region.g1 { fill: var(--g1); }
+.graph-region.g2 { fill: var(--g2); }
+.graph-region.g3 { fill: var(--g3); }
+.graph-region.g4 { fill: var(--g4); }
+.graph-region.g5 { fill: var(--g5); }

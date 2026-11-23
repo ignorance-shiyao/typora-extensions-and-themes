@@ -10,6 +10,8 @@ const GROUPS = 6;
 const LIST_LIMIT = 30;
 const HUB_LABELS = 10;
 const LABEL_GROUP_LIMIT = 20;
+const MAX_RADIUS = 14;
+const REGION_MIN_NODES = 8;
 const PREFS = "graph-view-prefs";
 function loadPrefs() {
   try {
@@ -144,6 +146,25 @@ function drawHulls(graph, groups, unit) {
   svg.append(layer);
 }
 
+// In dense graphs boxes would cover everything, so each folder gets a faint name at its centre.
+function drawRegions(graph, groups, unit) {
+  const layer = make("g", {});
+  const members = new Map();
+  for (const node of graph.nodes) {
+    if (node.broken) continue;
+    if (!members.has(node.group)) members.set(node.group, []);
+    members.get(node.group).push(node);
+  }
+  const middle = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+  for (const [name, nodes] of members) {
+    if (nodes.length < REGION_MIN_NODES) continue;
+    const index = groups.get(name) ?? 0;
+    const size = Math.min(17, 11 + Math.sqrt(nodes.length) * 0.4) * unit;
+    layer.append(make("text", { class: `graph-region g${index}`, x: middle(nodes.map((node) => node.x)), y: [...nodes.map((node) => node.y)].sort((a, b) => a - b)[Math.floor(nodes.length * 0.04)] - size * 0.8, "font-size": size, "text-anchor": "middle", "stroke-width": 3 * unit }, name || "根目录"));
+  }
+  svg.append(layer);
+}
+
 function filtered(graph) {
   let nodes = graph.nodes;
   if (!state.broken) nodes = nodes.filter((node) => !node.broken);
@@ -185,7 +206,7 @@ function draw() {
   setViewBox();
   const unit = state.view.width / (svg.getBoundingClientRect().width || state.view.width);
   const byId = new Map(graph.nodes.map((node) => [node.id, node]));
-  const radius = new Map(graph.nodes.map((node) => [node.id, (3.2 + Math.sqrt(near.get(node.id)?.size ?? 0) * 1.5 + (node.id === currentNode?.id ? 1.5 : 0)) * unit]));
+  const radius = new Map(graph.nodes.map((node) => [node.id, Math.min(3.2 + Math.sqrt(near.get(node.id)?.size ?? 0) * 1.5, MAX_RADIUS) * unit + (node.id === currentNode?.id ? 1.5 * unit : 0)]));
   const late = today();
   svg.replaceChildren();
   if (state.grouped && !dense) drawHulls(graph, groups, unit);
@@ -213,6 +234,7 @@ function draw() {
   const hubs = new Set(dense ? [...graph.nodes].sort((a, b) => (near.get(b.id)?.size ?? 0) - (near.get(a.id)?.size ?? 0)).slice(0, HUB_LABELS).map((node) => node.id) : []);
   const nodeLayer = make("g", {});
   const labelLayer = make("g", {});
+  const candidates = [];
   for (const node of graph.nodes) {
     const degree = near.get(node.id)?.size ?? 0;
     const isCurrent = node.id === currentNode?.id;
@@ -237,10 +259,22 @@ function draw() {
     nodeLayer.append(group);
     const emphasised = isCurrent || node.id === state.selected || node.id === focus || (matched?.has(node.id) && matched.size <= LABEL_GROUP_LIMIT) || (lit?.has(node.id) && lit.size <= LABEL_GROUP_LIMIT);
     if (emphasised || !dense || hubs.has(node.id)) {
-      labelLayer.append(pill(node.x + r + 3 * unit, node.y, node.name, 12 * unit, unit, dimmed ? "graph-dim" : "", { strong: isCurrent || node.id === state.selected }));
+      candidates.push({ node, r, dimmed, strong: isCurrent || node.id === state.selected, rank: emphasised ? 2 : 1, degree });
     }
   }
-  svg.append(nodeLayer, labelLayer);
+  const taken = [];
+  const labelSize = 12 * unit;
+  candidates.sort((a, b) => b.rank - a.rank || b.degree - a.degree);
+  for (const { node, r, dimmed, strong } of candidates) {
+    const x = node.x + r + 3 * unit;
+    const box = { left: x, right: x + textUnits(node.name) * labelSize + 10 * unit, top: node.y - labelSize * 0.7, bottom: node.y + labelSize * 0.7 };
+    if (taken.some((other) => box.left < other.right && box.right > other.left && box.top < other.bottom && box.bottom > other.top)) continue;
+    taken.push(box);
+    labelLayer.append(pill(x, node.y, node.name, labelSize, unit, dimmed ? "graph-dim" : "", { strong }));
+  }
+  if (state.grouped && dense) drawRegions(graph, groups, unit);
+  svg.append(nodeLayer);
+  svg.append(labelLayer);
   countLine.textContent = `${graph.nodes.length} 笔记 · ${graph.edges.length} 链接`;
   drawLegend(graph, groups);
   drawMini(graph, size, groups);
