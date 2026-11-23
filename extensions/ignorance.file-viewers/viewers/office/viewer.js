@@ -63,7 +63,7 @@ function renderSheet(sheet) {
 }
 
 async function showXlsx(bytes) {
-  const files = await unzipText(bytes, (p) => /^xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml|worksheets\/[^/]+\.xml)$/.test(p));
+  const files = await unzipText(bytes, (p) => /^xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml|styles\.xml|worksheets\/[^/]+\.xml)$/.test(p));
   const sheets = parseXlsx(files);
   if (!sheets.length) throw new Error("没有找到工作表");
   const tabs = $("tabs");

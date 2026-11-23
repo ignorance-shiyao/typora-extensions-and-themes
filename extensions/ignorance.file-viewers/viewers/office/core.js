@@ -41,7 +41,43 @@ export function sharedStrings(xml) {
   return out;
 }
 
-export function parseSheet(xml, strings) {
+const BUILTIN_DATE_FORMATS = new Set([14, 15, 16, 17, 18, 19, 20, 21, 22, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 45, 46, 47, 50, 51, 52, 53, 54, 55, 56, 57, 58]);
+
+const isDateFormat = (code) => /[ymdhs]/i.test(code.replace(/"[^"]*"|\[[^\]]*\]|\\.|_.|\*./g, ""));
+
+/** Indexes of the cell formats (cellXfs) in styles.xml that show a date or time. */
+export function dateStyles(xml) {
+  const out = new Set();
+  if (!xml) return out;
+  const custom = new Map();
+  for (const m of xml.matchAll(/<numFmt\b([^>]*?)\/?>/g)) custom.set(attr(m[1], "numFmtId"), attr(m[1], "formatCode") ?? "");
+  const cellXfs = /<cellXfs\b[^>]*>([\s\S]*?)<\/cellXfs>/.exec(xml);
+  if (!cellXfs) return out;
+  let index = 0;
+  for (const m of cellXfs[1].matchAll(/<xf\b([^>]*?)(?:\/>|>[\s\S]*?<\/xf>)/g)) {
+    const id = attr(m[1], "numFmtId");
+    if (BUILTIN_DATE_FORMATS.has(+id) || (custom.has(id) && isDateFormat(custom.get(id)))) out.add(index);
+    index++;
+  }
+  return out;
+}
+
+const pad = (n) => String(n).padStart(2, "0");
+
+/** Excel serial number to text: a date, a time, or both. */
+export function serialToText(serial, date1904 = false) {
+  const n = Number(serial);
+  if (!Number.isFinite(n) || n < 0) return serial;
+  const epoch = date1904 ? Date.UTC(1904, 0, 1) : Date.UTC(1899, 11, 30);
+  const ms = Math.round(n * 86400000);
+  const d = new Date(epoch + ms);
+  const day = `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+  const time = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}${d.getUTCSeconds() ? `:${pad(d.getUTCSeconds())}` : ""}`;
+  if (n < 1) return time;
+  return Number.isInteger(n) ? day : `${day} ${time}`;
+}
+
+export function parseSheet(xml, strings, dates = new Set(), date1904 = false) {
   const rows = [];
   const cellRe = /<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g;
   let m;
@@ -57,6 +93,7 @@ export function parseSheet(xml, strings) {
     else if (type === "inlineStr") value = runs(body, "t");
     else if (type === "b" && v) value = v[1] === "1" ? "TRUE" : "FALSE";
     else if (v) value = unescapeXml(v[1]);
+    if (v && !type && dates.has(Number(attr(head, "s")))) value = serialToText(value, date1904);
     if (value === "") continue;
     const r = parseInt(ref.replace(/[^0-9]/g, ""), 10) - 1;
     (rows[r] ??= [])[columnIndex(ref)] = value;
@@ -75,6 +112,8 @@ export function parseXlsx(files) {
   const wb = files["xl/workbook.xml"] ?? "";
   const rels = files["xl/_rels/workbook.xml.rels"] ?? "";
   const strings = sharedStrings(files["xl/sharedStrings.xml"]);
+  const dates = dateStyles(files["xl/styles.xml"]);
+  const date1904 = /<workbookPr\b[^>]*date1904="(?:1|true)"/.test(wb);
   const sheets = [];
   const re = /<sheet\b([^>]*?)\/?>/g;
   let m;
@@ -84,7 +123,7 @@ export function parseXlsx(files) {
     const t = rid && target(rels, rid);
     if (!t) continue;
     const path = t.startsWith("/") ? t.slice(1) : `xl/${t}`;
-    sheets.push({ name, rows: parseSheet(files[path] ?? "", strings) });
+    sheets.push({ name, rows: parseSheet(files[path] ?? "", strings, dates, date1904) });
   }
   return sheets;
 }

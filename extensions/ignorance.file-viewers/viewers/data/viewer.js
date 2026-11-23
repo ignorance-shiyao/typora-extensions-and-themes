@@ -50,6 +50,23 @@ function span(cls, content) {
   return s;
 }
 
+const PAGE = 200;
+
+// Large arrays and objects are drawn PAGE children at a time so opening one does not freeze the page.
+function appendKids(box, kids, from, depth) {
+  const end = Math.min(from + PAGE, kids.length);
+  for (let i = from; i < end; i++) box.append(render(kids[i], depth + 1, depth + 1 < 2));
+  if (end >= kids.length) return;
+  const more = document.createElement("button");
+  more.className = "more";
+  more.textContent = `再显示 ${Math.min(PAGE, kids.length - end)} 项，还有 ${kids.length - end} 项`;
+  more.addEventListener("click", () => {
+    more.remove();
+    appendKids(box, kids, end, depth);
+  });
+  box.append(more);
+}
+
 function render(n, depth, open) {
   const wrap = document.createElement("div");
   const row = document.createElement("div");
@@ -72,7 +89,7 @@ function render(n, depth, open) {
       if (show && !box) {
         box = document.createElement("div");
         box.className = "kids";
-        for (const k of n.kids) box.append(render(k, depth + 1, depth + 1 < 2));
+        appendKids(box, n.kids, 0, depth);
         wrap.append(box);
         tog.textContent = "▾";
       } else if (!show && box) {

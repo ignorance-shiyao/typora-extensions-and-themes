@@ -17,3 +17,5 @@ main { flex: 1; overflow: auto; padding: 8px 6px 24px; }
 @media (prefers-color-scheme: dark) { #err { color: #f87171; } .v-num, .v-bool { color: color-mix(in srgb, var(--accent) 55%, #fbbf24); } }
 
 #dirty { display: inline-flex; }
+.more { margin: 2px 0 2px 18px; padding: 2px 10px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--accent); font: inherit; cursor: pointer; }
+.more:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }

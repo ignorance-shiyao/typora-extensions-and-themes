@@ -11,20 +11,13 @@ function showSize(size) {
   $("info").textContent = size > 1024 ? `${(size / 1024).toFixed(1)} KB` : `${size} B`;
 }
 
-const HIGHLIGHT_LIMIT = 300000;
-let paintTimer = 0;
-
-// Colours are skipped above HIGHLIGHT_LIMIT characters; larger files are repainted after typing pauses.
 function paint() {
-  const text = ta.value;
-  $("hl").innerHTML = globalThis.codeHighlight.highlight(text.length > HIGHLIGHT_LIMIT ? "" : ext, text) + "\n";
+  $("hl").innerHTML = globalThis.codeHighlight.highlight(ext, ta.value) + "\n";
 }
 
-function refresh(typing) {
+function refresh() {
   const text = ta.value;
-  clearTimeout(paintTimer);
-  if (typing === true && text.length > 50000) paintTimer = setTimeout(paint, 150);
-  else paint();
+  paint();
   const lines = text.split("\n").length;
   $("gutter").textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
   const isDirty = text !== saved;
@@ -70,7 +63,27 @@ view.onOpen(({ name, bytes, ext: e, size, readonly: ro }) => {
   mode("src");
 });
 
-ta.addEventListener("input", () => refresh(true));
+// Edits go through execCommand so the browser keeps its undo history; assigning ta.value would clear it.
+function replaceRange(start, end, text, selStart, selEnd) {
+  ta.focus();
+  ta.setSelectionRange(start, end);
+  document.execCommand("insertText", false, text);
+  ta.setSelectionRange(selStart, selEnd);
+}
+
+function indent(outdent) {
+  const { selectionStart: s, selectionEnd: e, value } = ta;
+  if (s === e && !outdent) return replaceRange(s, e, "  ", s + 2, s + 2);
+  const from = value.lastIndexOf("\n", s - 1) + 1;
+  const to = e > s && value[e - 1] === "\n" ? e - 1 : e;
+  const lines = value.slice(from, to).split("\n");
+  const out = lines.map((line) => (outdent ? line.replace(/^(?: {1,2}|\t)/, "") : "  " + line));
+  const text = out.join("\n");
+  const first = out[0].length - lines[0].length;
+  replaceRange(from, to, text, Math.max(from, s + first), to + text.length - (to - from));
+}
+
+ta.addEventListener("input", refresh);
 ta.addEventListener("scroll", syncScroll);
 ta.addEventListener("keydown", (ev) => {
   if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "s") {
@@ -78,10 +91,7 @@ ta.addEventListener("keydown", (ev) => {
     save();
   } else if (ev.key === "Tab" && !readonly) {
     ev.preventDefault();
-    const { selectionStart: s, selectionEnd: e2, value } = ta;
-    ta.value = value.slice(0, s) + "  " + value.slice(e2);
-    ta.selectionStart = ta.selectionEnd = s + 2;
-    refresh();
+    indent(ev.shiftKey);
   }
 });
 $("save").addEventListener("click", save);
