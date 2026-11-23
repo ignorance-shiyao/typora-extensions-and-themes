@@ -13,10 +13,12 @@
 .graph-bar input[type="search"] { width: 100%; margin: 0; padding: 5px 10px; border-radius: 8px; }
 .chip { color: var(--typora-foreground); text-decoration: none; text-align: center; display: inline-flex; align-items: center; gap: 5px; line-height: 1.2; }
 .chip { background: var(--typora-panel); border-radius: 8px; padding: 5px 10px; white-space: nowrap; }
+.chip[hidden] { display: none; }
 .chip[aria-pressed="true"] { color: var(--typora-accent); background: color-mix(in srgb, var(--typora-accent) 14%, transparent); font-weight: 500; }
 .graph-count { color: var(--typora-foreground); font-size: 12px; margin-inline-start: auto; font-variant-numeric: tabular-nums; }
 .graph-canvas { display: block; width: 100%; height: auto; max-height: 72vh; background: var(--typora-panel); border-radius: 10px; touch-action: none; cursor: grab; user-select: none; }
 .graph-canvas.dragging { cursor: grabbing; }
+.graph-canvas:focus-visible { outline: 2px solid var(--typora-accent); outline-offset: 2px; }
 .graph-edge { stroke: var(--typora-foreground); stroke-opacity: .22; stroke-linecap: round; }
 .graph-edge.parent { stroke: var(--typora-accent); stroke-opacity: .9; }
 .graph-edge.active { stroke: var(--typora-accent); stroke-opacity: .9; }
@@ -156,7 +158,7 @@
 @media (prefers-reduced-motion: reduce) { .chip.spin .graph-ic { animation: none; } .rel summary > .graph-ic:last-child { transition: none; } }
 .scope-select { color: var(--typora-foreground); background: var(--typora-panel); border: 0; border-radius: 8px; padding: 5px 8px; font: inherit; cursor: pointer; }
 #output.graph-full { position: fixed; inset: 0; z-index: 20; overflow: auto; background: var(--typora-background); padding: 16px; box-sizing: border-box; }
-#output.graph-full .graph-body.side .graph-canvas { max-height: calc(100vh - 190px); }
+#output.graph-full .graph-body.side .graph-canvas { height: calc(100vh - 190px); max-height: none; }
 #output.graph-full .graph-body.side .graph-side, #output.graph-full .graph-body.side .graph-detail { max-height: calc(100vh - 150px); }
 .graph-region { fill: var(--g0); stroke: var(--typora-panel); stroke-linejoin: round; paint-order: stroke; font-weight: 600; pointer-events: none; user-select: none; filter: brightness(.8); opacity: .55; }
 .graph-region.g1 { fill: var(--g1); }

@@ -130,7 +130,8 @@ function drawHulls(graph, groups, unit) {
     if (!members.has(node.group)) members.set(node.group, []);
     members.get(node.group).push(node);
   }
-  for (const [name, nodes] of members) {
+  const labels = [];
+  for (const [name, nodes] of [...members].sort((a, b) => b[1].length - a[1].length)) {
     if (nodes.length < 2) continue;
     const pad = 20 * unit;
     const left = Math.min(...nodes.map((node) => node.x)) - pad;
@@ -140,7 +141,14 @@ function drawHulls(graph, groups, unit) {
     const index = groups.get(name) ?? 0;
     const box = make("g", { class: `graph-hull g${index}` });
     box.append(make("rect", { class: "graph-hull-box", x: left, y: top, width: right - left, height: bottom - top, rx: 12 * unit, "stroke-width": unit }));
-    box.append(pill(left + 8 * unit, top + 2 * unit, name || "根目录", 11 * unit, unit, "graph-hull-label"));
+    const text = name || "根目录";
+    const labelWidth = textUnits(text) * 11 * unit + 10 * unit;
+    const x = left + 8 * unit;
+    let y = top + 2 * unit;
+    // Boxes of different folders overlap in a local graph, so push a name down until it clears the others.
+    while (labels.some((other) => x < other.x + other.width && x + labelWidth > other.x && Math.abs(y - other.y) < 16 * unit) && y < bottom - 8 * unit) y += 16 * unit;
+    labels.push({ x, y, width: labelWidth });
+    box.append(pill(x, y, text, 11 * unit, unit, "graph-hull-label"));
     layer.append(box);
   }
   svg.append(layer);
@@ -156,11 +164,19 @@ function drawRegions(graph, groups, unit) {
     members.get(node.group).push(node);
   }
   const middle = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
-  for (const [name, nodes] of members) {
-    if (nodes.length < REGION_MIN_NODES) continue;
+  const placed = [];
+  const regions = [...members].filter(([, nodes]) => nodes.length >= REGION_MIN_NODES).sort((a, b) => b[1].length - a[1].length);
+  for (const [name, nodes] of regions) {
     const index = groups.get(name) ?? 0;
     const size = Math.min(17, 11 + Math.sqrt(nodes.length) * 0.4) * unit;
-    layer.append(make("text", { class: `graph-region g${index}`, x: middle(nodes.map((node) => node.x)), y: [...nodes.map((node) => node.y)].sort((a, b) => a - b)[Math.floor(nodes.length * 0.04)] - size * 0.8, "font-size": size, "text-anchor": "middle", "stroke-width": 3 * unit }, name || "根目录"));
+    const label = name || "根目录";
+    const width = textUnits(label) * size;
+    const x = middle(nodes.map((node) => node.x));
+    let y = [...nodes.map((node) => node.y)].sort((a, b) => a - b)[Math.floor(nodes.length * 0.04)] - size * 0.8;
+    const clash = () => placed.some((box) => Math.abs(box.x - x) < (box.width + width) / 2 && Math.abs(box.y - y) < size * 1.1);
+    for (let step = 0; step < 8 && clash(); step++) y -= size * 1.1;
+    placed.push({ x, y, width });
+    layer.append(make("text", { class: `graph-region g${index}`, x, y, "font-size": size, "text-anchor": "middle", "stroke-width": 6 * unit }, label));
   }
   svg.append(layer);
 }
@@ -272,8 +288,8 @@ function draw() {
     taken.push(box);
     labelLayer.append(pill(x, node.y, node.name, labelSize, unit, dimmed ? "graph-dim" : "", { strong }));
   }
-  if (state.grouped && dense) drawRegions(graph, groups, unit);
   svg.append(nodeLayer);
+  if (state.grouped && dense) drawRegions(graph, groups, unit);
   svg.append(labelLayer);
   countLine.textContent = `${graph.nodes.length} 笔记 · ${graph.edges.length} 链接`;
   drawLegend(graph, groups);
@@ -661,6 +677,7 @@ function build() {
   full.setAttribute("aria-label", state.full ? "退出全屏" : "全屏显示");
   full.append(icon(state.full ? "shrink" : "expand"));
   full.addEventListener("click", () => void toggleFull());
+  full.hidden = Boolean(sdk.capabilities?.toolbar);
   filters.append(chip("孤立笔记", "orphans", "orphan"), chip("断链节点", "broken", "unlink"), chip("层级", "parents", "layers"), chip("任务", "tasks", "task"), chip("箭头", "arrows", "arrow"), chip("分组", "grouped", "folder"), full);
   output.append(top, searchRow, filters);
   if (state.refreshError) output.append(control("p", { textContent: `刷新失败：${state.refreshError}` }));
@@ -668,6 +685,9 @@ function build() {
   if (notice) output.append(control("p", { textContent: notice }));
   svg = document.createElementNS(NS, "svg");
   svg.setAttribute("class", "graph-canvas graph-scope");
+  svg.setAttribute("tabindex", "0");
+  svg.setAttribute("role", "group");
+  svg.setAttribute("aria-label", "笔记关系图，方向键切换笔记，Esc 取消选择");
   legendBox = control("div", { className: "graph-legend" });
   detailBox = control("div", { className: "graph-detail" });
   const stage = control("div", { className: "graph-stage" });
@@ -702,6 +722,7 @@ function build() {
   wrap.append(body);
   output.append(wrap);
   bindPointer();
+  bindKeys();
   renderDetail();
   draw();
 }
@@ -747,7 +768,35 @@ document.addEventListener("fullscreenchange", () => {
   }
 });
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && state.full) void toggleFull();
+  if (event.key === "Escape" && state.full && !sdk.capabilities?.toolbar) void toggleFull();
+});
+
+// Inside Typora the panel goes fullsize through a host toolbar button; the browser Fullscreen API is not available to the view.
+const FULL_ICONS = {
+  expand: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/></svg>',
+  shrink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 10 7-7"/><path d="M20 10h-6V4"/><path d="m3 21 7-7"/><path d="M4 14h6v6"/></svg>',
+};
+let fullToolbar;
+
+function ensureFullToolbar() {
+  if (fullToolbar || !sdk.capabilities?.toolbar) return;
+  fullToolbar = sdk.Toolbar({
+    label: "图谱",
+    buttons: [sdk.Button({ id: "full", role: "fullsize", icon: FULL_ICONS.expand, activeIcon: FULL_ICONS.shrink, tooltip: "全屏显示" })],
+  });
+  void fullToolbar.ready?.catch(() => {});
+}
+
+sdk.onFullsize?.(({ fullsize }) => {
+  state.full = Boolean(fullsize);
+  output.classList.toggle("graph-full", state.full);
+  const rebuild = () => {
+    state.view = undefined;
+    if (data) build();
+  };
+  rebuild();
+  // The host resizes the panel after this event, so draw again once the new size is in place.
+  setTimeout(rebuild, 150);
 });
 
 function zoomBy(factor) {
@@ -764,6 +813,26 @@ function zoomBy(factor) {
 function scheduleDraw() {
   if (frame) return;
   frame = requestAnimationFrame(() => { frame = undefined; draw(); });
+}
+
+const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+
+function bindKeys() {
+  svg.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.selected && !state.full) {
+      state.selected = undefined;
+      renderDetail();
+      draw();
+      return;
+    }
+    const direction = ARROWS[event.key];
+    if (!direction || event.metaKey || event.ctrlKey || event.altKey) return;
+    event.preventDefault();
+    const { nodes } = filtered(shown().graph);
+    const current = nodes.find((node) => node.id === state.selected) ?? nodes.find((node) => node.path && node.path === data.current);
+    const target = current ? globalThis.graphMatch.nextNode(current, nodes, direction) : nodes[0];
+    if (target && target.id !== state.selected) select(target.id);
+  });
 }
 
 function bindPointer() {
@@ -862,11 +931,20 @@ async function readGraph() {
   build();
 }
 
+// An unsaved document never gets a snapshot, so the loading animation would run forever.
+let emptyTimer;
+
 sdk.onDocument(({ blocks }) => {
   graphRequest++;
+  ensureFullToolbar();
   currentContext = blocks[0]?.id;
   shownSnapshot = undefined;
   showLoading();
+  clearTimeout(emptyTimer);
+  const context = currentContext;
+  emptyTimer = setTimeout(() => {
+    if (context === currentContext && shownSnapshot === "null") output.textContent = "保存笔记后显示图谱";
+  }, 6000);
   void readGraph().catch(() => {});
 });
 setInterval(() => { void readGraph().catch(() => {}); }, 1000);
