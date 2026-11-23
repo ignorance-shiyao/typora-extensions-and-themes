@@ -23,9 +23,121 @@
   ],
   "main": "main.js",
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:date-insert",
+    "onCommand:date-convert",
+    "onCommand:outline-up",
+    "onCommand:outline-down",
+    "onCommand:outline-promote",
+    "onCommand:outline-demote",
+    "onCommand:outline-branch",
+    "onCommand:outline-depth",
+    "onCommand:outline-to-list",
+    "onCommand:outline-to-headings",
+    "onCommand:table-sort-asc",
+    "onCommand:table-sort-desc",
+    "onCommand:table-recalculate",
+    "onCommand:table-total",
+    "onCommand:table-transpose",
+    "onCommand:table-csv-convert"
   ],
   "contributes": {
+    "commands": [
+      {"id": "date-insert", "title": "插入自然语言日期", "category": "日期"},
+      {"id": "date-convert", "title": "将选中文字转换为日期", "category": "日期"},
+      {"id": "outline-up", "title": "上移列表项", "category": "列表"},
+      {"id": "outline-down", "title": "下移列表项", "category": "列表"},
+      {"id": "outline-promote", "title": "提升列表层级", "category": "列表"},
+      {"id": "outline-demote", "title": "降低列表层级", "category": "列表"},
+      {"id": "outline-branch", "title": "查看列表分支", "category": "列表"},
+      {"id": "outline-depth", "title": "查看列表前几层", "category": "列表"},
+      {"id": "outline-to-list", "title": "将选中文本转换为列表", "category": "列表"},
+      {"id": "outline-to-headings", "title": "将选中列表转换为标题", "category": "列表"},
+      {
+        "id": "table-sort-asc",
+        "title": "按列升序排序",
+        "category": "表格"
+      },
+      {
+        "id": "table-sort-desc",
+        "title": "按列降序排序",
+        "category": "表格"
+      },
+      {
+        "id": "table-recalculate",
+        "title": "重新计算表格",
+        "category": "表格"
+      },
+      {
+        "id": "table-total",
+        "title": "追加合计行",
+        "category": "表格"
+      },
+      {
+        "id": "table-transpose",
+        "title": "转置表格",
+        "category": "表格"
+      },
+      {
+        "id": "table-csv-convert",
+        "title": "将选中的 CSV 转为表格",
+        "category": "表格"
+      }
+    ],
+    "keyBindings": [
+      {"command": "outline-up", "key": "Mod+Shift+F7"},
+      {"command": "outline-down", "key": "Mod+Shift+F8"},
+      {"command": "outline-promote", "key": "Mod+Shift+F9"},
+      {"command": "outline-demote", "key": "Mod+Shift+F10"}
+    ],
+    "menus": {
+      "editor/context": [
+        {"command": "date-convert", "when": "editorHasSelection"},
+        {
+          "command": "table-sort-asc",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-sort-desc",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-recalculate",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-total",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-transpose",
+          "when": "blockType == 'table_cell'"
+        }
+      ],
+      "inlinePalette": [
+        {"command": "date-insert"},
+        {
+          "command": "table-sort-asc",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-sort-desc",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-recalculate",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-total",
+          "when": "blockType == 'table_cell'"
+        },
+        {
+          "command": "table-transpose",
+          "when": "blockType == 'table_cell'"
+        }
+      ]
+    },
     "inlineRules": [
       {
         "id": "badge-open",
@@ -414,6 +526,7 @@
       }
     ],
     "detailViews": [
+      {"id": "outline-list", "title": "列表大纲", "icon": "list", "entry": "outline/index.html"},
       {
         "id": "figures",
         "title": "图表与图片",
@@ -447,16 +560,98 @@
     "configuration": {
       "title": "Ignorance Advanced",
       "properties": {
+        "dateFormat": {
+          "type": "string",
+          "title": "插入日期格式",
+          "enum": ["iso", "weekday", "wiki"],
+          "enumLabels": ["日期", "日期和星期", "Wiki 链接"],
+          "default": "iso"
+        },
+        "dateWeekStart": {
+          "type": "number",
+          "title": "每周起始日",
+          "enum": [1, 0],
+          "enumLabels": ["周一", "周日"],
+          "default": 1
+        },
         "showMascot": {
           "type": "boolean",
           "default": false,
           "title": "在演示里显示双猫",
           "description": "封面右下角和最后一页。主题里的双猫在 设置 ▸ 视图 ▸ 主题选项「双猫」单独开关，默认都关闭。"
+        },
+        "lintHeadings": {
+          "type": "boolean",
+          "default": true,
+          "title": "整理标题层级与空行"
+        },
+        "lintBullets": {
+          "type": "boolean",
+          "default": true,
+          "title": "列表符号统一"
+        },
+        "lintNumbering": {
+          "type": "boolean",
+          "default": true,
+          "title": "有序列表重新编号"
+        },
+        "lintBlankLines": {
+          "type": "boolean",
+          "default": true,
+          "title": "合并连续空行"
+        },
+        "lintTrailingSpaces": {
+          "type": "boolean",
+          "default": true,
+          "title": "删除行尾空白"
+        },
+        "lintHardBreaks": {
+          "type": "boolean",
+          "default": true,
+          "title": "保留 Markdown 硬换行",
+          "when": {
+            "lintTrailingSpaces": true
+          }
+        },
+        "lintFinalNewline": {
+          "type": "boolean",
+          "default": true,
+          "title": "文件末尾保留一个换行"
+        },
+        "lintPunctuation": {
+          "type": "boolean",
+          "default": true,
+          "title": "中文标点全角化"
+        },
+        "lintCjkSpacing": {
+          "type": "boolean",
+          "default": true,
+          "title": "中英文之间加空格"
+        },
+        "lintEmphasis": {
+          "type": "boolean",
+          "default": true,
+          "title": "统一斜体标记"
+        },
+        "lintIndent": {
+          "type": "number",
+          "default": 2,
+          "enum": [
+            0,
+            2,
+            4
+          ],
+          "enumLabels": [
+            "保留原样",
+            "2 空格",
+            "4 空格"
+          ],
+          "title": "列表缩进"
         }
       }
     }
   },
   "permissions": {
-    "document": "read"
+    "document": "write"
   }
 }

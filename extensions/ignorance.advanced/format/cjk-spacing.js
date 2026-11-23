@@ -9,7 +9,7 @@ const LATIN_THEN_CJK = new RegExp(`([${LATIN}\\])!%&+=>])([${CJK}])`, "g");
 // Inline spans that must not change: code, math, links/images (the URL part), autolinks, HTML tags.
 const PROTECTED_INLINE = /(`+)[\s\S]*?\1|\$\$[\s\S]*?\$\$|\$[^$\n]+\$|!?\[[^\]\n]*\]\([^)\n]*\)|<[^>\n]+>|https?:\/\/[^\s)]+/g;
 
-function spaceText(text) {
+export function spaceText(text) {
   return text.replace(CJK_THEN_LATIN, "$1 $2").replace(LATIN_THEN_CJK, "$1 $2");
 }
 
