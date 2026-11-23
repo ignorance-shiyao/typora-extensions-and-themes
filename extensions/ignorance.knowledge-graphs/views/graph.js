@@ -24,7 +24,7 @@ function loadPrefs() {
 function savePrefs() {
   try { localStorage.setItem(PREFS, JSON.stringify({ layout: state.layout, grouped: state.grouped })); } catch { /* storage unavailable */ }
 }
-const state = { ...loadPrefs(), full: false, scope: "local", depth: 1, query: "", orphans: true, broken: true, parents: true, tasks: true, arrows: false, selected: undefined, hover: undefined, view: undefined, refreshing: false, refreshError: "" };
+const state = { ...loadPrefs(), full: false, scope: "local", depth: 1, query: "", orphans: true, broken: true, parents: true, tasks: true, arrows: false, selected: undefined, group: undefined, dock: false, hover: undefined, view: undefined, refreshing: false, refreshError: "" };
 let currentContext;
 let shownSnapshot;
 let data;
@@ -33,6 +33,8 @@ let detailBox;
 let legendBox;
 let countLine;
 let refreshButton;
+let dockBox;
+let countRefs = {};
 let sideBox;
 let miniBox;
 let sideSignature = "";
@@ -68,6 +70,9 @@ const ICONS = {
   link: ["M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"],
   text: ["M17 6.1H3", "M21 12.1H3", "M15.1 18H3"],
   outbound: ["M7 7h10v10", "M7 17 17 7"],
+  search: [["circle", { cx: 11, cy: 11, r: 8 }], "m21 21-4.3-4.3"],
+  hull: [["circle", { cx: 9, cy: 9, r: 5, "stroke-dasharray": "2 2" }], ["circle", { cx: 15, cy: 15, r: 5, "stroke-dasharray": "2 2" }]],
+  hierarchy: [["circle", { cx: 12, cy: 5, r: 2 }], ["circle", { cx: 6, cy: 19, r: 2 }], ["circle", { cx: 18, cy: 19, r: 2 }], "M12 7v5m0 0-6 5m6-5 6 5"],
 };
 
 function icon(name) {
@@ -133,20 +138,23 @@ function drawHulls(graph, groups, unit) {
   const labels = [];
   for (const [name, nodes] of [...members].sort((a, b) => b[1].length - a[1].length)) {
     if (nodes.length < 2) continue;
-    const pad = 20 * unit;
-    const left = Math.min(...nodes.map((node) => node.x)) - pad;
-    const right = Math.max(...nodes.map((node) => node.x)) + pad;
-    const top = Math.min(...nodes.map((node) => node.y)) - pad - 8 * unit;
-    const bottom = Math.max(...nodes.map((node) => node.y)) + pad;
+    const pad = 18 * unit;
+    const xs = nodes.map((node) => node.x);
+    const ys = nodes.map((node) => node.y);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    // An ellipse through the corners of the bounding box would cover a lot of empty space, so 1.2 of the half extent plus padding.
+    const rx = ((Math.max(...xs) - Math.min(...xs)) / 2) * 1.2 + pad;
+    const ry = ((Math.max(...ys) - Math.min(...ys)) / 2) * 1.2 + pad;
     const index = groups.get(name) ?? 0;
     const box = make("g", { class: `graph-hull g${index}` });
-    box.append(make("rect", { class: "graph-hull-box", x: left, y: top, width: right - left, height: bottom - top, rx: 12 * unit, "stroke-width": unit }));
+    box.append(make("ellipse", { class: "graph-hull-box", cx, cy, rx, ry, "stroke-width": unit, "stroke-dasharray": `${4 * unit} ${4 * unit}` }));
     const text = name || "根目录";
     const labelWidth = textUnits(text) * 11 * unit + 10 * unit;
-    const x = left + 8 * unit;
-    let y = top + 2 * unit;
-    // Boxes of different folders overlap in a local graph, so push a name down until it clears the others.
-    while (labels.some((other) => x < other.x + other.width && x + labelWidth > other.x && Math.abs(y - other.y) < 16 * unit) && y < bottom - 8 * unit) y += 16 * unit;
+    const x = cx - labelWidth / 2;
+    let y = cy - ry;
+    // Ellipses of different folders overlap in a local graph, so push a name down until it clears the others.
+    while (labels.some((other) => x < other.x + other.width && x + labelWidth > other.x && Math.abs(y - other.y) < 16 * unit) && y < cy) y += 16 * unit;
     labels.push({ x, y, width: labelWidth });
     box.append(pill(x, y, text, 11 * unit, unit, "graph-hull-label"));
     layer.append(box);
@@ -181,16 +189,25 @@ function drawRegions(graph, groups, unit) {
   svg.append(layer);
 }
 
+const isDense = (graph) => graph.nodes.length > 60;
+
+function linkedIds(graph) {
+  return new Set(graph.edges.filter((edge) => state.parents || edge.kind !== "parent").flatMap(({ source, target }) => [source, target]));
+}
+
 function filtered(graph) {
   let nodes = graph.nodes;
   if (!state.broken) nodes = nodes.filter((node) => !node.broken);
+  const linked = linkedIds(graph);
+  if (!state.orphans || isDense(graph)) nodes = nodes.filter((node) => linked.has(node.id) || node.path === data.current);
+  if (state.group !== undefined) nodes = nodes.filter((node) => node.broken || node.group === state.group);
   let edges = graph.edges.filter((edge) => state.parents || edge.kind !== "parent");
-  if (!state.orphans) {
-    const linked = new Set(edges.flatMap(({ source, target }) => [source, target]));
-    nodes = nodes.filter((node) => linked.has(node.id) || node.path === data.current);
-  }
-  const ids = new Set(nodes.map((node) => node.id));
+  let ids = new Set(nodes.map((node) => node.id));
   edges = edges.filter(({ source, target }) => ids.has(source) && ids.has(target));
+  if (state.group !== undefined) {
+    const touched = new Set(edges.flatMap(({ source, target }) => [source, target]));
+    nodes = nodes.filter((node) => !node.broken || touched.has(node.id));
+  }
   return { nodes, edges };
 }
 
@@ -291,10 +308,11 @@ function draw() {
   svg.append(nodeLayer);
   if (state.grouped && dense) drawRegions(graph, groups, unit);
   svg.append(labelLayer);
-  countLine.textContent = `${graph.nodes.length} 笔记 · ${graph.edges.length} 链接`;
+  drawCounts(graph, full);
+  drawDock(full, groups);
   drawLegend(graph, groups);
   drawMini(graph, size, groups);
-  drawSide(graph, full, groups);
+  drawSide(sideGraph(full), full, groups);
 }
 
 function drawMini(graph, size, groups) {
@@ -305,6 +323,66 @@ function drawMini(graph, size, groups) {
   for (const node of graph.nodes) miniBox.append(make("circle", { class: `mini-dot ${node.broken ? "broken" : `g${groups.get(node.group) ?? 0}`}`, cx: node.x, cy: node.y, r: dot }));
   const { x, y, width, height } = state.view;
   miniBox.append(make("rect", { class: "mini-view", x, y, width, height }));
+}
+
+// The folder tree lists every note except what the toggles hide, so a folder filter can always be switched off again.
+function sideGraph(full) {
+  let nodes = full.nodes;
+  if (!state.broken) nodes = nodes.filter((node) => !node.broken);
+  if (!state.orphans) {
+    const linked = linkedIds(full);
+    nodes = nodes.filter((node) => linked.has(node.id) || node.path === data.current);
+  }
+  return { nodes, edges: full.edges };
+}
+
+function orphanNotes(full) {
+  const linked = linkedIds(full);
+  return full.nodes.filter((node) => !node.broken && !linked.has(node.id) && (state.group === undefined || node.group === state.group));
+}
+
+function drawCounts(graph, full) {
+  const stat = (glyph, value, title) => {
+    const item = control("span", { title });
+    item.append(glyph, control("b", { textContent: value.toLocaleString() }));
+    return item;
+  };
+  countLine.replaceChildren(stat(control("i", { className: "swatch ink" }), graph.nodes.length, "节点"), stat(icon("link"), graph.edges.length, "链接"));
+  const open = full.nodes.filter((node) => infoMap[node.path]?.open).length;
+  const values = { orphans: noteStats(full)[2][2], broken: full.nodes.filter((node) => node.broken).length, tasks: open };
+  for (const [key, value] of Object.entries(values)) if (countRefs[key]) countRefs[key].textContent = String(value);
+}
+
+function drawDock(full, groups) {
+  if (!dockBox) return;
+  const list = isDense(filtered(full)) && state.orphans ? orphanNotes(full) : [];
+  dockBox.hidden = list.length === 0;
+  dockBox.replaceChildren();
+  if (!list.length) return;
+  const toggle = control("button", { type: "button", className: "dock-toggle" });
+  toggle.setAttribute("aria-expanded", String(state.dock));
+  const dots = control("span", { className: "dock-dots" });
+  for (const index of [...new Set(list.map((node) => groups.get(node.group) ?? 0))].slice(0, 6)) dots.append(control("i", { className: `swatch g${index}` }));
+  toggle.append(dots, control("span", { textContent: `孤立 · ${list.length}` }), icon("chevron"));
+  toggle.addEventListener("click", () => { state.dock = !state.dock; drawDock(full, groups); });
+  dockBox.append(toggle);
+  if (!state.dock) return;
+  const panel = control("div", { className: "dock-panel" });
+  const sorted = [...list].sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+  for (const node of sorted.slice(0, 60)) {
+    const button = control("button", { type: "button", className: "pill-link", textContent: node.name, title: node.path ?? node.name });
+    button.addEventListener("click", () => select(node.id));
+    panel.append(button);
+  }
+  if (sorted.length > 60) panel.append(control("span", { className: "rel-more", textContent: `另有 ${sorted.length - 60} 个` }));
+  dockBox.append(panel);
+}
+
+function toggleGroup(key) {
+  state.group = state.group === key ? undefined : key;
+  state.view = undefined;
+  sideSignature = "";
+  draw();
 }
 
 function noteStats(full) {
@@ -328,7 +406,7 @@ function treeItem(node, groups, active) {
 function drawSide(graph, full, groups) {
   if (!sideBox) return;
   const active = state.selected ?? currentNodeId();
-  const signature = [active, state.query, state.grouped, state.scope, state.depth, graph.nodes.length, graph.edges.length, data.version].join("|");
+  const signature = [active, state.query, state.grouped, state.group, state.scope, state.depth, graph.nodes.length, graph.edges.length, data.version].join("|");
   if (signature === sideSignature) return;
   sideSignature = signature;
   const nodes = [...graph.nodes].sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
@@ -343,10 +421,34 @@ function drawSide(graph, full, groups) {
       members.get(key).push(node);
     }
     const ordered = [...members].sort(([a], [b]) => (a === "\0") - (b === "\0") || a.localeCompare(b, "zh-CN"));
+    const noted = ordered.filter(([key]) => key !== "\0");
+    const total = noted.reduce((sum, [, list]) => sum + list.length, 0) || 1;
+    const biggest = Math.max(1, ...noted.map(([, list]) => list.length));
+    const share = control("div", { className: "share-bar" });
+    for (const [key, list] of noted) {
+      const part = control("button", { type: "button", className: `share-part swatch-bg g${groups.get(key) ?? 0}${state.group !== undefined && state.group !== key ? " off" : ""}`, title: `${key || "根目录"} · ${list.length}` });
+      part.style.flexGrow = String(list.length);
+      part.setAttribute("aria-label", `${key || "根目录"}，${list.length}`);
+      part.addEventListener("click", () => toggleGroup(key));
+      share.append(part);
+    }
+    if (noted.length > 1) tree.append(share);
     for (const [key, list] of ordered) {
       const details = control("details", { className: "tree-group", open: list.length <= 8 || list.some((node) => node.id === active) });
       const summary = control("summary");
-      summary.append(icon(key === "\0" ? "unlink" : "folder"), control("span", { className: "rel-title", textContent: key === "\0" ? "未分组" : key || "根目录" }), control("span", { className: "rel-count", textContent: String(list.length) }), icon("chevron"));
+      const mark = key === "\0" ? icon("unlink") : control("i", { className: `swatch g${groups.get(key) ?? 0}` });
+      summary.append(mark, control("span", { className: "rel-title", textContent: key === "\0" ? "未分组" : key || "根目录" }));
+      if (key !== "\0") {
+        const bar = control("span", { className: "mini-bar" });
+        const fillBar = control("i", { className: `swatch-bg g${groups.get(key) ?? 0}` });
+        fillBar.style.width = `${Math.max(6, Math.round((list.length / biggest) * 100))}%`;
+        bar.append(fillBar);
+        summary.append(bar);
+        summary.title = "点击色块只看这个目录";
+        mark.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); toggleGroup(key); });
+        if (state.group !== undefined && state.group !== key) details.classList.add("off");
+      }
+      summary.append(control("span", { className: "rel-count", textContent: String(list.length) }), icon("chevron"));
       const items = control("div", { className: "tree-items" });
       const fill = () => {
         if (items.childNodes.length) return;
@@ -504,18 +606,22 @@ function renderDetail() {
   const node = graph.nodes.find((item) => item.id === id);
   if (!node) return;
   const byId = new Map(graph.nodes.map((item) => [item.id, item]));
+  const touching = graph.edges.filter((edge) => (edge.source === node.id || edge.target === node.id) && byId.has(edge.source) && byId.has(edge.target));
+  const groups = groupIndex();
+  const top = control("div", { className: "d-top" });
+  const badge = control("span", { className: "d-badge" });
+  badge.append(control("i", { className: node.broken ? "swatch hollow" : `swatch g${groups.get(node.group) ?? 0}` }), node.broken ? "断链" : node.group || "根目录");
+  const degree = control("span", { className: `d-degree${touching.length ? "" : " zero"}`, title: "链接数" });
+  degree.append(icon("link"), control("b", { textContent: String(touching.length) }));
+  top.append(badge, degree);
   const title = control("div", { className: "d-title" });
   title.append(control("h2", { textContent: node.name }));
-  const folders = (node.path ?? "").split("/").slice(0, -1).slice(0, 2);
-  const crumbs = control("div", { className: "tag-row" });
-  for (const folder of folders) crumbs.append(control("span", { className: "tag", textContent: folder }));
-  detailBox.append(title);
-  if (folders.length) detailBox.append(crumbs);
-  const touching = graph.edges.filter((edge) => (edge.source === node.id || edge.target === node.id) && byId.has(edge.source) && byId.has(edge.target));
-  const neighbours = new Set(touching.map((edge) => (edge.source === node.id ? edge.target : edge.source)));
-  const rows = control("dl", { className: "d-meta" });
-  rows.append(control("dt", { textContent: "路径" }), control("dd", { textContent: node.path ?? "未找到笔记" }), control("dt", { textContent: "关联" }), control("dd", { textContent: `${neighbours.size} 个笔记 · ${touching.length} 条链接` }));
-  detailBox.append(rows);
+  detailBox.append(top, title);
+  if (node.path) {
+    const path = control("div", { className: "detail-path", title: node.path });
+    path.append(icon("file"), control("span", { textContent: node.path }));
+    detailBox.append(path);
+  }
   const info = infoMap[node.path];
   if (info && (info.open || info.done || info.cards || info.tags.length || info.props.length)) {
     const sum = detailSection("text", "内容摘要");
@@ -559,18 +665,6 @@ function select(id) {
   state.selected = id;
   renderDetail();
   draw();
-}
-
-function chip(label, key, glyph) {
-  const button = control("button", { type: "button", className: "chip" });
-  button.append(icon(glyph), label);
-  button.setAttribute("aria-pressed", String(state[key]));
-  button.addEventListener("click", () => {
-    state[key] = !state[key];
-    button.setAttribute("aria-pressed", String(state[key]));
-    draw();
-  });
-  return button;
 }
 
 async function refresh() {
@@ -647,7 +741,12 @@ function build() {
     state.view = undefined;
     build();
   });
-  top.append(mode);
+  const search = control("input", { type: "search", value: state.query, placeholder: "搜索：名称 #标签 path:目录" });
+  search.setAttribute("aria-label", "搜索");
+  search.addEventListener("input", () => { state.query = search.value; draw(); });
+  const searchBox = control("div", { className: "search-box" });
+  searchBox.append(mode, icon("search"), search);
+  top.append(searchBox);
   const layoutButton = control("button", { type: "button", className: "chip icon", disabled: state.full });
   const layoutName = state.layout === "side" ? "左右布局" : "上下布局";
   layoutButton.append(icon(state.layout === "side" ? "side" : "stack"));
@@ -659,27 +758,48 @@ function build() {
     state.view = undefined;
     build();
   });
-  top.append(layoutButton);
   refreshButton = control("button", { type: "button", className: `chip icon${state.refreshing ? " spin" : ""}`, title: "刷新索引", disabled: state.refreshing });
   refreshButton.setAttribute("aria-label", "刷新索引");
   refreshButton.append(icon("refresh"));
   refreshButton.addEventListener("click", () => void refresh());
-  countLine = control("span", { className: "graph-count" });
-  top.append(refreshButton, countLine);
-  const search = control("input", { type: "search", value: state.query, placeholder: "搜索：名称 #标签 path:目录" });
-  search.addEventListener("input", () => { state.query = search.value; draw(); });
-  const searchRow = control("div", { className: "graph-bar" });
-  const grow = control("div", { className: "grow" });
-  grow.append(search);
-  searchRow.append(grow);
-  const filters = control("div", { className: "graph-bar" });
   const full = control("button", { type: "button", className: "chip icon", title: state.full ? "退出全屏" : "全屏显示" });
   full.setAttribute("aria-label", state.full ? "退出全屏" : "全屏显示");
   full.append(icon(state.full ? "shrink" : "expand"));
   full.addEventListener("click", () => void toggleFull());
   full.hidden = Boolean(sdk.capabilities?.toolbar);
-  filters.append(chip("孤立笔记", "orphans", "orphan"), chip("断链节点", "broken", "unlink"), chip("层级", "parents", "layers"), chip("任务", "tasks", "task"), chip("箭头", "arrows", "arrow"), chip("分组", "grouped", "folder"), full);
-  output.append(top, searchRow, filters);
+  top.append(layoutButton, refreshButton, full);
+  countLine = control("span", { className: "graph-count" });
+  countRefs = {};
+  const filters = control("div", { className: "graph-bar" });
+  const segment = control("div", { className: "seg" });
+  for (const [label, key, dot] of [["孤立", "orphans", "swatch hollow-dash"], ["断链", "broken", "swatch hollow"], ["待办", "tasks", "swatch task"]]) {
+    const button = control("button", { type: "button", className: "seg-btn" });
+    countRefs[key] = control("b", { textContent: "0" });
+    button.append(control("i", { className: dot }), control("span", { textContent: label }), countRefs[key]);
+    button.setAttribute("aria-pressed", String(state[key]));
+    button.addEventListener("click", () => {
+      state[key] = !state[key];
+      button.setAttribute("aria-pressed", String(state[key]));
+      draw();
+    });
+    segment.append(button);
+  }
+  const toggles = control("div", { className: "seg" });
+  for (const [label, key, glyph] of [["分组边界", "grouped", "hull"], ["层级", "parents", "hierarchy"], ["箭头", "arrows", "arrow"]]) {
+    const button = control("button", { type: "button", className: "seg-btn icon", title: label });
+    button.setAttribute("aria-label", label);
+    button.append(icon(glyph));
+    button.setAttribute("aria-pressed", String(state[key]));
+    button.addEventListener("click", () => {
+      state[key] = !state[key];
+      button.setAttribute("aria-pressed", String(state[key]));
+      if (key === "grouped") sideSignature = "";
+      draw();
+    });
+    toggles.append(button);
+  }
+  filters.append(segment, toggles, countLine);
+  output.append(top, filters);
   if (state.refreshError) output.append(control("p", { textContent: `刷新失败：${state.refreshError}` }));
   const notice = data.overflow ? "笔记超过 2,000 篇，只显示局部图" : data.globalNotice;
   if (notice) output.append(control("p", { textContent: notice }));
@@ -703,7 +823,8 @@ function build() {
   fitButton.append(icon("fit"));
   fitButton.addEventListener("click", () => { state.view = undefined; draw(); });
   zoom.append(fitButton);
-  stage.append(svg, zoom);
+  dockBox = control("div", { className: "graph-dock" });
+  stage.append(svg, zoom, dockBox);
   miniBox = make("svg", { class: "graph-mini graph-scope", "aria-label": "缩略图" });
   stage.append(miniBox);
   bindMini();
