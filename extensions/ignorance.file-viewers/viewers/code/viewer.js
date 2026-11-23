@@ -11,9 +11,20 @@ function showSize(size) {
   $("info").textContent = size > 1024 ? `${(size / 1024).toFixed(1)} KB` : `${size} B`;
 }
 
-function refresh() {
+const HIGHLIGHT_LIMIT = 300000;
+let paintTimer = 0;
+
+// Colours are skipped above HIGHLIGHT_LIMIT characters; larger files are repainted after typing pauses.
+function paint() {
   const text = ta.value;
-  $("hl").innerHTML = globalThis.codeHighlight.highlight(ext, text) + "\n";
+  $("hl").innerHTML = globalThis.codeHighlight.highlight(text.length > HIGHLIGHT_LIMIT ? "" : ext, text) + "\n";
+}
+
+function refresh(typing) {
+  const text = ta.value;
+  clearTimeout(paintTimer);
+  if (typing === true && text.length > 50000) paintTimer = setTimeout(paint, 150);
+  else paint();
   const lines = text.split("\n").length;
   $("gutter").textContent = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
   const isDirty = text !== saved;
@@ -59,7 +70,7 @@ view.onOpen(({ name, bytes, ext: e, size, readonly: ro }) => {
   mode("src");
 });
 
-ta.addEventListener("input", refresh);
+ta.addEventListener("input", () => refresh(true));
 ta.addEventListener("scroll", syncScroll);
 ta.addEventListener("keydown", (ev) => {
   if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "s") {
