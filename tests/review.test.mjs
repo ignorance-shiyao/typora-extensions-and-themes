@@ -12,7 +12,8 @@ import { md } from "../scripts/review/github.mjs";
 import { nestedQuantifier } from "../scripts/review/regex.mjs";
 import { approvals, assess } from "../scripts/review/risk.mjs";
 import { contrast, parseColor, themeVars } from "../scripts/review/theme.mjs";
-import { parseSource, untar } from "../scripts/review/vendor.mjs";
+import { parseSource, samePublished, untar } from "../scripts/review/vendor.mjs";
+import { sha256Hex } from "../scripts/lib.mjs";
 import { classify } from "../scripts/pr-check.mjs";
 import { expandSnippet, fences } from "../scripts/harness/harness.mjs";
 
@@ -158,6 +159,10 @@ test("vendored sources: npm and URL forms, tarballs read back", () => {
   const body = Buffer.from("hello");
   const tar = Buffer.concat([header("package/a.txt", body.length), body, Buffer.alloc(512 - body.length), Buffer.alloc(1024)]);
   const files = untar(tar);
+  // Only a last-line source map comment may be left out.
+  const published = Buffer.from("var a = 1;\n//# sourceMappingURL=a.js.map\n");
+  assert.equal(samePublished(sha256Hex(Buffer.from("var a = 1;\n")), published), true);
+  assert.equal(samePublished(sha256Hex(Buffer.from("var a = 2;\n")), published), false);
   assert.equal(files.get("package/a.txt").toString(), "hello");
 });
 

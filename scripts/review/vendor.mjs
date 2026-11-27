@@ -94,6 +94,17 @@ export async function npmFiles(name, version) {
   return promise;
 }
 
+/**
+ * Whether `hash` is the published file, or that file without its last-line
+ * source map comment (left out together with the .map, which is not shipped).
+ */
+export function samePublished(hash, published) {
+  if (sha256Hex(published) === hash) return true;
+  const text = published.toString("utf8");
+  const stripped = text.replace(/\n?(?:\/\/# sourceMappingURL=\S+|\/\*# sourceMappingURL=\S+ \*\/)\s*$/, "\n");
+  return stripped !== text && [stripped, stripped.replace(/\n$/, "")].some((t) => sha256Hex(Buffer.from(t, "utf8")) === hash);
+}
+
 /** Published bytes for one lock entry: Map<package path, Buffer>. */
 async function published(key, entry) {
   const source = parseSource(entry.from);
@@ -141,7 +152,7 @@ export async function verifyPackage(id, findings) {
     for (const path of registered) {
       const body = files.get(path);
       if (!body) findings.error("vendor/mismatch", id, `${path} is not in ${entry.from}.`, { file: path });
-      else if (sha256Hex(body) !== expected.get(path))
+      else if (!samePublished(expected.get(path), body))
         findings.error("vendor/mismatch", id, `${path} is not the file published as ${entry.from}.`, { file: path });
     }
     if (!findings.items.some((f) => f.id === id && f.file?.startsWith(key) && f.level === "error"))
@@ -162,12 +173,12 @@ export async function addEntry(id, key, from) {
       const body = files.get(path);
       if (!body) throw new Error(`${path} is not in ${from}.`);
       const hash = sha256Hex(readFileSync(join(dir, path)));
-      if (hash !== sha256Hex(body)) throw new Error(`${path} differs from ${from}.`);
+      if (!samePublished(hash, body)) throw new Error(`${path} differs from ${from}.`);
       entry.files[path.slice(key.length)] = hash;
     }
   } else {
     const hash = sha256Hex(readFileSync(join(dir, key)));
-    if (hash !== sha256Hex(files.get(key))) throw new Error(`${key} differs from ${from}.`);
+    if (!samePublished(hash, files.get(key))) throw new Error(`${key} differs from ${from}.`);
     entry.sha256 = hash;
   }
   const lock = readVendorLock(dir);

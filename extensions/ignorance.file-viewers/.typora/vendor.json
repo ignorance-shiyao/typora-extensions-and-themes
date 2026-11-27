@@ -1,0 +1,28 @@
+{
+  "viewers/data/js-yaml.js": {
+    "from": "npm:js-yaml@4.3.2/dist/js-yaml.js",
+    "sha256": "735920e03dbd70263913b645d2b1a715938d836043f3e8709b320ccdf299bdbb"
+  },
+  "viewers/data/smol-toml/": {
+    "from": "npm:smol-toml@1.9.1/dist/",
+    "files": {
+      "date.js": "ef924a2a42c7f16761e7098c3ed8e04195ecbcb02d5c369db0aee76f251a409c",
+      "error.js": "76f8e47f5fc57273748242d59570656d7c921a80bceb2291ca5a4d7a723e9f29",
+      "extract.js": "3e6f1e5764a091acf2df6a3f257d0467c37a2b9dbfecab1573f17a6489349c90",
+      "index.js": "dc8e0afc74477e514f5cb8492b587560c1d7d68cec03a994cc8bc4af99c8da2a",
+      "parse.js": "195e33ea068bf6f3acb5b3342792ac4aa954bba7e751519ba869c00da395ecdb",
+      "primitive.js": "be47fe90bf9a410af0b9204b6b34617f4b38e57f08198b10cb024a0272eb5936",
+      "stringify.js": "c717d95456426dc8a0b07c9d03a4e434d5dea8254fca24e5fd93a22de3bcd44c",
+      "struct.js": "736742cfa645bbd08bc5396c5f7ddbea5c3b7ac5d61fe86031846f5769131deb",
+      "util.js": "6327e40efd957128da15867c3a32293950a925570b457b1b78c735452cebc08e"
+    }
+  },
+  "viewers/office/jszip.js": {
+    "from": "npm:jszip@3.10.2/dist/jszip.js",
+    "sha256": "fa62224aa46f5aa78b9449aa8d6d46d914f8a7cce80bc65c635359f7a2f8ffd7"
+  },
+  "viewers/office/mammoth.browser.js": {
+    "from": "npm:mammoth@1.13.0/mammoth.browser.js",
+    "sha256": "ce90d8f7d6a558bd5d358b32d06af5571daf04ac4e9841523ac9c0cd24c9ab61"
+  }
+}

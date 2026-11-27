@@ -437,6 +437,8 @@ export function checkCode({ id, dir, manifest, files, vendored, findings, added 
         if (call.path !== rule.prefix && !call.path.startsWith(`${rule.prefix}.`)) continue;
         // `typora.view.process` is a page API; `typora.process` alone is not it.
         if (rule.prefix === "typora.process" && call.path.startsWith("typora.view.")) continue;
+        // A page's copy (toolbar `clipboard`, view SDK `ui.copy`) needs no permission.
+        if (call.shape && rule.needs === "clipboard" && where.every((c) => c === "page")) continue;
         if (!used.has(rule.needs)) used.set(rule.needs, []);
         used.get(rule.needs).push({ path, line: call.line });
         // A call matched by shape may be another object's method of that name.
