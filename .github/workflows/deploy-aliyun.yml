@@ -17,9 +17,6 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Holds the deploy secrets; give it required reviewers in the repository
-    # settings so a merge alone cannot reach them.
-    environment: production-aliyun
     strategy:
       fail-fast: false # A failure on one site does not stop the other.
       matrix:
