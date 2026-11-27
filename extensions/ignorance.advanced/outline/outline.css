@@ -1,0 +1,25 @@
+:root {
+  color: var(--typora-foreground);
+  background: var(--typora-background);
+  font: 14px/1.5 system-ui, sans-serif;
+}
+body { margin: 0; }
+main { padding: 8px; }
+p { margin: 0 0 8px; }
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 8em;
+  resize: vertical;
+  color: var(--typora-foreground);
+  background: var(--typora-background);
+  border: 1px solid var(--typora-border);
+  padding: 6px;
+}
+button {
+  color: var(--typora-foreground);
+  background: var(--typora-panel);
+  border: 1px solid var(--typora-border);
+  font: inherit;
+  margin-top: 6px;
+}
