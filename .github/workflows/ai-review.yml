@@ -1,0 +1,125 @@
+name: AI review
+
+# Reviews a PR with a Cursor cloud agent when it changes something that can
+# execute, reach the network or run programs (scripts/ai-review.mjs `plan` has
+# the rules). Pure data — translations, dictionaries, snippets, templates,
+# themes, store images, READMEs — is skipped. The `ai-review` label forces a
+# run; `no-ai-review` turns it off for the PR.
+#
+# Two guards run first and fail the PR without an AI review:
+# - "Tooling guard": a contributor PR changes the tooling (scripts/, .github/, …);
+#   a maintainer can accept it with `allow-tooling`.
+# - "Content guard": package files (or a contributor's title / description) name
+#   credentials or CI secrets, use catch-all exfiltration endpoints, address
+#   reviewers or AI, or hide characters; a maintainer can accept it with
+#   `allow-content`.
+#
+# The agent runs from the BASE commit (its prompt, environment and tools come
+# from main) and fetches the PR as data. This workflow never checks out or runs
+# PR code; the Cursor API key exists only in the `review` job's environment.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, labeled]
+  # Runs the two guards (no AI review) on a PR that predates this workflow.
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true # start cancels the superseded agent run
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  REPO: ${{ github.repository }}
+  PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+  HEAD_SHA: ${{ github.event.pull_request.head.sha }} # plan fills it in on workflow_dispatch
+  EVENT_NAME: ${{ github.event_name }}
+  AI_REVIEW_MAX_PER_PR: ${{ vars.AI_REVIEW_MAX_PER_PR }}
+  AI_REVIEW_MAX_PER_DAY: ${{ vars.AI_REVIEW_MAX_PER_DAY }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
+    outputs:
+      run: ${{ steps.plan.outputs.run }}
+      reason: ${{ steps.plan.outputs.reason }}
+      forced: ${{ steps.plan.outputs.forced }}
+      runs: ${{ steps.plan.outputs.runs }}
+    steps:
+      - uses: actions/checkout@v4 # base; pin to a SHA when adopting
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: plan
+        shell: bash # -o pipefail: a failing Tooling guard fails the job through tee
+        env:
+          EVENT_ACTION: ${{ github.event.action }}
+          EVENT_LABEL: ${{ github.event.label.name }}
+        run: node scripts/ai-review.mjs plan | tee -a "$GITHUB_OUTPUT"
+
+  review:
+    needs: plan
+    if: github.event_name == 'pull_request_target' && needs.plan.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: ai-review # holds secrets.CURSOR_API_KEY; deployment branch: main
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    env:
+      PR_URL: ${{ github.event.pull_request.html_url }}
+      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+      PR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      CURSOR_MODEL: ${{ vars.CURSOR_REVIEW_MODEL }}
+      FORCED: ${{ needs.plan.outputs.forced }}
+      PLAN_REASON: ${{ needs.plan.outputs.reason }}
+      PLAN_RUNS: ${{ needs.plan.outputs.runs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Consume the ai-review label
+        if: needs.plan.outputs.forced == 'true'
+        run: gh pr edit "$PR_NUMBER" -R "$REPO" --remove-label ai-review
+
+      - name: Start the cloud agent
+        id: start
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: node scripts/ai-review.mjs start >> "$GITHUB_OUTPUT"
+
+      - name: Wait for the review
+        id: wait
+        if: steps.start.outputs.agent_id
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          AGENT_ID: ${{ steps.start.outputs.agent_id }}
+        run: node scripts/ai-review.mjs wait > result.txt
+
+      - name: Report
+        if: ${{ !cancelled() }} # a newer push took over; its run reports
+        env:
+          AGENT_URL: ${{ steps.start.outputs.agent_url }}
+          WAIT_OUTCOME: ${{ steps.wait.outcome }}
+        run: node scripts/ai-review.mjs report result.txt

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/typora/typora-extensions-and-themes/review/ai-review.schema.json",
+  "title": "AI deep review result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pr", "head_sha", "verdict", "summary", "packages", "findings", "permission_review", "sensitive_call_sites", "runtime", "deterministic", "not_checked"],
+  "properties": {
+    "pr": { "type": "integer" },
+    "head_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "verdict": { "enum": ["block", "changes-requested", "human-review"] },
+    "summary": { "type": "string", "maxLength": 1200 },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "tier", "permissions"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "enum": ["new", "updated", "removed"] },
+          "tier": { "enum": ["L0", "L1", "L2", "theme"] },
+          "permissions": { "type": "string" },
+          "tooling_changes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "category", "title", "file", "line", "evidence", "scenario", "fix"],
+        "properties": {
+          "severity": { "enum": ["critical", "high", "medium", "low"] },
+          "category": {
+            "enum": [
+              "prompt-injection", "data-exfiltration", "untrusted-input", "process-exec",
+              "excess-permission", "missing-permission", "hidden-behaviour", "supply-chain",
+              "theme-css", "data-loss", "broken-feature", "error-handling", "platform",
+              "lifecycle", "disclosure", "tooling-change"
+            ]
+          },
+          "title": { "type": "string", "maxLength": 140 },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "evidence": { "type": "string", "maxLength": 600 },
+          "scenario": { "type": "string", "maxLength": 800 },
+          "fix": { "type": "string", "maxLength": 600 },
+          "confidence": { "enum": ["confirmed", "likely", "possible"] }
+        }
+      }
+    },
+    "permission_review": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["package", "permission", "used_for", "minimal", "disclosed_in_readme"],
+        "properties": {
+          "package": { "type": "string" },
+          "permission": { "type": "string" },
+          "used_for": { "type": "string" },
+          "minimal": { "type": "boolean" },
+          "disclosed_in_readme": { "type": "boolean" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "sensitive_call_sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["package", "api", "file", "line", "data_sent_or_used"],
+        "properties": {
+          "package": { "type": "string" },
+          "api": { "type": "string" },
+          "file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "target": { "type": "string" },
+          "data_sent_or_used": { "type": "string" }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["harness", "typora"],
+      "properties": {
+        "harness": { "enum": ["passed", "failed", "skipped", "unavailable"] },
+        "typora": { "enum": ["passed", "failed", "skipped", "unavailable"] },
+        "network_requests": { "type": "array", "items": { "type": "string" } },
+        "spawned": { "type": "array", "items": { "type": "string" } },
+        "canary_leaked": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "deterministic": { "type": "array", "items": { "type": "string" } },
+    "not_checked": { "type": "array", "items": { "type": "string" } }
+  }
+}
