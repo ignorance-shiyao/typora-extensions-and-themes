@@ -56,9 +56,10 @@ jobs:
       forced: ${{ steps.plan.outputs.forced }}
       runs: ${{ steps.plan.outputs.runs }}
     steps:
-      - uses: actions/checkout@v4 # base; pin to a SHA when adopting
+      # The base branch as it is now (github.sha). The event's base.sha is the
+      # base when the PR was opened and can predate this workflow.
+      - uses: actions/checkout@v4 # pin to a SHA when adopting
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -85,7 +86,7 @@ jobs:
       PR_AUTHOR: ${{ github.event.pull_request.user.login }}
       PR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
       PR_BODY: ${{ github.event.pull_request.body }}
-      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      BASE_SHA: ${{ github.sha }} # the agent starts from current main, with its review rules
       CURSOR_MODEL: ${{ vars.CURSOR_REVIEW_MODEL }}
       FORCED: ${{ needs.plan.outputs.forced }}
       PLAN_REASON: ${{ needs.plan.outputs.reason }}
@@ -93,7 +94,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
