@@ -31,7 +31,9 @@ import {
   packageDir,
   packageIds,
   packagePath,
+  STORE_META,
   themeIds,
+  vendorStatus,
 } from "./lib.mjs";
 
 const CI = !!process.env.GITHUB_ACTIONS;
@@ -80,6 +82,10 @@ function validate(id) {
   const dictionaries = dictionaryFiles(manifestJson);
   const fontFolders = mathFontFolders(manifestJson);
   const inFontFolder = (path) => fontFolders.some((folder) => path.startsWith(`${folder}/`));
+  // Registered, unchanged third-party files (.typora/vendor.json) are not
+  // held to the source rules: their origin is checked instead.
+  const vendor = vendorStatus(dir);
+  errors.push(...vendor.problems);
   let total = 0;
   for (const path of walkAll(dir)) {
     const stat = lstatSync(join(dir, path));
@@ -108,7 +114,7 @@ function validate(id) {
 
     const isCode = /\.(m?js|cjs)$/i.test(path);
     const isHtml = /\.html?$/i.test(path);
-    if (!isCode && !isHtml) continue;
+    if ((!isCode && !isHtml) || vendor.vendored.has(path)) continue;
     const text = readFileSync(join(dir, path), "utf8");
     const lines = text.split("\n");
     const rules = isCode ? CODE_RULES : HTML_RULES;
@@ -131,7 +137,7 @@ function validate(id) {
   const packageLimit = dictionaries.size || fontFolders.length ? MAX_LANGUAGE_PACK_BYTES : MAX_PACKAGE_BYTES;
   if (total > packageLimit)
     errors.push(`The package is ${(total / 1024 / 1024).toFixed(1)} MB (limit ${packageLimit / 1024 / 1024} MB).`);
-  for (const path of hiddenFiles(dir)) warnings.push(`${path} is hidden and will not be packaged.`);
+  for (const path of hiddenFiles(dir)) if (path !== STORE_META) warnings.push(`${path} is hidden and will not be packaged.`);
 
   let raw;
   try {

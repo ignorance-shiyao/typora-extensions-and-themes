@@ -1,0 +1,65 @@
+name: PR report
+
+# The review comment and the review-policy status (scripts/pr-report.mjs),
+# after the checks finish or a review comes in. Trusted: the base branch's
+# scripts with a write token. The results it downloads were made from the
+# pull request's files and are only read as data.
+on:
+  workflow_run:
+    workflows: [PR checks, PR review submitted]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  issues: write
+  statuses: write
+
+concurrency:
+  group: pr-report-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  report:
+    if: ${{ github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'pull_request_review' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      # The latest "PR checks" run of this head: its results and conclusion.
+      - name: Download results
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pr-checks.yml/runs?head_sha=$HEAD_SHA&per_page=1" --jq '.workflow_runs[0] | select(.status == "completed") | "\(.id) \(.conclusion) \(.html_url)"')
+          if [ -z "$run" ]; then echo "conclusion=pending" >> "$GITHUB_OUTPUT"; exit 0; fi
+          read -r id conclusion url <<< "$run"
+          echo "conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          # Outside the workspace, and only the files the report reads.
+          mkdir -p results
+          for name in static-results runtime-results; do
+            dir="$RUNNER_TEMP/$name"
+            gh run download "$id" -R "$GITHUB_REPOSITORY" -n "$name" -D "$dir" || continue
+            for file in static.json permissions.json runtime.json; do
+              if [ -f "$dir/$file" ] && [ ! -L "$dir/$file" ]; then cp "$dir/$file" results/; fi
+            done
+          done
+
+      - name: Report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          CHECKS_CONCLUSION: ${{ steps.run.outputs.conclusion }}
+          CHECKS_RUN_URL: ${{ steps.run.outputs.url }}
+        run: node scripts/pr-report.mjs results

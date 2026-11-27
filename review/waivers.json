@@ -1,0 +1,4 @@
+{
+  "$comment": "Findings a maintainer has looked at and accepted: { id, rule, file?, reason }. A waived error or review item is reported as info. Only maintainers edit this file (.github/CODEOWNERS).",
+  "waivers": []
+}

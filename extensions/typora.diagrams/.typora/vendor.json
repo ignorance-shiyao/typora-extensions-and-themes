@@ -1,0 +1,42 @@
+{
+  "vendor/bpmn-viewer.production.min.js": {
+    "from": "npm:bpmn-js@18.31.0/dist/bpmn-viewer.production.min.js",
+    "sha256": "3c1e57f8ca944ae66464548d693a4777dfe259bbb063e2ef5517d2a5baa4d85b"
+  },
+  "vendor/graphre.js": {
+    "from": "npm:graphre@0.1.3/dist/graphre.js",
+    "sha256": "d88111e403c1210ef905c86be98761c15d3ff190636470d838edc1797f8d5c7a"
+  },
+  "vendor/graphviz.js": {
+    "from": "npm:@hpcc-js/wasm-graphviz@1.29.2/dist/index.js",
+    "sha256": "550d9cd6ff429f5bd225316fe1faed4f852038c3e1ec609ce113af1f9379ce25"
+  },
+  "vendor/nomnoml.js": {
+    "from": "npm:nomnoml@1.7.0/dist/nomnoml.js",
+    "sha256": "601c588fe6a6ce3730d58b7d261c6694424d1d3d3d386a6cafaf6d1c1037f759"
+  },
+  "vendor/vega-interpreter.entry.js": {
+    "built": "the esbuild entry vendor/vega-interpreter.js is bundled from (see README.md)",
+    "sha256": "be17fc608782aede371b515f77f6043c601f8fbf67d37c2f899ddac35949d9d7"
+  },
+  "vendor/vega-interpreter.js": {
+    "built": "vega-interpreter 2.3.2 with vega-util 2.1.3, bundled by esbuild from vendor/vega-interpreter.entry.js (see README.md)",
+    "sha256": "c9dc0f6b3e71ce47d07cef7fe461e90085181cd0c764270df86691ed1c7ec660"
+  },
+  "vendor/vega-lite.min.js": {
+    "from": "npm:vega-lite@6.5.0/build/vega-lite.min.js",
+    "sha256": "83e215e84e308ee8688fa6503ba0f1cf8a3c05c0d61df2841a0b92bf86809e00"
+  },
+  "vendor/vega.min.js": {
+    "from": "npm:vega@6.4.0/build/vega.min.js",
+    "sha256": "8f6a3587cf8d4f42c7e08120e3eb05d067e746d554e39d2dcf52acc0bd5ba28f"
+  },
+  "vendor/wavedrom-dark.js": {
+    "from": "npm:wavedrom@3.7.0/skins/dark.js",
+    "sha256": "f86d96f3db2bb2c21d43b00792cefab99e6c035299e318745a39c6898dd3253c"
+  },
+  "vendor/wavedrom.unpkg.min.js": {
+    "from": "npm:wavedrom@3.7.0/wavedrom.unpkg.min.js",
+    "sha256": "e3579493c2a0c11eb0d32344ea0eadb2904a7c85ad729b28b6222ab837297742"
+  }
+}

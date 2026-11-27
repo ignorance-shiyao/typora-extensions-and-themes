@@ -1,0 +1,16 @@
+# The store's tooling and review rules: only maintainers change them
+# (scripts/pr-gate.mjs refuses them in a package pull request). Packages have
+# no code owner here; review/owners.json names who owns each namespace.
+/.github/          @abnerlee
+/scripts/          @abnerlee
+/tests/            @abnerlee
+/review/           @abnerlee
+/site/             @abnerlee
+/package.json      @abnerlee
+/package-lock.json @abnerlee
+/worker.js         @abnerlee
+/headers.js        @abnerlee
+/wrangler.toml     @abnerlee
+/wrangler.themes.toml @abnerlee
+/suggestions.json  @abnerlee
+/CONTRIBUTING.md   @abnerlee

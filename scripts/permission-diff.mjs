@@ -4,11 +4,12 @@
 // depth the change needs. Also fails when a changed extension keeps its
 // version: published downloads are immutable, so every change needs a bump.
 //
-//   node scripts/permission-diff.mjs origin/main
+//   node scripts/permission-diff.mjs origin/main [--json out.json]
 //
 // Writes Markdown to $GITHUB_STEP_SUMMARY when set, and always to stdout.
 
-import { appendFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import {
   MANIFEST,
   git,
@@ -23,7 +24,10 @@ import {
   tierOf,
 } from "./lib.mjs";
 
-const base = process.argv[2];
+const args = process.argv.slice(2);
+const jsonAt = args.indexOf("--json");
+const jsonOut = jsonAt >= 0 ? args.splice(jsonAt, 2)[1] : null;
+const base = args[0];
 if (!base) {
   console.error("Usage: node scripts/permission-diff.mjs <base-ref>");
   process.exit(2);
@@ -56,7 +60,7 @@ const baseFiles = (id) =>
     .split("\n")
     .filter(Boolean)
     .map((p) => p.slice(`${basePaths.get(id)}/`.length));
-/** Whether a packaged file changed; store images alone need no bump. */
+/** Whether a packaged file changed; store images and dotfiles (.typora/) alone need no bump. */
 const changed = (id) => {
   const prefix = `${packagePath(id)}/`;
   const paths = [
@@ -64,7 +68,10 @@ const changed = (id) => {
     // Untracked files are not seen by git diff; count them too.
     ...git(["ls-files", "--others", "--exclude-standard", "--", prefix]).split("\n"),
   ];
-  return paths.some((p) => p && !isStoreOnlyImage(packageDir(id), p.slice(prefix.length)));
+  return paths.some((p) => {
+    const rel = p.slice(prefix.length);
+    return p && !rel.split("/").some((part) => part.startsWith(".")) && !isStoreOnlyImage(packageDir(id), rel);
+  });
 };
 
 const DOC_LEVEL = { "": 0, read: 1, write: 2 };
@@ -168,6 +175,8 @@ for (const id of ids) {
       : "—",
     tier: oldTier && oldTier !== headTier ? `${oldTier} → ${headTier}` : headTier,
     review,
+    // For scripts/review/risk.mjs.
+    facts: { widened, added, removed, permissions: headPerms, tierNow: headTier, sensitive: SENSITIVE(headPerms) },
   });
 }
 
@@ -182,6 +191,10 @@ else {
 if (problems.length) md += `\n### Problems\n\n${problems.map((p) => `- ${p}`).join("\n")}\n`;
 
 console.log(md);
+if (jsonOut) {
+  mkdirSync(dirname(jsonOut), { recursive: true });
+  writeFileSync(jsonOut, `${JSON.stringify({ base, rows, problems, markdown: md }, null, 2)}\n`);
+}
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${md}\n`);
 if (process.env.GITHUB_ACTIONS) for (const p of problems) console.log(`::error::${p}`);
 process.exit(problems.length ? 1 : 0);

@@ -18,16 +18,21 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Holds the deploy secrets; give it required reviewers in the repository
+    # settings so a merge alone cannot reach them.
+    environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0 # updatedAt in index.json comes from git log
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
-      - run: npm ci
+      # No install scripts run next to the deploy secrets.
+      - run: npm ci --ignore-scripts
 
       - name: Validate
         run: npm run validate
@@ -35,18 +40,21 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Published versions keep their bytes
+        run: node scripts/immutable.mjs https://extensions.typora.io
+
       - name: Build V1 theme gallery
         uses: ./.github/actions/build-v1
 
       - name: Deploy to extensions.typora.io
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
 
       - name: Deploy to themes.typora.io
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

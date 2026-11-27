@@ -1,0 +1,5 @@
+{
+  "source": "apps/electron/src/main/extensionProtocol.ts (Typora 100823f4)",
+  "page": "default-src 'none'; script-src {base} 'wasm-unsafe-eval'; style-src {base} 'unsafe-inline'; img-src {base} blob: data:; font-src {base} data:; media-src {base} blob: data:; connect-src 'none'; frame-src 'none'; worker-src {base} blob:; base-uri 'none'; form-action 'none'",
+  "worker": "default-src 'none'; script-src {base} 'wasm-unsafe-eval'; connect-src 'none'; worker-src 'none'"
+}

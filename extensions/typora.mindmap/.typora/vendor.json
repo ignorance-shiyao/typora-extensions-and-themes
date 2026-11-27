@@ -1,0 +1,15 @@
+{
+  "vendor/chunks/": {
+    "built": "markmap 1.0.0-next.0 bundled by scripts/mindmap-vendor/build.mjs",
+    "files": {
+      "chunk-HIMZUJGG.js": "3aa126f8fece3c7a14eaa6afaa3eb6fb413d3c29c96c207b87cf56b4d2a9ed1f",
+      "chunk-NZLE2WMY.js": "2e35a8e8827cc0c2c6f2d2fd93ef17f6dcc15013d8a954eaf41023e527aec372",
+      "highlight-C7UPduaR-WKPTTOED.js": "338f929e216cd2efe21cb3ac42915c628c14ade18d8b92e83fc48e2f62f457f6",
+      "notes-html-DIYxB3aO-GMCPTGNZ.js": "377b5b1ada8fb05350275237bc2c4c807860fa15b5a4db4bab30782f9f9aab21"
+    }
+  },
+  "vendor/markmap.js": {
+    "built": "markmap 1.0.0-next.0 bundled by scripts/mindmap-vendor/build.mjs",
+    "sha256": "af3585ebcb14036cd9acff2a518b24951794bb72047691f88f3896dff2a2ff1f"
+  }
+}

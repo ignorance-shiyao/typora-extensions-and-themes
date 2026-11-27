@@ -1,12 +1,15 @@
 // Shared helpers for validate / build / permission-diff. Zero dependencies.
 
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateRawSync } from "node:zlib";
 
-export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+/** The tree to read: this checkout, or `STORE_ROOT` — a pull request checked out
+ * next to the trusted scripts, read as data (.github/workflows/pr-checks.yml). */
+export const ROOT = process.env.STORE_ROOT ? resolve(process.env.STORE_ROOT) : join(dirname(fileURLToPath(import.meta.url)), "..");
 export const EXTENSIONS_DIR = join(ROOT, "extensions");
 export const THEMES_DIR = join(ROOT, "themes");
 /** Themes that ship with Typora: listed on themes.typora.io, not packaged. */
@@ -229,6 +232,92 @@ export function packageFiles(dir) {
   };
   walk("");
   return out.sort(compareBytes);
+}
+
+// ── Store metadata and vendored libraries ─────────────────────────────
+// `.typora/` in a package holds what the store's review reads and users never
+// get (dot folders are not packaged): `vendor.json`, test fixtures.
+
+export const STORE_META = ".typora";
+export const VENDOR_LOCK = `${STORE_META}/vendor.json`;
+
+export const sha256Hex = (buf) => createHash("sha256").update(buf).digest("hex");
+
+/**
+ * `.typora/vendor.json`: where each third-party file came from.
+ *
+ *   "vendor/vega.min.js": { "from": "npm:vega@6.4.0/build/vega.min.js", "sha256": "…" }
+ *   "vendor/chunks/x/":   { "from": "npm:mermaid@11.16.0/dist/chunks/x/", "files": { "a.mjs": "…" } }
+ *   "vendor/y.js":        { "from": "https://example.com/y-1.2.3.js", "sha256": "…" }
+ *   "vendor/z.js":        { "built": "what was bundled, and how", "sha256": "…" }
+ *
+ * Returns {} without the file; throws when it is not valid JSON.
+ */
+export function readVendorLock(dir) {
+  const path = join(dir, VENDOR_LOCK);
+  if (!existsSync(path)) return {};
+  const raw = JSON.parse(readFileSync(path, "utf8"));
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${VENDOR_LOCK} must be an object.`);
+  return raw;
+}
+
+/** Each file a lock entry covers, with its expected sha256: [[path, sha256, key]]. */
+export function vendorLockFiles(lock) {
+  const out = [];
+  for (const [key, entry] of Object.entries(lock)) {
+    if (!entry || typeof entry !== "object") continue;
+    if (key.endsWith("/")) for (const [name, hash] of Object.entries(entry.files ?? {})) out.push([`${key}${name}`, hash, key]);
+    else out.push([key, entry.sha256, key]);
+  }
+  return out;
+}
+
+/**
+ * Offline half of the vendored-library check: which packaged files are
+ * registered and still byte-identical to what was registered. Whether the
+ * registration is true (the bytes are the published ones) is checked online
+ * by scripts/review/vendor.mjs.
+ */
+export function vendorStatus(dir) {
+  const problems = [];
+  let lock;
+  try {
+    lock = readVendorLock(dir);
+  } catch (error) {
+    return { vendored: new Map(), problems: [error.message] };
+  }
+  const vendored = new Map();
+  const covered = new Set();
+  for (const [path, hash, key] of vendorLockFiles(lock)) {
+    covered.add(path);
+    const entry = lock[key];
+    if (typeof entry.from !== "string" && typeof entry.built !== "string") {
+      problems.push(`${VENDOR_LOCK}: "${key}" needs "from" (npm:<name>@<version>/<path> or a URL) or "built".`);
+      continue;
+    }
+    if (!isRelativeAssetPath(path)) {
+      problems.push(`${VENDOR_LOCK}: "${path}" must be a relative path inside the package.`);
+      continue;
+    }
+    const file = join(dir, path);
+    if (!existsSync(file)) {
+      problems.push(`${VENDOR_LOCK}: ${path} is registered but missing.`);
+      continue;
+    }
+    if (sha256Hex(readFileSync(file)) !== hash) {
+      problems.push(`${path} differs from the registered copy (${VENDOR_LOCK}); vendored files are taken unchanged.`);
+      continue;
+    }
+    vendored.set(path, { key, entry });
+  }
+  // A folder entry covers the whole folder: a file added next to the
+  // registered ones is not vendored.
+  for (const key of Object.keys(lock).filter((k) => k.endsWith("/"))) {
+    if (!existsSync(join(dir, key))) continue;
+    for (const path of packageFiles(dir).filter((p) => p.startsWith(key)))
+      if (!covered.has(path)) problems.push(`${path} is in the registered folder ${key} but not in ${VENDOR_LOCK}.`);
+  }
+  return { vendored, problems };
 }
 
 /** Every dotfile / dot-folder under `dir` (not packaged; reported by validate). */

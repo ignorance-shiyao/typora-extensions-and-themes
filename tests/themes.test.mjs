@@ -33,8 +33,10 @@ const theme = {
   download: { url: "https://extensions.typora.io/download/typora.ash-1.0.0.typora-theme", size: 40949 },
 };
 
-test("every official theme is a valid themes-only package", () => {
-  assert.deepEqual(themeIds(), OFFICIAL);
+test("every theme is a valid themes-only package", () => {
+  // Contributed themes join the list without touching tests/ (a pull request
+  // that adds a package may not change the tooling: scripts/pr-gate.mjs).
+  assert.deepEqual(themeIds().filter((id) => id.startsWith("typora.")), OFFICIAL);
   for (const id of themeIds()) {
     const raw = readManifest(id);
     const dir = join(THEMES_DIR, id);

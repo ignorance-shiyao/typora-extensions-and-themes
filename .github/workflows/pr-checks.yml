@@ -1,0 +1,133 @@
+name: PR checks
+
+# Checks of a pull request's packages. The pull request is data: the scripts,
+# their dependencies and the browsers come from the base branch (trusted/),
+# the pull request is checked out next to them (pr/) and read through
+# STORE_ROOT. No secrets, a read-only token. pr-report.yml turns the results
+# into the review comment and the review-policy status.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    outputs:
+      ids: ${{ steps.check.outputs.ids }}
+      tooling: ${{ steps.check.outputs.tooling }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      # The merge of the pull request into the base: diffing it against
+      # BASE_SHA gives exactly what the pull request changes.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          path: pr
+          fetch-depth: 0 # updatedAt in index.json comes from git log
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - run: npm ci --ignore-scripts
+        working-directory: trusted
+
+      - name: Validate
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node trusted/scripts/validate.mjs
+
+      - name: Permission diff
+        if: ${{ !cancelled() }}
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node trusted/scripts/permission-diff.mjs "$BASE_SHA" --json results/permissions.json
+
+      - name: Static review
+        id: check
+        if: ${{ !cancelled() }}
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node trusted/scripts/pr-check.mjs --base "$BASE_SHA" --out results --online
+
+      - name: Tests on the pull request's packages
+        if: ${{ !cancelled() }}
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node --test trusted/tests/*.test.mjs
+
+      - name: Build
+        if: ${{ !cancelled() }}
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node trusted/scripts/build.mjs
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: ${{ always() }}
+        with:
+          name: static-results
+          path: results
+          retention-days: 14
+
+  runtime:
+    needs: static
+    if: ${{ !cancelled() && needs.static.outputs.ids != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          path: pr
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - run: npm ci --ignore-scripts
+        working-directory: trusted
+
+      - run: npx playwright install --with-deps chromium webkit
+        working-directory: trusted
+
+      - name: Run in the sandbox
+        env:
+          IDS: ${{ needs.static.outputs.ids }}
+        run: STORE_ROOT="$GITHUB_WORKSPACE/pr" node trusted/scripts/harness/harness.mjs --out results "$IDS"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: ${{ always() }}
+        with:
+          name: runtime-results
+          path: results
+          retention-days: 14
+
+  # A pull request that changes the tooling: its own tests, with its own
+  # scripts. Still no secrets; CODEOWNERS decides whether it merges.
+  tooling:
+    needs: static
+    if: ${{ !cancelled() && needs.static.outputs.tooling == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - run: npm ci --ignore-scripts
+      - run: npm run validate
+      - run: npm test
+      - run: npm run build

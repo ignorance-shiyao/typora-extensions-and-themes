@@ -44,34 +44,72 @@ not every line for escapes.
 - A `README.md` in the folder is shown on the extension's store page. An
   image uploader that drives a companion app (iPic, uPic, …) names the app,
   links where to get it and says what the extension sends it.
-- Run `npm run validate` before pushing.
+- Third-party files are registered in `.typora/vendor.json` with where they
+  came from, so CI can compare them byte for byte with the published package:
+  `node scripts/review/vendor.mjs add <id> vendor/lib.js npm:lib@1.2.3/dist/lib.js`
+  (a folder ends in `/`; an https URL works for a single file). Something you
+  bundled yourself is `{ "built": "how", "sha256": "…" }` and gets a human
+  look at the recipe.
+- Fence renderers render their examples in CI: the fences in `snippets/` and
+  in `.typora/fixtures/*.md`. Add the cases you fixed or care about there.
+  `.typora/` is not packaged and needs no version bump.
+- Run `npm run validate` and `node scripts/pr-check.mjs <id>` before pushing;
+  `node scripts/harness/harness.mjs <id>` runs the extension in the sandbox
+  (`npx playwright install chromium webkit` once).
 
 ## Automated checks (every PR)
 
-- Manifest: required fields, id pattern, folder name, permission shapes,
-  every referenced file (`main`, `background`, entries, templates,
-  snippets) exists.
-- Files: no symbolic links, at most 1 MB per file and 5 MB per extension.
-  Language packs (dictionaries) and MathJax fonts (`contributes.mathjax.fonts`
-  folders, copied unchanged from `@mathjax/mathjax-<name>-font`) may be larger:
-  32 MB per dictionary, 8 MB per font file, 128 MB per extension.
-- Vendored libraries (like xterm.js) are taken unchanged from their
-  published package and named with their version in the README; their
-  minified-line warning is expected.
-- Code: flags `eval(`, `new Function(`, remote `import()` /
-  `importScripts()` / `<script src>` and very long (minified) lines.
-- Permission diff against `main`: permissions added or removed, network
-  origins, tier change, and the review depth below. It is printed in the
-  job summary.
+CI checks a pull request with the base branch's scripts and reads the pull
+request as data, so a pull request cannot change how it is checked. The
+results come back as one comment on the pull request.
+
+- **Gate** (before anything runs): the pull request changes one package
+  folder and nothing else — `scripts/`, `tests/`, `.github/`, `review/` and
+  the other tooling are for maintainers. A new package's namespace (`author`
+  in `author.name`) is yours: `review/owners.json` records it after your
+  first package, and others cannot add packages to it. `typora.*` is
+  Typora's. Names that read like an existing package or namespace are
+  flagged. The description explains every permission.
+- **Manifest and files**: required fields, id pattern, folder name,
+  permission shapes, every referenced file exists; no symbolic links, at most
+  1 MB per file and 5 MB per extension (language packs and MathJax fonts:
+  32 MB per dictionary, 8 MB per font file, 128 MB per extension); no
+  programs or archives under any name, WebAssembly only with its origin,
+  no credentials, bundled fonts with their license.
+- **Third-party files**: registered ones are compared with their published
+  package and checked against known vulnerabilities (osv.dev);
+  unregistered ones under `vendor/` need a reviewer.
+- **Code** (your own sources): no `eval`, `Function()`, strings in
+  `setTimeout`, remote imports, minified or obfuscated code. Every import and
+  `src` exists with the same case and stays in the package; pages have no
+  inline scripts, handlers or remote resources (the page CSP blocks them).
+  Every SDK call is matched with the permission it needs and where it runs
+  (`ai` and `process` are main only, …); a permission nothing uses is
+  flagged. The calls that use permissions are listed for the reviewer.
+- **Manifest patterns**: a regex that nests repetition (`(a+)+`) is refused.
+- **Themes**: text, headings, links and secondary text keep their contrast
+  against the background in every color scheme.
+- **Permission diff** against `main`: permissions added or removed, network
+  origins, tier change; a changed package needs a version bump.
+- **In the sandbox** (Chromium and WebKit, Typora's own Worker bootstrap,
+  view SDK and CSPs, no network): `main` and `background` activate and
+  deactivate, every command in `contributes.commands` is registered, every
+  page loads, fence renderers draw their examples into SVG Typora accepts and
+  survive hostile input. Network requests and programs are recorded, and a
+  request that carries the test document's text is reported.
 
 ## Review depth follows permissions
 
-| The extension | Review |
-| --- | --- |
-| L0 (data only), no `network` | Automated checks plus a light review |
-| Declares `network`, `document`, `workspace`, `clipboard` or `ai` | Human review of the code paths that use them |
-| Declares `process` | Human review of every place it starts a program, and why it needs to; the README says what it runs |
-| An update that widens permissions | Human review; users are asked to consent again on update |
+`review-policy` passes once enough maintainers approved the current commit:
+
+| Risk | When | Approvals |
+| --- | --- | --- |
+| low | L0 (data only), no `network` | 1 |
+| medium | Ships code, or vendors a library | 1 |
+| high | Declares `network`, `document`, `workspace`, `clipboard` or `ai`; a first contribution; a new namespace; anything the checks ask a reviewer to look at | 1, who goes through every listed call |
+| critical | Declares `process`; an update that widens permissions (users consent again); a change from outside the package's namespace; tooling; a waived finding | 2, one of them from `review/owners.json` `security` (at most as many as there are maintainers besides the author) |
+
+A maintainer can accept a finding in `review/waivers.json` with the reason.
 
 ## Rules
 

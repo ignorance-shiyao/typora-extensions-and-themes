@@ -1,0 +1,51 @@
+name: Nightly review
+
+# Everything in the store against what changed since it was reviewed: new
+# vulnerabilities in vendored libraries, and Typora's runtime (synced into
+# scripts/harness/runtime) breaking an extension that used to work.
+on:
+  schedule:
+    - cron: '41 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium webkit
+
+      # Packages reviewed before a rule existed: reported, not failed; a pull
+      # request that changes one has to fix what it reports.
+      - name: Static review of every package
+        continue-on-error: true
+        run: node scripts/pr-check.mjs --all --out results
+
+      - name: Vendored libraries match their packages
+        run: node scripts/review/vendor.mjs verify
+
+      - name: Known vulnerabilities
+        if: ${{ !cancelled() }}
+        run: node scripts/review/vendor.mjs osv
+
+      - name: Every package in the sandbox
+        if: ${{ !cancelled() }}
+        run: node scripts/harness/harness.mjs --all --out results
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: ${{ always() }}
+        with:
+          name: nightly-results
+          path: results
+          retention-days: 14

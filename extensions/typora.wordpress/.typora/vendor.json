@@ -1,0 +1,6 @@
+{
+  "vendor/marked.esm.js": {
+    "from": "npm:marked@16.4.2/lib/marked.esm.js",
+    "sha256": "6540aa2544be84b3abdd9424fa287120e9ed7c7600512dd92c097493121a5951"
+  }
+}

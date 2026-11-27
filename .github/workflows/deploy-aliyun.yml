@@ -17,6 +17,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Holds the deploy secrets; give it required reviewers in the repository
+    # settings so a merge alone cannot reach them.
+    environment: production-aliyun
     strategy:
       fail-fast: false # A failure on one site does not stop the other.
       matrix:
@@ -24,21 +27,26 @@ jobs:
           - { site: extensions, app: typora-extensions, domain: extensions.typoraio.cn }
           - { site: themes, app: typora-themes, domain: theme2.typoraio.cn }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0 # updatedAt in index.json comes from git log
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
 
-      - run: npm ci
+      # No install scripts run next to the deploy secrets.
+      - run: npm ci --ignore-scripts
 
       - name: Validate
         run: npm run validate
 
       - name: Build
         run: node scripts/build.mjs --origin https://extensions.typoraio.cn --themes-origin https://theme2.typoraio.cn --docs-origin https://docs.typoraio.cn --home-origin https://v2.typoraio.cn
+
+      - name: Published versions keep their bytes
+        run: node scripts/immutable.mjs https://extensions.typoraio.cn
 
       - name: Build V1 theme gallery
         if: matrix.site == 'themes'
